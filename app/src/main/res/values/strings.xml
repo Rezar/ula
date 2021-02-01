@@ -1,0 +1,101 @@
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name">ULA</string>
+
+    <string name="intro_welcome_1">A magic has happened and now you own an egg of a monster, ULA.</string>
+    <string name="intro_welcome_2">As much as you stay committed to your daily walk/run routine your ULA is happy, being lazy makes the ULA unhappy.</string>
+    <string name="intro_welcome_3">I agree with Terms of Service / Privacy Policy</string>
+    <string name="intro_welcome_timer">You can change this settings in:</string>
+
+    <string name="intro_goal_1">Tell ULA the number of steps you intend to take. No, No, No you can not enter anything less than 5,000 steps >:)</string>
+    <string name="intro_goal_2">Are you sure about your selection ? You can not change it until 3 days passes</string>
+    <string name="intro_goal_steps_1">5,000 steps daily</string>
+    <string name="intro_goal_steps_2">10,000 steps daily</string>
+    <string name="intro_goal_steps_3">15,000 steps daily</string>
+    <string name="intro_goal_steps_4">20,000 steps daily</string>
+
+    <string name="intro_fit_1">Please allow "Google Fit" to access your health data. Choose your profile from next dialog.</string>
+    <string name="taps_to_go">Taps To Go</string>
+    <string name="max_threshold">Max Threshold (Percent)</string>
+    <string name="min_threshold">Min Threshold (Percent)</string>
+    <string name="effective_days">Effective Days</string>
+    <string name="lock_time">Lock Time (Seconds)</string>
+    <string name="save">Save</string>
+    <string name="error">Error</string>
+    <string name="value_not_correct">Value is not correct</string>
+    <string name="ok">OK</string>
+    <string name="max_threshold_not_correct">Max threshold is not correct!</string>
+    <string name="min_threshold_not_correct">Min threshold is not correct!</string>
+    <string name="effective_days_not_correct">Effective days is not correct!</string>
+    <string name="lock_time_not_correct">Lock time is not correct!</string>
+    <string name="successfully_saved">Successfully Saved!</string>
+    <string name="display_step_counts">Display Step Counts</string>
+    <string name="display_step_toasts">Display Toast Messages</string>
+    <string name="display_tap_to_go">Display Tap To Go</string>
+    <string name="loading_senario">Loading Senario</string>
+    <string name="senario_successfull">Senario loaded successfully</string>
+    <string name="tap_egg">Tap the Egg to Crack!</string>
+
+    <string-array name="array_age">
+        <item>Child</item>
+        <item>Adult</item>
+    </string-array>
+
+    <string-array name="array_body">
+        <item>Normal</item>
+        <item>Overweight</item>
+        <item>Fat</item>
+        <item>Fit</item>
+    </string-array>
+
+    <string-array name="array_emotion">
+        <item>Happy</item>
+        <item>OK</item>
+        <item>Sad</item>
+    </string-array>
+
+    <!--Player-->
+    <string name="error_drm_not_supported">Protected content not supported on API levels below 18</string>
+    <string name="error_drm_unsupported_scheme">This device does not support the required DRM scheme</string>
+    <string name="error_drm_unknown">An unknown DRM error occurred</string>
+    <string name="error_no_decoder">This device does not provide a decoder for</string>
+    <string name="error_no_secure_decoder">This device does not provide a secure decoder for</string>
+    <string name="error_querying_decoders">Unable to query device decoders</string>
+    <string name="error_instantiating_decoder">Unable to instantiate decoder</string>
+    <string name="error_unsupported_video">Media includes video tracks, but none are playable by this device</string>
+    <string name="error_unsupported_audio">Media includes audio tracks, but none are playable by this device</string>
+    <string name="error_cleartext_not_permitted">Cleartext traffic not permitted</string>
+    <string name="error_unrecognized_stereo_mode">Unrecognized stereo mode</string>
+    <string name="storage_permission_denied">Permission to access storage was denied</string>
+    <string name="error_generic">Playback failed</string>
+    <string name="material_pause">&#xe034;</string>
+    <string name="material_forward_30">&#xe057;</string>
+    <string name="material_play_arrow">&#xe037;</string>
+    <string name="material_replay_10">&#xe059;</string>
+    <!---->
+
+    <string name="add_noted_media_bookmark">اضافه كردن بوكمارك بهمراه يادداشت</string>
+    <string name="see_all_media_bookmarks">ديدن همه بوكمارك ها</string>
+    <string name="fa_video_camera">&#xf03d;</string>
+
+    <string name="unexpected_intent_action">Unexpected intent action: <xliff:g id="action">%1$s</xliff:g></string>
+    <string name="error_unrecognized_abr_algorithm">Unrecognized ABR algorithm</string>
+    <string name="ima_not_loaded">Playing sample without ads, as the IMA extension was not loaded</string>
+    <string name="download_start_error">Failed to start download</string>
+    <string name="back_image">Background Image</string>
+    <string name="previous_chapter">Previous Chapter</string>
+    <string name="next_chapter">Next Chapter</string>
+    <string name="storage_permission_persistence">اپليكيشن جهت دانلود و ذخيره‌سازى كتاب‌ها نياز به دسترسى‌هاى لازم دارد. لطفا از قسمت تنظيمات مجوزهاى لازم را صادر نماييد.</string>
+    <string name="app_settings">رفتن به تنظيمات</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="material_play_circle_outline">&#xe039;</string>
+    <string name="material_pause_circle_outline">&#xe036;</string>
+    <string name="media_list">Media List</string>
+    <string name="fa_bookmark_o">&#xf097;</string>
+    <string name="info">Info</string>
+    <string name="download_in_progress">در حال دانلود&#8230;</string>
+    <string name="subscription_books_title">اشتراكى</string>
+    <string name="user_books_title">خريدارى شده</string>
+    <!-- -->
+
+</resources>
