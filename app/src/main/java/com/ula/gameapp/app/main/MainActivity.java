@@ -384,7 +384,7 @@ public class MainActivity extends BaseActivity implements SensorEventListener {
     }
 
     private void fetchData() {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:MM:SS", Locale.getDefault());
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:SS", Locale.getDefault());
 
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
