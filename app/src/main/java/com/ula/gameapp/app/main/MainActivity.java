@@ -9,8 +9,11 @@ package com.ula.gameapp.app.main;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -34,7 +37,9 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.fitness.Fitness;
+import com.google.android.gms.fitness.FitnessOptions;
 import com.google.android.gms.fitness.data.Bucket;
 import com.google.android.gms.fitness.data.DataPoint;
 import com.google.android.gms.fitness.data.DataSet;
@@ -45,7 +50,6 @@ import com.google.android.gms.fitness.result.DataReadResponse;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.ula.gameapp.BuildConfig;
 import com.ula.gameapp.R;
 import com.ula.gameapp.ViewModels.FootStepViewModel;
 import com.ula.gameapp.ViewModels.PrimaryDataViewModel;
@@ -55,11 +59,12 @@ import com.ula.gameapp.app.main.help.HelpFragment;
 import com.ula.gameapp.app.main.home.HomeFragment;
 import com.ula.gameapp.app.main.setting.SettingFragment;
 import com.ula.gameapp.app.main.stats.StatsFragment;
-import com.ula.gameapp.core.Annotation;
+import com.ula.gameapp.core.helper.CacheManager;
 import com.ula.gameapp.core.helper.GoogleFit;
 import com.ula.gameapp.core.helper.PedometerManager;
-import com.ula.gameapp.core.logger.CatLogger;
-import com.ula.gameapp.database.dao.StepDaoUtils;
+import com.ula.gameapp.core.receiver.ResetSensorReceiver;
+import com.ula.gameapp.database.DatabaseClient;
+import com.ula.gameapp.database.dao.StepDao;
 import com.ula.gameapp.item.AppConfig;
 import com.ula.gameapp.item.FootStep;
 import com.ula.gameapp.item.Step;
@@ -79,21 +84,41 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import devlight.io.library.ntb.NavigationTabBar;
 
+import static com.ula.gameapp.App.getContext;
+import static com.ula.gameapp.core.Annotation.PEDOMETER_GOOGLE_FIT;
+import static com.ula.gameapp.core.Annotation.PEDOMETER_SENSOR;
 import static com.ula.gameapp.core.helper.GoogleFit.REQUEST_OAUTH_REQUEST_CODE;
+
+import com.microsoft.appcenter.AppCenter;
+import com.microsoft.appcenter.analytics.Analytics;
+import com.microsoft.appcenter.crashes.Crashes;
 
 public class MainActivity extends BaseActivity implements SensorEventListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    @BindView(R.id.img_nav_toggle) ImageView imgNavToggle;
-    @BindView(R.id.ntb) NavigationTabBar navigationTabBar;
-    @BindView(R.id.vp) public NoSwipeViewPager viewPager;
+    @BindView(R.id.img_nav_toggle)
+    ImageView imgNavToggle;
+    @BindView(R.id.ntb)
+    NavigationTabBar navigationTabBar;
+    @BindView(R.id.vp)
+    public NoSwipeViewPager viewPager;
 
     boolean animationDone = true;
 
-//    private StepDao stepDao;
-//    StepViewModel stepViewModel;
+    private StepDao stepDao;
+    StepViewModel stepViewModel;
+    private Step todayStep;
     int todayOffset = 0, sinceBoot = 0; // pedometer handler
+    private  int idx=-1;
+
+    private static final int N_SAMPLES = 200;
+    private static List<Float> x;
+    private static List<Float> y;
+    private static List<Float> z;
+    private String[] labels = {"Downstairs", "Jogging", "Sitting", "Standing", "Upstairs", "Walking"};
+    private float[] results;
+    private TensorFlowClassifier classifier;
 
     private PrimaryDataViewModel primaryDataViewModel;
     private FootStepViewModel footStepViewModel;
@@ -104,13 +129,75 @@ public class MainActivity extends BaseActivity implements SensorEventListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        stepDao = DatabaseClient.getInstance(this).getAppDatabase().stepDao();
-//        stepViewModel = ViewModelProviders.of(this).get(StepViewModel.class);
+        AppCenter.start(getApplication(), "ae6b638e-1f24-474e-b99b-f2f6d6e0b735",
+                Analytics.class, Crashes.class);
+
+        stepDao = DatabaseClient.getInstance(this).getAppDatabase().stepDao();
+        stepViewModel = new ViewModelProvider(this).get(StepViewModel.class);
+
+
         initViewModels();
-        if (GoogleFit.checkGoogleFitPermission(this)) {
+        x = new ArrayList<>();
+        y = new ArrayList<>();
+        z = new ArrayList<>();
+        classifier = new TensorFlowClassifier(getApplicationContext());
+
+
+        SharedPreferences pref = getSharedPreferences("UlaSettings", Context.MODE_PRIVATE);
+
+        if(pref.contains("pedometer_type")) {
+            int pedometerType = pref.getInt("pedometer_type", 0);
+
+            switch (pedometerType) {
+                case PEDOMETER_SENSOR:
+                    loadFromSensor();
+                    break;
+
+                case PEDOMETER_GOOGLE_FIT:
+                    if (GoogleFit.checkGoogleFitPermission(this)) {
+                        loadFromFit();
+                    } else {
+                        loadFromSensor();
+                    }
+                    break;
+            }
+        }
+        else
+        { if (GoogleFit.checkGoogleFitPermission(this)) {
             loadFromFit();
+        } else {
+            loadFromSensor();
+        }
+        }
+//        checkSignIn();
+
+        if(!pref.contains("fistTime")) {
+
+            Intent intent1 = new Intent(this, ResetSensorReceiver.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent1, 0);
+            AlarmManager alarmManager = (AlarmManager) this.getSystemService(ALARM_SERVICE);
+
+
+            Calendar calendar = Calendar.getInstance();
+            Calendar now = Calendar.getInstance();
+            calendar.setTimeInMillis(System.currentTimeMillis());
+            calendar.set(Calendar.HOUR_OF_DAY, 23);
+            calendar.set(Calendar.MINUTE, 59);
+            calendar.set(Calendar.SECOND, 0);
+
+            if (now.after(calendar)) {
+                calendar.add(Calendar.DATE, 1);
+            }
+            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                    AlarmManager.INTERVAL_DAY, pendingIntent);
+
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putInt("fistTime", 1);
+            editor.apply();
+
         }
         loadPrimaryData();
+
         loadAppConfigs();
 
         launchIntroIfNeeded();
@@ -163,7 +250,9 @@ public class MainActivity extends BaseActivity implements SensorEventListener {
         });
 
         // start pedometer
-//        PedometerManager.initializePedometer(this);
+        PedometerManager.initializePedometer(this);
+
+
     }
 
     private void initNTB() {
@@ -174,6 +263,7 @@ public class MainActivity extends BaseActivity implements SensorEventListener {
         models.add(new NavigationTabBar.Model.Builder(getResources().getDrawable(R.drawable.ic_stats), Color.parseColor(colors[0])).build());
         models.add(new NavigationTabBar.Model.Builder(getResources().getDrawable(R.drawable.ic_help), Color.parseColor(colors[0])).build());
         models.add(new NavigationTabBar.Model.Builder(getResources().getDrawable(R.drawable.ic_cog), Color.parseColor(colors[0])).build());
+        models.add(new NavigationTabBar.Model.Builder(getResources().getDrawable(R.drawable.ic_bug), Color.parseColor(colors[0])).build());
 
         viewPager.setAdapter(new NTBAdapter(getSupportFragmentManager(), models.size()));
         viewPager.setOffscreenPageLimit(4); // cache 4 fragment
@@ -225,6 +315,8 @@ public class MainActivity extends BaseActivity implements SensorEventListener {
                     return new HelpFragment();
                 case 3:
                     return new SettingFragment();
+                case 4:
+                    return new DebugFragment();
                 default:
                     throw new RuntimeException("No fragment is available.");
             }
@@ -246,31 +338,84 @@ public class MainActivity extends BaseActivity implements SensorEventListener {
 
     // Pedometer
 
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        if (PedometerManager.getPedometerType(this) == Annotation.PEDOMETER_SENSOR) {
+    private float[] toFloatArray(List<Float> list) {
+        int i = 0;
+        float[] array = new float[list.size()];
 
-            if (BuildConfig.DEBUG) CatLogger.get().log("UI - sensorChanged | : since boot:" + event.values[0]);
-
-            if (event.values[0] > Integer.MAX_VALUE || event.values[0] == 0) {
-                return;
-            }
-
-            if (todayOffset == Integer.MIN_VALUE) {
-                // no values for today
-                // we don't know when the reboot was, so set today's steps to 0 by
-                // initializing them with -STEPS_SINCE_BOOT
-                todayOffset = -(int) event.values[0];
-
-                StepDaoUtils.insertNewDay(this, CalendarUtil.getStartOfToday(), (int) event.values[0]);
-            }
-
-            sinceBoot = (int) event.values[0];
-            int step = Math.max(todayOffset + sinceBoot, 0);
-//            stepViewModel.getSteps().setValue(step);
+        for (Float f : list) {
+            array[i++] = (f != null ? f : Float.NaN);
         }
+        return array;
     }
 
+    private void activityPrediction() {
+        if (x.size() == N_SAMPLES && y.size() == N_SAMPLES && z.size() == N_SAMPLES) {
+            List<Float> data = new ArrayList<>();
+            data.addAll(x);
+            data.addAll(y);
+            data.addAll(z);
+
+            results = classifier.predictProbabilities(toFloatArray(data));
+
+            float max = -1;
+            for (int i = 0; i < results.length; i++) {
+                if (results[i] > max) {
+                    idx = i;
+                    max = results[i];
+                }
+            }
+
+
+            Log.v("Activity_Tracker", labels[idx] + " ");
+
+            x.clear();
+            y.clear();
+            z.clear();
+
+        }
+    }
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        Sensor sensor = event.sensor;
+        Log.v("sensor_model", sensor.getType() + "");
+
+        activityPrediction();
+        if (sensor.getType() == Sensor.TYPE_STEP_DETECTOR) {
+
+            SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("ulaData", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            int step = sharedPreferences.getInt("steps", 0);
+            step++;
+            editor.putInt("steps", step);
+            editor.apply();
+            ArrayList<FootStep> stepsList = new ArrayList<>();
+            FootStep footStep = new FootStep();
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(new Date());
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            cal.set(Calendar.MILLISECOND, 0);
+            footStep.setType(5);
+            footStep.setDate(cal.getTime());
+            footStep.setStepCount(step);
+            stepsList.add(footStep);
+            if (stepsList.size() > 0) {
+                footStepViewModel.insertStepsHistory(stepsList);
+            }
+            if(idx!=-1) {
+                step = sharedPreferences.getInt(idx + "", 0);
+                step++;
+                editor.putInt(idx + "", step);
+                editor.apply();
+            }
+        }
+        if (event.sensor.getType() == 1) {
+            x.add(event.values[0]);
+            y.add(event.values[1]);
+            z.add(event.values[2]);
+        }
+    }
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
 
@@ -279,13 +424,29 @@ public class MainActivity extends BaseActivity implements SensorEventListener {
     @Override
     public void onResume() {
         super.onResume();
+        getSensorManager().registerListener(this, getSensorManager().getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_GAME);
 
-        if (PedometerManager.getPedometerType(this) == Annotation.PEDOMETER_SENSOR) {
-//            Step step = stepDao.getByDate(CalendarUtil.getStartOfToday());
-//            todayOffset = (step == null) ? Integer.MIN_VALUE : step.getStep();
-            sinceBoot = Step.getCurrentSteps(this);
-            CatLogger.get().log("First: " + sinceBoot);
-
+//
+//        if (PedometerManager.getPedometerType(this) == Annotation.PEDOMETER_SENSOR) {
+////            Step step = stepDao.getByDate(CalendarUtil.getStartOfToday());
+////            todayOffset = (step == null) ? Integer.MIN_VALUE : step.getStep();
+//            sinceBoot = Step.getCurrentSteps(this);
+//            CatLogger.get().log("First: " + sinceBoot);
+//
+//            SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+//            if(sensorManager == null){
+//                Toast.makeText(this, "Sensor not found!", Toast.LENGTH_SHORT).show();
+//            }
+//            else{
+//                Sensor accel = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
+//                if(accel!=null){
+//                    sensorManager.registerListener(this, accel, SensorManager.SENSOR_DELAY_UI);
+//                }
+//                else{
+//                    Toast.makeText(this, "Sorry Sensor is not available!", Toast.LENGTH_LONG).show();
+//                }
+//            }
+            /*
             // register a sensorlistener to live update the UI if a step is taken
             SensorManager sm = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
             Sensor sensor = sm.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
@@ -293,15 +454,17 @@ public class MainActivity extends BaseActivity implements SensorEventListener {
 //                Snackbar.make(lnrRoot, "There is no hardware pedometer sensor.", 1000).show();
             } else {
                 sm.registerListener(this, sensor, SensorManager.SENSOR_DELAY_UI, 0);
-            }
+            }*/
 
-            CatLogger.get().log("Next: " + sinceBoot);
-        }
+//            CatLogger.get().log("Next: " + sinceBoot);
+//        }
     }
-
+    private SensorManager getSensorManager() {
+        return (SensorManager) getSystemService(SENSOR_SERVICE);
+    }
     private void loadPrimaryData() {
 
-        primaryDataViewModel.loadPrimaryData().observe(this, primaryDataResult ->{
+        primaryDataViewModel.loadPrimaryData().observe(this, primaryDataResult -> {
             switch (primaryDataResult.getLoadingState()) {
                 case LOADING:
 
@@ -319,7 +482,7 @@ public class MainActivity extends BaseActivity implements SensorEventListener {
         footStepViewModel = new ViewModelProvider(this).get(FootStepViewModel.class);
     }
 
-    /*private void checkSignIn() {
+    private void checkSignIn() {
 
         FitnessOptions fitnessOptions = FitnessOptions.builder()
                 .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
@@ -338,28 +501,32 @@ public class MainActivity extends BaseActivity implements SensorEventListener {
         } else {
             loadFromFit();
         }
-    }*/
+    }
 
 
     private void loadFromSensor() {
-        StepViewModel stepViewModel = new ViewModelProvider(this).get(StepViewModel.class);
-        stepViewModel.getSteps().observe(this, new Observer<Integer>() {
+
+
+        todayStep = new Step();
+        StepViewModel stepViewModel2 = new ViewModelProvider(this).get(StepViewModel.class);
+        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("ulaData",Context.MODE_PRIVATE);
+        stepViewModel2.getSteps().observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(@Nullable Integer step) {
-                //todayStep = new Step(CalendarUtil.getStartOfToday(), step);
-                Log.d("TodaySteps", String.valueOf(step));
+                todayStep = new Step(CalendarUtil.getStartOfToday(), step,5);
             }
         });
-        stepViewModel.getStepsList().observe(this, steps -> {
-//                if (todayStep != null)
-//                    steps.add(todayStep);
+        todayStep.setStep(todayStep.getStep()+sharedPreferences.getInt("5",0));
+        stepViewModel2.getStepsList().observe(this, steps -> {
+            if (todayStep != null)
+                steps.add(todayStep);
 
 //                adapter.removeAll(); // clear adapter
 //                adapter.add(steps); // add live data steps
 //                adapter.notifyDataSetChanged();
 
             // cache the loaded data
-//                CacheManager.setStatisticsCache(getContext(), steps);
+            CacheManager.setStatisticsCache(getContext(), steps);
         });
     }
 

@@ -27,7 +27,7 @@ public class StepViewModel extends AndroidViewModel {
     public StepViewModel(Application app) {
         super(app);
         database = DatabaseClient.getInstance(app).getAppDatabase();
-//        stepsList = database.stepDao().getLast7Days();
+        stepsList = database.stepDao().getLast7Days();
     }
 
     public LiveData<List<Step>> getStepsList() {
@@ -54,7 +54,7 @@ public class StepViewModel extends AndroidViewModel {
 
         @Override
         protected Void doInBackground(final Step... params) {
-//            db.stepDao().delete(params[0]);
+            db.stepDao().delete(params[0]);
             return null;
         }
     }

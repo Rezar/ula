@@ -55,7 +55,16 @@ public class StatsAdapter extends RecyclerView.Adapter<StatsAdapter.ViewHolder> 
 
         // calculate progress
         int progress = 100 * item.getStepCount() / this.dailyGoal;
-        if (progress >= 0 && progress <= 17) {
+        if (progress==0)
+        {
+            holder.imgStickman0.setImageAlpha(50);
+            holder.imgStickman1.setImageAlpha(50);
+            holder.imgStickman2.setImageAlpha(50);
+            holder.imgStickman3.setImageAlpha(50);
+            holder.imgStickman4.setImageAlpha(50);
+            holder.imgStickman5.setImageAlpha(50);
+        }
+        else if (progress > 0 && progress <= 17) {
             holder.imgStickman0.setImageAlpha(255);
             holder.imgStickman1.setImageAlpha(50);
             holder.imgStickman2.setImageAlpha(50);
