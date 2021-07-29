@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 
 import com.ula.gameapp.core.Annotation.PedometerDef;
+import com.ula.gameapp.core.service.ActivityTracker;
 import com.ula.gameapp.core.service.SensorListener;
 
 import static com.ula.gameapp.core.Annotation.PEDOMETER_GOOGLE_FIT;
@@ -57,7 +58,9 @@ public class PedometerManager {
 
     private static void startPedometerService(Activity activity) {
         // start pedometer service
-        Intent i = new Intent(activity, SensorListener.class);
+//        Intent i = new Intent(activity, SensorListener.class);
+        Intent i = new Intent(activity, ActivityTracker.class);
         activity.startService(i);
+
     }
 }

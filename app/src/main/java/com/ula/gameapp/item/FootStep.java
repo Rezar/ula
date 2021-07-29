@@ -12,6 +12,7 @@ public class FootStep {
     private int id;
     private Date date;
     private int stepCount;
+    private int type;
 
     public int getId() {
         return id;
@@ -36,4 +37,10 @@ public class FootStep {
     public void setStepCount(int stepCount) {
         this.stepCount = stepCount;
     }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) { this.type = type; }
 }

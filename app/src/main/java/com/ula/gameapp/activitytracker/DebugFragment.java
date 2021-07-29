@@ -1,4 +1,4 @@
-package com.ula.gameapp.app.main;
+package com.ula.gameapp.activitytracker;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -9,15 +9,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.ula.gameapp.R;
-
-import butterknife.BindView;
 
 /**
  * A simple {@link Fragment} subclass.

@@ -28,10 +28,10 @@ public interface StepDao {
     @Delete
     void delete(Step step);
 
-    @Query("SELECT * FROM steps")
+    @Query("SELECT * FROM steps WHERE type = 5")
     List<Step> getAll();
 
-    @Query("SELECT * FROM steps WHERE date >= strftime('%s', date('now','-7 days')) * 1000 AND date <= strftime('%s', date('now')) * 1000 AND step > 0")
+    @Query("SELECT * FROM steps WHERE date >= strftime('%s', date('now','-7 days')) * 1000 AND date <= strftime('%s', date('now')) * 1000 AND step > 0 AND type = 5")
     LiveData<List<Step>> getLast7Days();
 
     @Query("SELECT * FROM steps WHERE id = :id")
@@ -40,7 +40,7 @@ public interface StepDao {
     @Query("SELECT COUNT(*) FROM steps WHERE date = :date")
     int hasStepByDate(long date);
 
-    @Query("SELECT * FROM steps WHERE date = :date")
+    @Query("SELECT * FROM steps WHERE date = :date AND type = 5")
     Step getByDate(long date);
 
     @Query("DELETE FROM steps")

@@ -27,6 +27,7 @@ import com.google.android.exoplayer2.upstream.cache.CacheDataSource;
 import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory;
 import com.google.android.exoplayer2.upstream.cache.NoOpCacheEvictor;
 import com.google.android.exoplayer2.upstream.cache.SimpleCache;
+import com.google.firebase.BuildConfig;
 import com.ula.gameapp.core.helper.Paths;
 import com.ula.gameapp.player.DownloadTracker;
 import com.ula.gameapp.utils.AppExecutors;

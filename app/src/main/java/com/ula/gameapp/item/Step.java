@@ -14,6 +14,8 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.ula.gameapp.core.logger.CatLogger;
+import com.ula.gameapp.database.DatabaseClient;
+import com.ula.gameapp.database.dao.StepDao;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -32,13 +34,18 @@ public class Step implements Serializable {
     @ColumnInfo(name = "step")
     private int step;
 
+    @ColumnInfo(name = "type")
+    private int type;
+
+
     public Step() {
     }
 
     @Ignore
-    public Step(long date, int step) {
+    public Step(long date, int step, int type) {
         this.date = date;
         this.step = step;
+        this.type = type;
     }
 
     public long getId() {
@@ -65,34 +72,41 @@ public class Step implements Serializable {
         this.step = step;
     }
 
-    public static void saveCurrentSteps(Context context, int steps) {
-//        StepDao stepDao = DatabaseClient.getInstance(context).getAppDatabase().stepDao();
-//        Step step = stepDao.getByDate(-1);
+    public int getType() {
+        return type;
+    }
 
-//        if (step == null) {
-//            step = new Step();
-//            step.setDate(-1);
-//            step.setStep(steps);
-//
-//            // insert
-//            stepDao.insert(step);
-//        } else {
-//            step.setStep(steps);
-//            stepDao.update(step);
-//        }
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public static void saveCurrentSteps(Context context, int steps) {
+        StepDao stepDao = DatabaseClient.getInstance(context).getAppDatabase().stepDao();
+        Step step = stepDao.getByDate(-1);
+
+        if (step == null) {
+            step = new Step();
+            step.setDate(-1);
+            step.setStep(steps);
+
+            // insert
+            stepDao.insert(step);
+        } else {
+            step.setStep(steps);
+            stepDao.update(step);
+        }
 
         CatLogger.get().log("saving steps in db: " + steps);
     }
 
     public static int getCurrentSteps(Context context) {
-//        StepDao stepDao = DatabaseClient.getInstance(context).getAppDatabase().stepDao();
-//        Step step = stepDao.getByDate(-1);
-//        return (step != null) ? step.getStep() : 0;
-        return 0;
+        StepDao stepDao = DatabaseClient.getInstance(context).getAppDatabase().stepDao();
+        Step step = stepDao.getByDate(-1);
+        return (step != null) ? step.getStep() : 0;
     }
 
     public static void insertNewDay(Context context, long date, int steps) {
-//        StepDao stepDao = DatabaseClient.getInstance(context).getAppDatabase().stepDao();
+        StepDao stepDao = DatabaseClient.getInstance(context).getAppDatabase().stepDao();
 
     }
 

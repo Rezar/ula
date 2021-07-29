@@ -54,6 +54,8 @@ import com.ula.gameapp.R;
 import com.ula.gameapp.ViewModels.FootStepViewModel;
 import com.ula.gameapp.ViewModels.PrimaryDataViewModel;
 import com.ula.gameapp.ViewModels.SettingsViewModel;
+import com.ula.gameapp.activitytracker.DebugFragment;
+import com.ula.gameapp.activitytracker.TensorFlowClassifier;
 import com.ula.gameapp.app.BaseActivity;
 import com.ula.gameapp.app.main.help.HelpFragment;
 import com.ula.gameapp.app.main.home.HomeFragment;
