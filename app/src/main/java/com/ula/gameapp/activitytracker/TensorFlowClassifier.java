@@ -7,6 +7,7 @@ import org.tensorflow.contrib.android.TensorFlowInferenceInterface;
 
 //Bavan Divaani-azar
 //reference : https://github.com/curiousily/TensorFlow-on-Android-for-Human-Activity-Recognition-with-LSTMs
+
 public class TensorFlowClassifier {
     static {
         System.loadLibrary("tensorflow_inference");
