@@ -7,25 +7,37 @@
 package com.ula.gameapp.core.service;
 
 import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.IBinder;
+import android.provider.Settings;
+import android.util.Log;
+
+import androidx.core.app.NotificationCompat;
 
 import com.ula.gameapp.BuildConfig;
 import com.ula.gameapp.core.logger.CatLogger;
 import com.ula.gameapp.core.receiver.ShutdownReceiver;
+import com.ula.gameapp.item.FootStep;
 import com.ula.gameapp.utils.CalendarUtil;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Background service which keeps the step-sensor listener alive to always get
@@ -54,10 +66,23 @@ public class SensorListener extends Service implements SensorEventListener {
 
     @Override
     public void onSensorChanged(final SensorEvent event) {
-        if (event.values[0] > Integer.MAX_VALUE) {
-            CatLogger.get().log("probably not a real value: " + event.values[0]);
-        } else {
-            steps = (int) event.values[0];
+//        if (event.values[0] > Integer.MAX_VALUE) {
+//            CatLogger.get().log("probably not a real value: " + event.values[0]);
+//        } else {
+//            steps = (int) event.values[0];
+//
+//
+//        }
+        Sensor sensor = event.sensor;
+        if (sensor.getType() == Sensor.TYPE_STEP_DETECTOR) {
+            int numSteps;
+            SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("ulaData",Context.MODE_PRIVATE);
+            numSteps=sharedPreferences.getInt("numSteps",0);
+            numSteps++;
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putInt("numSteps", numSteps);
+            Log.v("numSteps",numSteps+"");
+            editor.apply();
         }
     }
 
@@ -68,6 +93,25 @@ public class SensorListener extends Service implements SensorEventListener {
 
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
+        NotificationCompat.Builder builder;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            createNotificationChannel();
+            builder = new NotificationCompat.Builder(this, "10").
+                    setPriority(NotificationCompat.PRIORITY_MIN);
+        }
+        else
+            builder = new NotificationCompat.Builder(this)
+                    .setPriority(NotificationCompat.PRIORITY_MIN);
+
+//        Intent intent2 = new Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
+//                .putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName())
+//                .putExtra(Settings.EXTRA_CHANNEL_ID,"10");
+//        intent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        startActivity(intent2);
+
+        Notification notification = builder.build();
+        startForeground(NOTIFICATION_ID, notification);
+
         reRegisterSensor();
         registerBroadcastReceiver();
 
@@ -91,7 +135,19 @@ public class SensorListener extends Service implements SensorEventListener {
 
         return START_STICKY;
     }
-
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "step counter";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("10", name, importance);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
     @Override
     public void onCreate() {
         super.onCreate();
@@ -127,6 +183,7 @@ public class SensorListener extends Service implements SensorEventListener {
         }
     }
 
+
     private void registerBroadcastReceiver() {
         CatLogger.get().log("register broadcastreceiver");
 
@@ -147,12 +204,16 @@ public class SensorListener extends Service implements SensorEventListener {
         }
 
         if (BuildConfig.DEBUG) {
-            CatLogger.get().log("step sensors: " + sm.getSensorList(Sensor.TYPE_STEP_COUNTER).size());
-            if (sm.getSensorList(Sensor.TYPE_STEP_COUNTER).size() < 1) return; // emulator
-            CatLogger.get().log("default: " + sm.getDefaultSensor(Sensor.TYPE_STEP_COUNTER).getName());
+            CatLogger.get().log("step sensors: " + sm.getSensorList(Sensor.TYPE_STEP_DETECTOR).size());
+//            if (sm.getSensorList(Sensor.TYPE_STEP_DETECTOR).size() < 1) return; // emulator
+            CatLogger.get().log("default: " + sm.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR).getName());
         }
 
         // enable batching with delay of max 5 min
-        sm.registerListener(this, sm.getDefaultSensor(Sensor.TYPE_STEP_COUNTER), SensorManager.SENSOR_DELAY_NORMAL, (int) (5 * MICROSECONDS_IN_ONE_MINUTE));
+        Sensor accel = sm.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
+        if(accel!=null){
+            sm.registerListener(this, accel, SensorManager.SENSOR_DELAY_UI);
+        }
+//        sm.registerListener(this, sm.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR), SensorManager.SENSOR_DELAY_NORMAL, (int) (5 * MICROSECONDS_IN_ONE_MINUTE));
     }
 }

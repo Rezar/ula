@@ -15,17 +15,19 @@ import com.ula.gameapp.database.dao.FootStepDao;
 import com.ula.gameapp.database.dao.AnimationDao;
 import com.ula.gameapp.database.dao.PetDao;
 import com.ula.gameapp.database.dao.PetStatusDao;
+import com.ula.gameapp.database.dao.StepDao;
 import com.ula.gameapp.item.AppConfig;
 import com.ula.gameapp.item.FootStep;
 import com.ula.gameapp.item.InteractionMapping;
 import com.ula.gameapp.item.JAnimation;
 import com.ula.gameapp.item.Pet;
 import com.ula.gameapp.item.PetStatus;
+import com.ula.gameapp.item.Step;
 import com.ula.gameapp.utils.Converter;
 
 @Database(entities = {JAnimation.class, PetStatus.class, Pet.class, InteractionMapping.class,
-        FootStep.class, AppConfig.class},
-        version = 4, exportSchema = false)
+        FootStep.class, Step.class, AppConfig.class},
+        version = 7, exportSchema = false)
 @TypeConverters({Converter.class})
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -38,4 +40,6 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract FootStepDao footStepDao();
 
     public abstract AppConfigDao appConfigDao();
+
+    public  abstract StepDao stepDao();
 }

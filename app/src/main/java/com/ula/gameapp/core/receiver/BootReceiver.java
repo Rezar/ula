@@ -6,6 +6,8 @@
 
 package com.ula.gameapp.core.receiver;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +17,10 @@ import com.ula.gameapp.BuildConfig;
 import com.ula.gameapp.core.logger.CatLogger;
 import com.ula.gameapp.core.service.SensorListener;
 import com.ula.gameapp.item.Step;
+
+import java.util.Calendar;
+
+import static android.content.Context.ALARM_SERVICE;
 
 public class BootReceiver extends BroadcastReceiver {
 
@@ -41,6 +47,19 @@ public class BootReceiver extends BroadcastReceiver {
         Step.saveCurrentSteps(context, 0);
         prefs.edit().remove("correctShutdown").apply();
 
+        if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
+            Intent intent1 = new Intent(context, ResetSensorReceiver.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent1, 0);
+            AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(System.currentTimeMillis());
+            calendar.set(Calendar.HOUR_OF_DAY, 11);
+            calendar.set(Calendar.MINUTE, 59);
+            calendar.set(Calendar.SECOND,0);
+            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                    AlarmManager.INTERVAL_DAY, pendingIntent);
+        }
         try {
             context.startService(new Intent(context, SensorListener.class));
         } catch (Exception ex) {
