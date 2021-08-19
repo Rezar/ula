@@ -9,13 +9,22 @@ android {
 
     defaultConfig {
         applicationId "com.ula.gameapp"
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion 28
         versionCode 4
         versionName "1.0.4"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        ndk {
+            ndk { abiFilters "armeabi-v7a", "x86", "x86_64" }
+        }
     }
+
+    sourceSets.main {
+        jniLibs.srcDir 'src/main/jniLibs'
+        jni.srcDirs = []
+    }
+
 
     buildTypes {
 
@@ -96,6 +105,22 @@ dependencies {
     implementation "androidx.core:core-ktx:+"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    //step counter
+    implementation files('libs/libandroid_tensorflow_inference_java.jar')
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
+    //database debug
+    debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
+
+    //appcenter bug reporter
+    def appCenterSdkVersion = '4.1.0'
+    implementation "com.microsoft.appcenter:appcenter-analytics:${appCenterSdkVersion}"
+    implementation "com.microsoft.appcenter:appcenter-crashes:${appCenterSdkVersion}"
+
+
 
 }
 apply plugin: 'com.google.gms.google-services'

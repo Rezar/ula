@@ -52,7 +52,7 @@ public class SettingsViewModel extends ViewModel {
 
     public LiveData<List<String>> getFileNameList() {
         return fileNamesLiveData;
-    }
+}
 
     public LiveData<AppConfig> getAppConfig() {
         return DataRepository.getInstance().getAppConfig();

@@ -26,8 +26,7 @@
                 android:layout_marginTop="15dp"
                 android:layout_marginRight="24dp"
                 app:isChecked="false"
-                app:titleText="Use Google Fit"
-                android:visibility="gone"/>
+                app:titleText="Use Google Fit" />
 
             <com.ula.gameapp.utils.views.CustomCheckBox
                 android:id="@+id/chb_sensor"
@@ -37,109 +36,7 @@
                 android:layout_marginTop="3dp"
                 android:layout_marginRight="24dp"
                 app:isChecked="false"
-                app:titleText="Use hardware sensor"
-                android:visibility="gone"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="24dp"
-                android:layout_marginTop="@dimen/view_margin_large"
-                android:layout_marginRight="24dp"
-                android:orientation="horizontal">
-
-                <com.ula.gameapp.utils.views.FontBodyTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:text="Age:   "/>
-
-                <Spinner
-                    android:id="@+id/spnr_age"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    style="@style/Widget.AppCompat.Spinner.Underlined"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="24dp"
-                android:layout_marginTop="@dimen/view_margin_large"
-                android:layout_marginRight="24dp"
-                android:orientation="horizontal">
-
-                <com.ula.gameapp.utils.views.FontBodyTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:text="Body:  "/>
-
-                <Spinner
-                    android:id="@+id/spnr_body"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    style="@style/Widget.AppCompat.Spinner.Underlined"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="24dp"
-                android:layout_marginTop="@dimen/view_margin_large"
-                android:layout_marginRight="24dp"
-                android:orientation="horizontal"
-                android:visibility="gone">
-
-                <com.ula.gameapp.utils.views.FontBodyTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:text="Emotion:"/>
-
-                <Spinner
-                    android:id="@+id/spnr_emption"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    style="@style/Widget.AppCompat.Spinner.Underlined"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="24dp"
-                android:layout_marginTop="@dimen/view_margin_large"
-                android:layout_marginRight="24dp"
-                android:orientation="horizontal">
-
-                <com.ula.gameapp.utils.views.FontBodyTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:text="Scenario:"/>
-
-                <Spinner
-                    android:id="@+id/spnr_scenario"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    style="@style/Widget.AppCompat.Spinner.Underlined"/>
-            </LinearLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/view_margin_large"
-                android:layout_marginStart="@dimen/view_margin_large"
-                android:layout_marginEnd="@dimen/view_margin_large">
-
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/btn_load_senario"
-                    android:text="Load Senario"
-                    style="@style/Widget.AppCompat.Button.Colored"
-                    android:layout_alignParentEnd="true"/>
-            </RelativeLayout>
+                app:titleText="Default" />
 
             <View
                 android:id="@+id/divider_first"

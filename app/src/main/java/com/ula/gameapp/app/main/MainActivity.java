@@ -50,6 +50,9 @@ import com.google.android.gms.fitness.result.DataReadResponse;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.microsoft.appcenter.AppCenter;
+import com.microsoft.appcenter.analytics.Analytics;
+import com.microsoft.appcenter.crashes.Crashes;
 import com.ula.gameapp.R;
 import com.ula.gameapp.ViewModels.FootStepViewModel;
 import com.ula.gameapp.ViewModels.PrimaryDataViewModel;
@@ -68,11 +71,13 @@ import com.ula.gameapp.core.receiver.ResetSensorReceiver;
 import com.ula.gameapp.database.DatabaseClient;
 import com.ula.gameapp.database.dao.StepDao;
 import com.ula.gameapp.item.AppConfig;
-import com.ula.gameapp.item.FootStep;
 import com.ula.gameapp.item.Step;
 import com.ula.gameapp.utils.CalendarUtil;
 import com.ula.gameapp.utils.JTimeUtil;
 import com.ula.gameapp.utils.views.NoSwipeViewPager;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -91,10 +96,6 @@ import static com.ula.gameapp.core.Annotation.PEDOMETER_GOOGLE_FIT;
 import static com.ula.gameapp.core.Annotation.PEDOMETER_SENSOR;
 import static com.ula.gameapp.core.helper.GoogleFit.REQUEST_OAUTH_REQUEST_CODE;
 
-import com.microsoft.appcenter.AppCenter;
-import com.microsoft.appcenter.analytics.Analytics;
-import com.microsoft.appcenter.crashes.Crashes;
-
 public class MainActivity extends BaseActivity implements SensorEventListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -112,13 +113,13 @@ public class MainActivity extends BaseActivity implements SensorEventListener {
     StepViewModel stepViewModel;
     private Step todayStep;
     int todayOffset = 0, sinceBoot = 0; // pedometer handler
-    private  int idx=-1;
+    private int idx = -1;
 
     private static final int N_SAMPLES = 200;
     private static List<Float> x;
     private static List<Float> y;
     private static List<Float> z;
-    private String[] labels = {"Downstairs", "Jogging", "Sitting", "Standing", "Upstairs", "Walking"};
+    private String[] labels = {"downstairs", "jogging", "sitting", "standing", "upstairs", "walking"};
     private float[] results;
     private TensorFlowClassifier classifier;
 
@@ -147,7 +148,7 @@ public class MainActivity extends BaseActivity implements SensorEventListener {
 
         SharedPreferences pref = getSharedPreferences("UlaSettings", Context.MODE_PRIVATE);
 
-        if(pref.contains("pedometer_type")) {
+        if (pref.contains("pedometer_type")) {
             int pedometerType = pref.getInt("pedometer_type", 0);
 
             switch (pedometerType) {
@@ -156,6 +157,7 @@ public class MainActivity extends BaseActivity implements SensorEventListener {
                     break;
 
                 case PEDOMETER_GOOGLE_FIT:
+                    checkSignIn();
                     if (GoogleFit.checkGoogleFitPermission(this)) {
                         loadFromFit();
                     } else {
@@ -163,17 +165,15 @@ public class MainActivity extends BaseActivity implements SensorEventListener {
                     }
                     break;
             }
-        }
-        else
-        { if (GoogleFit.checkGoogleFitPermission(this)) {
-            loadFromFit();
         } else {
-            loadFromSensor();
+            if (GoogleFit.checkGoogleFitPermission(this)) {
+                loadFromFit();
+            } else {
+                loadFromSensor();
+            }
         }
-        }
-//        checkSignIn();
 
-        if(!pref.contains("fistTime")) {
+        if (!pref.contains("fist_time")) {
 
             Intent intent1 = new Intent(this, ResetSensorReceiver.class);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent1, 0);
@@ -194,7 +194,15 @@ public class MainActivity extends BaseActivity implements SensorEventListener {
                     AlarmManager.INTERVAL_DAY, pendingIntent);
 
             SharedPreferences.Editor editor = pref.edit();
-            editor.putInt("fistTime", 1);
+            editor.putInt("fist_time", 1);
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(new Date());
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            cal.set(Calendar.MILLISECOND, 0);
+            cal.add(Calendar.DAY_OF_MONTH, -1);
+            editor.putLong("last_update_date", cal.getTimeInMillis());
             editor.apply();
 
         }
@@ -376,6 +384,7 @@ public class MainActivity extends BaseActivity implements SensorEventListener {
 
         }
     }
+
     @Override
     public void onSensorChanged(SensorEvent event) {
         Sensor sensor = event.sensor;
@@ -386,38 +395,66 @@ public class MainActivity extends BaseActivity implements SensorEventListener {
 
             SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("ulaData", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            int step = sharedPreferences.getInt("steps", 0);
-            step++;
-            editor.putInt("steps", step);
-            editor.apply();
-            ArrayList<FootStep> stepsList = new ArrayList<>();
-            FootStep footStep = new FootStep();
+
             Calendar cal = Calendar.getInstance();
             cal.setTime(new Date());
             cal.set(Calendar.HOUR_OF_DAY, 0);
             cal.set(Calendar.MINUTE, 0);
             cal.set(Calendar.SECOND, 0);
             cal.set(Calendar.MILLISECOND, 0);
-            footStep.setType(5);
-            footStep.setDate(cal.getTime());
-            footStep.setStepCount(step);
-            stepsList.add(footStep);
-            if (stepsList.size() > 0) {
-                footStepViewModel.insertStepsHistory(stepsList);
-            }
-            if(idx!=-1) {
-                step = sharedPreferences.getInt(idx + "", 0);
+
+            String data = sharedPreferences.getString("stepsData", "{}");
+            try {
+                JSONObject obj = new JSONObject(data);
+                String date = cal.getTime() + "";
+
+                if (!obj.has(date)) {
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("total_steps", 0);
+                    jsonObject.put("google_fitness", 0);
+                    jsonObject.put("downstairs", 0);
+                    jsonObject.put("jogging", 0);
+                    jsonObject.put("upstairs", 0);
+                    jsonObject.put("walking", 0);
+                    jsonObject.put("sitting", 0);
+                    jsonObject.put("standing", 0);
+                    obj.put(date, jsonObject);
+                }
+                JSONObject jsonObject = obj.getJSONObject(date);
+                int step = jsonObject.getInt("total_steps");
                 step++;
-                editor.putInt(idx + "", step);
+                jsonObject.put("total_steps", step);
+//                ArrayList<FootStep> stepsList = new ArrayList<>();
+//                FootStep footStep = new FootStep();
+//                footStep.setType(5);
+//                footStep.setDate(cal.getTime());
+//                footStep.setStepCount(step);
+//                stepsList.add(footStep);
+//                if (stepsList.size() > 0) {
+//                    footStepViewModel.insertStepsHistory(stepsList);
+//                }
+                if (idx != -1) {
+                    step = jsonObject.getInt(labels[idx]);
+                    step++;
+                    jsonObject.put(labels[idx], step);
+                }
+                obj.put(date, jsonObject);
+                editor.putString("stepsData", obj.toString());
+                Log.v("stepsData", obj.toString());
                 editor.apply();
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
+
         }
         if (event.sensor.getType() == 1) {
             x.add(event.values[0]);
             y.add(event.values[1]);
             z.add(event.values[2]);
         }
+
     }
+
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
 
@@ -461,9 +498,11 @@ public class MainActivity extends BaseActivity implements SensorEventListener {
 //            CatLogger.get().log("Next: " + sinceBoot);
 //        }
     }
+
     private SensorManager getSensorManager() {
         return (SensorManager) getSystemService(SENSOR_SERVICE);
     }
+
     private void loadPrimaryData() {
 
         primaryDataViewModel.loadPrimaryData().observe(this, primaryDataResult -> {
@@ -511,14 +550,14 @@ public class MainActivity extends BaseActivity implements SensorEventListener {
 
         todayStep = new Step();
         StepViewModel stepViewModel2 = new ViewModelProvider(this).get(StepViewModel.class);
-        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("ulaData",Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("ulaData", Context.MODE_PRIVATE);
         stepViewModel2.getSteps().observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(@Nullable Integer step) {
-                todayStep = new Step(CalendarUtil.getStartOfToday(), step,5);
+                todayStep = new Step(CalendarUtil.getStartOfToday(), step, 5);
             }
         });
-        todayStep.setStep(todayStep.getStep()+sharedPreferences.getInt("5",0));
+        todayStep.setStep(todayStep.getStep() + sharedPreferences.getInt("5", 0));
         stepViewModel2.getStepsList().observe(this, steps -> {
             if (todayStep != null)
                 steps.add(todayStep);
@@ -553,20 +592,21 @@ public class MainActivity extends BaseActivity implements SensorEventListener {
     }
 
     private void fetchData() {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:SS", Locale.getDefault());
-
+        SharedPreferences pref = getSharedPreferences("UlaSettings", Context.MODE_PRIVATE);
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
+        long startTime = pref.getLong("last_update_date", cal.getTimeInMillis());
+
         long endTime = cal.getTimeInMillis();
-//        Log.d("FIT_ACTIVITY_START_DATE", dateFormat.format(endTime));
-//        int daysCount = getResources().getInteger(R.integer.activity_impact_life_time);
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
-        cal.add(Calendar.WEEK_OF_YEAR, -1);
-        long startTime = cal.getTimeInMillis();
-//        Log.d("FIT_ACTIVITY_END_DATE", dateFormat.format(startTime));
+        cal.add(Calendar.DAY_OF_MONTH, -1);
+
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putLong("last_update_date", cal.getTimeInMillis());
+        editor.apply();
 
         DataReadRequest readRequest = new DataReadRequest.Builder()
                 .aggregate(DataType.TYPE_STEP_COUNT_DELTA, DataType.AGGREGATE_STEP_COUNT_DELTA)
@@ -580,40 +620,52 @@ public class MainActivity extends BaseActivity implements SensorEventListener {
         Task<DataReadResponse> response = Fitness.getHistoryClient(this,
                 GoogleSignIn.getLastSignedInAccount(this)).readData(readRequest);
 
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("ulaData", Context.MODE_PRIVATE);
+        String data = sharedPreferences.getString("stepsData", "{}");
+
         response.addOnSuccessListener(dataReadResponse -> {
 
             List<Bucket> dataSets = dataReadResponse.getBuckets();
-            ArrayList<FootStep> stepsList = new ArrayList<>();
-            FootStep footStep;
 
-            for (Bucket bucket : dataSets) {
-                for (DataSet dataSet : bucket.getDataSets()) {
-                    for (DataPoint dp : dataSet.getDataPoints()) {
-                        for (Field field : dp.getDataType().getFields()) {
+            try {
+                JSONObject obj = new JSONObject(data);
+                for (Bucket bucket : dataSets) {
+                    for (DataSet dataSet : bucket.getDataSets()) {
+                        for (DataPoint dp : dataSet.getDataPoints()) {
+                            for (Field field : dp.getDataType().getFields()) {
 
-                            Log.d("STEP_INFO", dateFormat.format(
-                                    new Date(dp.getTimestamp(TimeUnit.MILLISECONDS))));
-                            Log.d("STEP_INFO", String.valueOf(dp.getValue(field).asInt()));
-                            footStep = new FootStep();
-                            cal.setTime(new Date(dp.getTimestamp(TimeUnit.MILLISECONDS)));
-                            cal.set(Calendar.HOUR_OF_DAY, 0);
-                            cal.set(Calendar.MINUTE, 0);
-                            cal.set(Calendar.SECOND, 0);
-                            cal.set(Calendar.MILLISECOND, 0);
-                            footStep.setDate(cal.getTime());
-                            footStep.setStepCount(dp.getValue(field).asInt());
-                            stepsList.add(footStep);
+
+                                cal.setTime(new Date(dp.getTimestamp(TimeUnit.MILLISECONDS)));
+                                cal.set(Calendar.HOUR_OF_DAY, 0);
+                                cal.set(Calendar.MINUTE, 0);
+                                cal.set(Calendar.SECOND, 0);
+                                cal.set(Calendar.MILLISECOND, 0);
+                                String date = cal.getTime().toString();
+                                if (obj.has(date)) {
+                                    JSONObject jsonObject = obj.getJSONObject(date);
+                                    jsonObject.put("google_fitness", dp.getValue(field).asInt());
+                                    obj.put(date, jsonObject);
+                                }
+                            }
                         }
                     }
+
                 }
+                SharedPreferences.Editor editor2 = sharedPreferences.edit();
+                editor2.putString("stepsData", obj.toString());
+                Log.v("stepsData", obj.toString());
+                editor2.apply();
+
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
 
-            if (stepsList.size() > 0) {
-                footStepViewModel.insertStepsHistory(stepsList);
-            }
+
         });
 
-        response.addOnFailureListener(e -> {
+        response.addOnFailureListener(e ->
+
+        {
             Log.e("FAIL", e.getMessage());
             Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
         });

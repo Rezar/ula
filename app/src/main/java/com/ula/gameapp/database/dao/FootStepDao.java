@@ -13,12 +13,12 @@ import java.util.List;
 @Dao
 public interface FootStepDao {
 
-    @Query("SELECT * FROM FootStep WHERE type = 5 AND date BETWEEN :startDate AND :endDate ")
+    @Query("SELECT * FROM FootStep WHERE date BETWEEN :startDate AND :endDate ")
     List<FootStep> getStepsHistory(Date startDate, Date endDate);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertStepsHistory(List<FootStep> footSteps);
 
-    @Query("SELECT stepCount FROM FootStep WHERE type = 5 AND  date = :mDate  ")
+    @Query("SELECT stepCount FROM FootStep WHERE date = :mDate  ")
     int getStepsOfDate(Date mDate);
 }

@@ -96,6 +96,8 @@
     <string name="download_in_progress">در حال دانلود&#8230;</string>
     <string name="subscription_books_title">اشتراكى</string>
     <string name="user_books_title">خريدارى شده</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
     <!-- -->
 
 </resources>

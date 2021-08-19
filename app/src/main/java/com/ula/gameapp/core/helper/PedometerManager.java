@@ -13,7 +13,6 @@ import android.content.SharedPreferences;
 
 import com.ula.gameapp.core.Annotation.PedometerDef;
 import com.ula.gameapp.core.service.ActivityTracker;
-import com.ula.gameapp.core.service.SensorListener;
 
 import static com.ula.gameapp.core.Annotation.PEDOMETER_GOOGLE_FIT;
 import static com.ula.gameapp.core.Annotation.PEDOMETER_SENSOR;
@@ -25,9 +24,7 @@ public class PedometerManager {
 
     public static @PedometerDef
     int getPedometerType(Context context) {
-        if (pedometerType == PEDOMETER_UNKNOWN)
-            loadPedometerType(context);
-
+        loadPedometerType(context);
         return pedometerType;
     }
 
@@ -36,9 +33,12 @@ public class PedometerManager {
         pedometerType = pref.getInt("pedometer_type", 0);
     }
 
-    public static void setPedometerType(Context context, @PedometerDef int type) {
+    public static boolean setPedometerType(Context context, @PedometerDef int type) {
         SharedPreferences pref = context.getSharedPreferences("UlaSettings", Context.MODE_PRIVATE);
-        pref.edit().putInt("pedometer_type", type).commit();
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putInt("pedometer_type", type);
+        editor.apply();
+        return true;
     }
 
     public static void initializePedometer(Activity activity) {
@@ -48,6 +48,7 @@ public class PedometerManager {
                 break;
 
             case PEDOMETER_GOOGLE_FIT:
+                startPedometerService(activity);
                 if (GoogleFit.isFitInstalled(activity))
                     GoogleFit.initializeGoogleFit(activity);
                 else

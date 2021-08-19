@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.ula.gameapp.core.logger.CatLogger;
+import com.ula.gameapp.core.service.ActivityTracker;
 import com.ula.gameapp.core.service.SensorListener;
 
 public class ShutdownReceiver extends BroadcastReceiver {
@@ -20,7 +21,8 @@ public class ShutdownReceiver extends BroadcastReceiver {
         CatLogger.get().log("shutting down");
 
         try {
-            context.startService(new Intent(context, SensorListener.class));
+            Intent serviceIntent = new Intent(context, ActivityTracker.class);
+            context.startService(serviceIntent);
         } catch (Exception ex) {
             // we can't run the service
         }

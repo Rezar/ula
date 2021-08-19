@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.ula.gameapp.core.logger.CatLogger;
+import com.ula.gameapp.core.service.ActivityTracker;
 import com.ula.gameapp.core.service.SensorListener;
 
 public class AppUpdatedReceiver extends BroadcastReceiver {
@@ -20,7 +21,7 @@ public class AppUpdatedReceiver extends BroadcastReceiver {
         CatLogger.get().log("app updated");
 
         try {
-            context.startService(new Intent(context, SensorListener.class));
+            context.startService(new Intent(context, ActivityTracker.class));
         } catch (Exception ex) {
             // we can't run the service
         }

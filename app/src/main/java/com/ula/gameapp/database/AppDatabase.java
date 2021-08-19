@@ -27,7 +27,7 @@ import com.ula.gameapp.utils.Converter;
 
 @Database(entities = {JAnimation.class, PetStatus.class, Pet.class, InteractionMapping.class,
         FootStep.class, Step.class, AppConfig.class},
-        version = 7, exportSchema = false)
+        version = 8, exportSchema = false)
 @TypeConverters({Converter.class})
 public abstract class AppDatabase extends RoomDatabase {
 
