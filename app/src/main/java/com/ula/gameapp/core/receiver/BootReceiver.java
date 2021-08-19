@@ -14,8 +14,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 
 import com.ula.gameapp.BuildConfig;
+import com.ula.gameapp.app.main.MainActivity;
 import com.ula.gameapp.core.logger.CatLogger;
-import com.ula.gameapp.core.service.SensorListener;
+import com.ula.gameapp.core.service.ActivityTracker;
 import com.ula.gameapp.item.Step;
 
 import java.util.Calendar;
@@ -47,7 +48,7 @@ public class BootReceiver extends BroadcastReceiver {
         Step.saveCurrentSteps(context, 0);
         prefs.edit().remove("correctShutdown").apply();
 
-        if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
+        if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
             Intent intent1 = new Intent(context, ResetSensorReceiver.class);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent1, 0);
             AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
@@ -56,13 +57,21 @@ public class BootReceiver extends BroadcastReceiver {
             calendar.setTimeInMillis(System.currentTimeMillis());
             calendar.set(Calendar.HOUR_OF_DAY, 11);
             calendar.set(Calendar.MINUTE, 59);
-            calendar.set(Calendar.SECOND,0);
+            calendar.set(Calendar.SECOND, 0);
             alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                     AlarmManager.INTERVAL_DAY, pendingIntent);
+
+
+            Intent serviceIntent = new Intent(context, ActivityTracker.class);
+            serviceIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startService(serviceIntent);
+
         }
+
         try {
-            context.startService(new Intent(context, SensorListener.class));
-        } catch (Exception ex) {
+
+        }
+        catch (Exception ex) {
             // we can't run the service
         }
     }

@@ -56,28 +56,37 @@ import butterknife.OnItemSelected;
 import static com.ula.gameapp.core.helper.GoogleFit.REQUEST_OAUTH_REQUEST_CODE;
 
 public class SettingFragment extends Fragment {
-    @BindView(R.id.lnr_root) LinearLayout lnrRoot;
-    @BindView(R.id.chb_fit) CustomCheckBox fitCheckBox;
-    @BindView(R.id.chb_sensor) CustomCheckBox sensorCheckBox;
+    @BindView(R.id.lnr_root)
+    LinearLayout lnrRoot;
+    @BindView(R.id.chb_fit)
+    CustomCheckBox fitCheckBox;
+    @BindView(R.id.chb_sensor)
+    CustomCheckBox sensorCheckBox;
 
-    @BindView(R.id.txt_gif_name) TextView txtGifName;
-    @BindView(R.id.spnr_scenario) Spinner spinnerScenario;
-    @BindView(R.id.et_speed) EditText etSpeed;
+    @BindView(R.id.txt_gif_name)
+    TextView txtGifName;
 
-    @BindView(R.id.txt_gif_speed_log) TextView txtGifLog;
+    @BindView(R.id.et_speed)
+    EditText etSpeed;
+
+    @BindView(R.id.txt_gif_speed_log)
+    TextView txtGifLog;
 
     GifLogHelper gifLogHelper;
 
-    @BindView(R.id.spnr_age) Spinner spinnerAge;
-    @BindView(R.id.spnr_body) Spinner spinnerBody;
-    @BindView(R.id.spnr_emption) Spinner spinnerEmotion;
-    @BindView(R.id.btn_load_senario) Button btnLoadSenario;
-    @BindView(R.id.switch_display_steps) Switch switchDisplaySteps;
-    @BindView(R.id.switch_display_tap_to_go) Switch switchTapToGo;
-    @BindView(R.id.edit_max_threshold) EditText editMaxThreshold;
-    @BindView(R.id.edit_min_threshold) EditText editMinThreshold;
-    @BindView(R.id.edit_effective_days) EditText editEffectiveDays;
-    @BindView(R.id.edit_lock_time) EditText editLockTime;
+
+    @BindView(R.id.switch_display_steps)
+    Switch switchDisplaySteps;
+    @BindView(R.id.switch_display_tap_to_go)
+    Switch switchTapToGo;
+    @BindView(R.id.edit_max_threshold)
+    EditText editMaxThreshold;
+    @BindView(R.id.edit_min_threshold)
+    EditText editMinThreshold;
+    @BindView(R.id.edit_effective_days)
+    EditText editEffectiveDays;
+    @BindView(R.id.edit_lock_time)
+    EditText editLockTime;
 
     private PetViewModel petViewModel;
     private SettingsViewModel settingsViewModel;
@@ -105,8 +114,7 @@ public class SettingFragment extends Fragment {
             if (check) {
                 fitCheckBox.setChecked(true);
                 sensorCheckBox.setChecked(false);
-                PedometerManager.setPedometerType(getContext(), Annotation.PEDOMETER_GOOGLE_FIT);
-
+               if( PedometerManager.setPedometerType(getContext(), Annotation.PEDOMETER_GOOGLE_FIT))
                 Snackbar.make(lnrRoot, "Please restart the app", 2000).show();
             }
         });
@@ -115,16 +123,15 @@ public class SettingFragment extends Fragment {
             if (check) {
                 fitCheckBox.setChecked(false);
                 sensorCheckBox.setChecked(true);
-                PedometerManager.setPedometerType(getContext(), Annotation.PEDOMETER_SENSOR);
-
-                Snackbar.make(lnrRoot, "Please restart the app", 2000).show();
+                if (PedometerManager.setPedometerType(getContext(), Annotation.PEDOMETER_SENSOR))
+                    Snackbar.make(lnrRoot, "Please restart the app", 2000).show();
             }
         });
 
         if (PedometerManager.getPedometerType(getContext()) == Annotation.PEDOMETER_GOOGLE_FIT)
             fitCheckBox.toggleCheckBox();
         else
-            sensorCheckBox.toggleCheckBox();
+        sensorCheckBox.toggleCheckBox();
 
         gifLogHelper = new GifLogHelper();
         gifLogHelper.loadMap(getContext());
@@ -135,40 +142,7 @@ public class SettingFragment extends Fragment {
         petViewModel = new ViewModelProvider(this).get(PetViewModel.class);
         settingsViewModel = new ViewModelProvider(this).get(SettingsViewModel.class);
 
-        settingsViewModel.getAgeList().observe(getViewLifecycleOwner(), ages -> {
-            List<String> ageList = new ArrayList<>();
-            for (Age age :
-                    ages) {
-                ageList.add(age.name());
-            }
-            ArrayAdapter<String> agesAdapter = new ArrayAdapter<>(requireContext(),
-                    android.R.layout.simple_spinner_dropdown_item, ageList);
-            spinnerAge.setAdapter(agesAdapter);
 
-        });
-
-        settingsViewModel.getBodyShapeList().observe(getViewLifecycleOwner(), bodyShapes -> {
-
-            if (bodyShapes != null) {
-                List<String> bodyShapeList = new ArrayList<>();
-                for (BodyShape bodyShape :
-                        bodyShapes) {
-                    bodyShapeList.add(bodyShape.name());
-                }
-                ArrayAdapter<String> bodyShapesAdapter = new ArrayAdapter<>(requireContext(),
-                        android.R.layout.simple_spinner_dropdown_item, bodyShapeList);
-                spinnerBody.setAdapter(bodyShapesAdapter);
-            }
-        });
-
-        settingsViewModel.getFileNameList().observe(getViewLifecycleOwner(), fileNames -> {
-
-            if (fileNames != null) {
-                ArrayAdapter<String> fileNamesAdapter = new ArrayAdapter<>(requireContext(),
-                        android.R.layout.simple_spinner_dropdown_item, fileNames);
-                spinnerScenario.setAdapter(fileNamesAdapter);
-            }
-        });
 
         settingsViewModel.getAppConfig().observe(getViewLifecycleOwner(), appConfig -> {
             if (appConfig != null) {
@@ -209,93 +183,7 @@ public class SettingFragment extends Fragment {
     List<Ula> ulaList;
     Map<Integer, String> spinnerMap = new HashMap<>();
 
-    @OnItemSelected({R.id.spnr_age, R.id.spnr_body, R.id.spnr_emption})
-    public void onItemChanged(Spinner spinner, int position) {
-//        String value = ((String) spinner.getAdapter().getItem(position)).toLowerCase();
-//        spinnerMap.put(spinner.getId(), value);
 
-//        UlaDao ulaDao = DatabaseClient.getInstance(getContext()).getAppDatabase().ulaDao();
-//        ulaList = ulaDao.getByStatus(spinnerMap.get(R.id.spnr_age), spinnerMap.get(R.id.spnr_body), spinnerMap.get(R.id.spnr_emption));
-
-        // update scenario dropdown
-        /*List<String> list = new ArrayList<>();
-        spinnerScenario.setAdapter(null);
-        for (int o = 0; o < ulaList.size(); o++)
-            list.add(o + "");*/
-
-//        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, list);
-//        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        spinnerScenario.setAdapter(dataAdapter);
-
-        BodyShape bodyShape = BodyShape.NONE;
-
-        if (spinner.getId() == R.id.spnr_age) {
-            switch (position) {
-                case 0:
-                    age = Age.EGG;
-                    break;
-                case 1:
-                    age = Age.CHILD;
-                    break;
-                case 2:
-                    age = Age.ADULT;
-                    break;
-            }
-
-            fillBodyShapes(age);
-        }
-
-        if (spinner.getId() == R.id.spnr_body) {
-
-            String strBodyShape = spinner.getSelectedItem().toString();
-            if (strBodyShape.equalsIgnoreCase(BodyShape.NORMAL.name())) {
-                bodyShape = BodyShape.NORMAL;
-            } else if (strBodyShape.equalsIgnoreCase(BodyShape.FIT.name())) {
-                bodyShape = BodyShape.FIT;
-            } else if (strBodyShape.equalsIgnoreCase(BodyShape.FAT.name())) {
-                bodyShape = BodyShape.FAT;
-            } else if (strBodyShape.equalsIgnoreCase(BodyShape.OVER_WEIGHT.name())) {
-                bodyShape = BodyShape.OVER_WEIGHT;
-            } else {
-                bodyShape = BodyShape.NONE;
-            }
-
-            if (age == null) return;
-            fillFileNames(age, bodyShape);
-        }
-    }
-
-    @OnItemSelected({R.id.spnr_age})
-    void onAgeChanged(Spinner spinner, int position) {
-
-        Age age = Converter.ageFromName(spinner.getSelectedItem().toString());
-        settingsViewModel.setAge(age);
-    }
-
-    @OnItemSelected({R.id.spnr_body})
-    void onBodyShapeChanged(Spinner spinner, int position) {
-
-        BodyShape bodyShape = Converter.bodyShapeFromName(spinner.getSelectedItem().toString());
-        settingsViewModel.setBodyShape(bodyShape);
-    }
-
-    @OnClick({R.id.btn_load_senario})
-    void onClickLoadSenario(View view) {
-
-        String fileName = spinnerScenario.getSelectedItem().toString();
-        if (currentStatus != null && !TextUtils.isEmpty(fileName)) {
-            petViewModel.loadPetStatus(fileName, currentStatus);
-            petViewModel.setIsLock(false);
-
-            new AlertDialog.Builder(requireContext())
-                    .setTitle(getString(R.string.loading_senario))
-                    .setMessage(getString(R.string.senario_successfull))
-                    .setPositiveButton(getString(R.string.ok), (dialog, which) -> {
-
-                    })
-                    .show();
-        }
-    }
 
     /*@OnItemSelected({R.id.spnr_scenario})
     public void onScenarioChanged(Spinner spinner, int position) {
@@ -351,7 +239,7 @@ public class SettingFragment extends Fragment {
             if (null != fragment)
 //                ((HomePresenter) ((HomeFragment) fragment).mPresenter).loadUlaDrawable(ulaList.get(selectedItem));
 
-            txtGifName.setText(ulaList.get(selectedItem).getFileName());
+                txtGifName.setText(ulaList.get(selectedItem).getFileName());
             gifLogHelper.saveSpeed(ulaList.get(selectedItem).getFileName(), speed);
         } catch (Exception e) {
             e.printStackTrace();
@@ -360,26 +248,6 @@ public class SettingFragment extends Fragment {
         gifLogHelper.populateLog(getContext(), txtGifLog);
     }
 
-    private void fillBodyShapes(Age age) {
-
-        List<BodyShape> bodyShapeList = petViewModel.getAllBodyShapes(age);
-        List<String> bodyShapeNames = new ArrayList<>();
-        for (BodyShape bodyShape :
-                bodyShapeList) {
-            bodyShapeNames.add(bodyShape.name());
-        }
-        ArrayAdapter<String> bodyShapeAdapter = new ArrayAdapter<>(getContext(),
-                android.R.layout.simple_spinner_item, bodyShapeNames);
-        spinnerBody.setAdapter(bodyShapeAdapter);
-    }
-
-    private void fillFileNames(Age age, BodyShape bodyShape) {
-
-        List<String> fileNames = petViewModel.getAllFileNames(age, bodyShape);
-        ArrayAdapter<String> fileNameAdapter = new ArrayAdapter<>(getContext(),
-                android.R.layout.simple_spinner_item, fileNames);
-        spinnerScenario.setAdapter(fileNameAdapter);
-    }
 
     @OnClick({R.id.btn_save})
     void onClickSave(View view) {

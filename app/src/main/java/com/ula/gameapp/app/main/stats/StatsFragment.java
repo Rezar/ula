@@ -22,7 +22,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -30,6 +29,7 @@ import com.google.android.gms.fitness.Fitness;
 import com.google.android.gms.fitness.data.Bucket;
 import com.google.android.gms.fitness.data.DataPoint;
 import com.google.android.gms.fitness.data.DataSet;
+import com.google.android.gms.fitness.data.DataType;
 import com.google.android.gms.fitness.data.Field;
 import com.google.android.gms.fitness.request.DataReadRequest;
 import com.google.android.gms.fitness.result.DataReadResponse;
@@ -39,36 +39,37 @@ import com.ula.gameapp.R;
 import com.ula.gameapp.ViewModels.FootStepViewModel;
 import com.ula.gameapp.ViewModels.SettingsViewModel;
 import com.ula.gameapp.app.main.StepViewModel;
-import com.ula.gameapp.core.Annotation;
 import com.ula.gameapp.core.helper.CacheManager;
 import com.ula.gameapp.core.helper.GoogleFit;
-import com.ula.gameapp.core.helper.PedometerManager;
 import com.ula.gameapp.item.FootStep;
 import com.ula.gameapp.item.Step;
 import com.ula.gameapp.utils.CalendarUtil;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.ula.gameapp.App.getContext;
+
 public class StatsFragment extends Fragment implements StatsContract.View {
-    @BindView(R.id.lnr_root) RelativeLayout lnrRoot;
-    @BindView(R.id.rv_stats) RecyclerView rvStats;
+    @BindView(R.id.lnr_root)
+    RelativeLayout lnrRoot;
+    @BindView(R.id.rv_stats)
+    RecyclerView rvStats;
 
     public StatsContract.Presenter mPresenter = null;
 
     Step todayStep;
     private StatsAdapter adapter;
     StepViewModel stepViewModel;
-    FootStepViewModel footStepViewModel;
 //    private PetViewModel petViewModel;
 //    private PetStatus petStatus;
 
@@ -89,68 +90,50 @@ public class StatsFragment extends Fragment implements StatsContract.View {
     public void onViewCreated(@NonNull final View view, @Nullable final Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        /*petViewModel = new ViewModelProvider(requireActivity()).get(PetViewModel.class);
-        petViewModel.getPetStatus().observe(getViewLifecycleOwner(), petStatus -> {
-            if (petStatus != null) {
-                this.petStatus = petStatus;
-            }
-        });*/
-
-        FootStepViewModel footStepViewModel = new ViewModelProvider(this)
-                .get(FootStepViewModel.class);
-
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(new Date());
-        cal.set(Calendar.HOUR_OF_DAY, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MILLISECOND, 0);
-
-//
-//        SharedPreferences sharedPreferences = getContext().getSharedPreferences("ulaData", Context.MODE_PRIVATE);
-//        int step = 0;
-//        step = sharedPreferences.getInt("5", 0);
-//        ArrayList<FootStep> stepsList = new ArrayList<>();
-//        FootStep footStep2 = new FootStep();
-//        footStep2.setType(5);
-//        footStep2.setDate(cal.getTime());
-//        footStep2.setStepCount(step);
-//        stepsList.add(footStep2);
-//        if (stepsList.size() > 0) {
-//            footStepViewModel.insertStepsHistory(stepsList);
-//        }
-
-
-        Date endDate = cal.getTime();
-        cal.add(Calendar.WEEK_OF_YEAR, -1);
-        Date startDate = cal.getTime();
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("ulaData", Context.MODE_PRIVATE);
         Handler handler = new Handler(); // new handler
 
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-        footStepViewModel.getStepsHistory(startDate, endDate).observe(getViewLifecycleOwner(),
-                stepList -> {
 
-                    if (stepList != null) {
-                        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:MM:SS",
-                                Locale.getDefault());
-                        for (FootStep footStep :
-                                stepList) {
-                            Log.d("DAY_STEP", dateFormat.format(footStep.getDate()));
-                        }
-                        Log.v("bavan",stepList.size()+"");
-                        if(stepList.size()==0)
-                        {
+                fetchData();
+                String data = sharedPreferences.getString("stepsData", "{}");
+                try {
+                    List<FootStep> stepList = new ArrayList<FootStep>();
+                    JSONObject obj = new JSONObject(data);
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(new Date());
+                    cal.set(Calendar.HOUR_OF_DAY, 0);
+                    cal.set(Calendar.MINUTE, 0);
+                    cal.set(Calendar.SECOND, 0);
+                    cal.set(Calendar.MILLISECOND, 0);
+
+                    for (int i = 0; i < 7; i++) {
+                        String date = cal.getTime().toString();
+                        if (obj.has(date)) {
+                            JSONObject jsonObject = obj.getJSONObject(date);
+                            Log.v("data", jsonObject.toString());
                             FootStep footStep = new FootStep();
+                            int step1 = jsonObject.getInt("total_steps");
+                            int step2 = jsonObject.getInt("google_fitness");
+                            footStep.setStepCount(Math.max(step1, step2));
                             footStep.setDate(cal.getTime());
-                            footStep.setStepCount(0);
                             stepList.add(footStep);
+                            cal.add(Calendar.DAY_OF_MONTH, -1);
                         }
-                        updateAdapter(stepList);
                     }
+                    if (stepList.size() == 0) {
+                        FootStep footStep = new FootStep();
+                        footStep.setDate(cal.getTime());
+                        footStep.setStepCount(0);
+                        stepList.add(footStep);
+                    }
+                    updateAdapter(stepList);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
-                });
 
                 handler.postDelayed(this, 1000);
 
@@ -171,12 +154,10 @@ public class StatsFragment extends Fragment implements StatsContract.View {
     }
 
 
-
     @Override
     public void initRecycler() {
         int dailyGoal = App.getContext().getSharedPreferences("UlaSettings",
                 Context.MODE_PRIVATE).getInt("daily_goal", 0);
-        adapter = new StatsAdapter(dailyGoal);
         adapter = new StatsAdapter(dailyGoal);
         rvStats.setAdapter(adapter);
     }
@@ -218,7 +199,7 @@ public class StatsFragment extends Fragment implements StatsContract.View {
         stepViewModel.getSteps().observe(getActivity(), new Observer<Integer>() {
             @Override
             public void onChanged(@Nullable Integer step) {
-                todayStep = new Step(CalendarUtil.getStartOfToday(), step,5);
+                todayStep = new Step(CalendarUtil.getStartOfToday(), step, 5);
             }
         });
         stepViewModel.getStepsList().observe(getActivity(), new Observer<List<Step>>() {
@@ -235,6 +216,87 @@ public class StatsFragment extends Fragment implements StatsContract.View {
                 // cache the loaded data
                 CacheManager.setStatisticsCache(getContext(), steps);
             }
+        });
+    }
+
+    private void fetchData() {
+
+        SharedPreferences pref = getContext().getSharedPreferences("UlaSettings", Context.MODE_PRIVATE);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+        long startTime = pref.getLong("last_update_date", cal.getTimeInMillis());
+
+        long endTime = cal.getTimeInMillis();
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        cal.add(Calendar.DAY_OF_MONTH, -1);
+
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putLong("last_update_date", cal.getTimeInMillis());
+        editor.apply();
+
+        DataReadRequest readRequest = new DataReadRequest.Builder()
+                .aggregate(DataType.TYPE_STEP_COUNT_DELTA, DataType.AGGREGATE_STEP_COUNT_DELTA)
+                .bucketByTime(1, TimeUnit.DAYS)
+                .enableServerQueries()
+                .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
+                .build();
+
+        if (GoogleSignIn.getLastSignedInAccount(getContext()) == null) return;
+
+        Task<DataReadResponse> response = Fitness.getHistoryClient(getContext(),
+                GoogleSignIn.getLastSignedInAccount(getContext())).readData(readRequest);
+
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("ulaData", Context.MODE_PRIVATE);
+        String data = sharedPreferences.getString("stepsData", "{}");
+
+        response.addOnSuccessListener(dataReadResponse -> {
+
+            List<Bucket> dataSets = dataReadResponse.getBuckets();
+
+            try {
+                JSONObject obj = new JSONObject(data);
+                for (Bucket bucket : dataSets) {
+                    for (DataSet dataSet : bucket.getDataSets()) {
+                        for (DataPoint dp : dataSet.getDataPoints()) {
+                            for (Field field : dp.getDataType().getFields()) {
+
+
+                                cal.setTime(new Date(dp.getTimestamp(TimeUnit.MILLISECONDS)));
+                                cal.set(Calendar.HOUR_OF_DAY, 0);
+                                cal.set(Calendar.MINUTE, 0);
+                                cal.set(Calendar.SECOND, 0);
+                                cal.set(Calendar.MILLISECOND, 0);
+                                String date = cal.getTime().toString();
+                                if (obj.has(date)) {
+                                    JSONObject jsonObject = obj.getJSONObject(date);
+                                    jsonObject.put("google_fitness", dp.getValue(field).asInt());
+                                    obj.put(date, jsonObject);
+                                }
+                            }
+                        }
+                    }
+
+                }
+                SharedPreferences.Editor editor2 = sharedPreferences.edit();
+                editor2.putString("stepsData", obj.toString());
+                Log.v("stepsData", obj.toString());
+                editor2.apply();
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+        });
+
+        response.addOnFailureListener(e ->
+
+        {
+            Log.e("FAIL", e.getMessage());
+            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
         });
     }
 

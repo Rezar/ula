@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -23,15 +24,15 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
 import com.ula.gameapp.App;
-import com.ula.gameapp.ViewModels.FootStepViewModel;
 import com.ula.gameapp.activitytracker.TensorFlowClassifier;
 import com.ula.gameapp.core.logger.CatLogger;
 import com.ula.gameapp.core.receiver.ShutdownReceiver;
 import com.ula.gameapp.database.AppDatabase;
 import com.ula.gameapp.database.DatabaseClient;
-import com.ula.gameapp.database.dao.FootStepDao;
-import com.ula.gameapp.item.FootStep;
 import com.ula.gameapp.utils.CalendarUtil;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -50,15 +51,14 @@ public class ActivityTracker extends Service implements SensorEventListener {
     private static List<Float> z;
     public final static int NOTIFICATION_ID = 1;
     private final BroadcastReceiver shutdownReceiver = new ShutdownReceiver();
+    int stepCount;
 
     private float[] results;
     private TensorFlowClassifier classifier;
-    private FootStepViewModel footStepViewModel;
-    private FootStepDao footStepDao;
 
-    private  int idx=-1;
+    private int idx = -1;
 
-    private String[] labels = {"Downstairs", "Jogging", "Sitting", "Standing", "Upstairs", "Walking"};
+    private String[] labels = {"downstairs", "jogging", "sitting", "standing", "upstairs", "walking"};
 
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
@@ -73,18 +73,16 @@ public class ActivityTracker extends Service implements SensorEventListener {
         z = new ArrayList<>();
 
         classifier = new TensorFlowClassifier(getApplicationContext());
-        footStepViewModel = new FootStepViewModel();
-        AppDatabase appDatabase = DatabaseClient.getInstance(App.getContext()).getAppDatabase();
-        footStepDao = appDatabase.footStepDao();
         NotificationCompat.Builder builder;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannel();
             builder = new NotificationCompat.Builder(this, "10").
-                    setPriority(NotificationCompat.PRIORITY_MIN);
+                    setPriority(NotificationCompat.PRIORITY_LOW);
         } else
             builder = new NotificationCompat.Builder(this)
-                    .setPriority(NotificationCompat.PRIORITY_MIN);
+                    .setPriority(NotificationCompat.PRIORITY_LOW);
 
+        builder.setSilent(true);
 
         Notification notification = builder.build();
         startForeground(NOTIFICATION_ID, notification);
@@ -126,11 +124,17 @@ public class ActivityTracker extends Service implements SensorEventListener {
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "step counter";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            int importance = NotificationManager.IMPORTANCE_LOW;
             NotificationChannel channel = new NotificationChannel("10", name, importance);
             // Register the channel with the system; you can't change the importance
             // or other notification behaviors after this
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+
+            channel.setSound(null, null);
+            channel.enableLights(false);
+            channel.setLightColor(Color.BLUE);
+            channel.enableVibration(false);
             notificationManager.createNotificationChannel(channel);
         }
     }
@@ -151,37 +155,65 @@ public class ActivityTracker extends Service implements SensorEventListener {
 
             SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("ulaData", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            int step = sharedPreferences.getInt("steps", 0);
-            step++;
-            editor.putInt("steps", step);
-            editor.apply();
-            ArrayList<FootStep> stepsList = new ArrayList<>();
-            FootStep footStep = new FootStep();
+
             Calendar cal = Calendar.getInstance();
             cal.setTime(new Date());
             cal.set(Calendar.HOUR_OF_DAY, 0);
             cal.set(Calendar.MINUTE, 0);
             cal.set(Calendar.SECOND, 0);
             cal.set(Calendar.MILLISECOND, 0);
-            footStep.setType(5);
-            footStep.setDate(cal.getTime());
-            footStep.setStepCount(step);
-            stepsList.add(footStep);
-            if (stepsList.size() > 0) {
-                footStepDao.insertStepsHistory(stepsList);
-            }
-            if(idx!=-1) {
-                step = sharedPreferences.getInt(idx + "", 0);
+
+            String data = sharedPreferences.getString("stepsData", "{}");
+            try {
+                JSONObject obj = new JSONObject(data);
+                String date = cal.getTime() + "";
+
+                if (!obj.has(date)) {
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("total_steps", 0);
+                    jsonObject.put("google_fitness", 0);
+                    jsonObject.put("downstairs", 0);
+                    jsonObject.put("jogging", 0);
+                    jsonObject.put("upstairs", 0);
+                    jsonObject.put("walking", 0);
+                    jsonObject.put("sitting", 0);
+                    jsonObject.put("standing", 0);
+                    obj.put(date, jsonObject);
+                }
+                JSONObject jsonObject = obj.getJSONObject(date);
+                int step = jsonObject.getInt("total_steps");
                 step++;
-                editor.putInt(idx + "", step);
+                jsonObject.put("total_steps", step);
+
+//                ArrayList<FootStep> stepsList = new ArrayList<>();
+//                FootStep footStep = new FootStep();
+//                footStep.setType(5);
+//                footStep.setDate(cal.getTime());
+//                footStep.setStepCount(step);
+//                stepsList.add(footStep);
+//                if (stepsList.size() > 0) {
+//                    footStepDao.insertStepsHistory(stepsList);
+//                }
+                if (idx != -1) {
+                    step = jsonObject.getInt(labels[idx]);
+                    step++;
+                    jsonObject.put(labels[idx], step);
+                }
+                obj.put(date, jsonObject);
+                editor.putString("stepsData", obj.toString());
+                Log.v("stepsData", obj.toString());
                 editor.apply();
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
+
         }
         if (event.sensor.getType() == 1) {
             x.add(event.values[0]);
             y.add(event.values[1]);
             z.add(event.values[2]);
         }
+
     }
 
     @Override
@@ -190,6 +222,7 @@ public class ActivityTracker extends Service implements SensorEventListener {
     }
 
     private void activityPrediction() {
+
         if (x.size() == N_SAMPLES && y.size() == N_SAMPLES && z.size() == N_SAMPLES) {
             List<Float> data = new ArrayList<>();
             data.addAll(x);
