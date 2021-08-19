@@ -592,7 +592,6 @@ public class MainActivity extends BaseActivity implements SensorEventListener {
     }
 
     private void fetchData() {
-
         SharedPreferences pref = getSharedPreferences("UlaSettings", Context.MODE_PRIVATE);
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
