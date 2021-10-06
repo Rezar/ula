@@ -18,6 +18,18 @@
         android:textSize="30dp"
         android:textStyle="bold" />
 
+    <TextView
+        android:id="@+id/device"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingLeft="30dp"
+        android:paddingTop="20dp"
+        android:paddingRight="30dp"
+        android:text="Mobile"
+        android:textColor="@color/black"
+        android:textSize="30dp" />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"

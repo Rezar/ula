@@ -38,13 +38,14 @@ public class IntroActivity extends AppCompatActivity {
         if (requestCode == REQUEST_OAUTH_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 helper.done(); // we got the permission, no need for further action
-                PedometerManager.setPedometerType(getBaseContext(), Annotation.PEDOMETER_GOOGLE_FIT);
+                PedometerManager.setPedometerType(getBaseContext(), Annotation.PEDOMETER_GOOGLE_FIT,1);
             } else {
-                if (permissionRequestCount++ < 2) {
+                if (permissionRequestCount++ < 1) {
                     GoogleFit.initializeGoogleFit(IntroActivity.this); // ask again
                 }
                 else {
                     helper.done(); // user not grant fit permission, we tried ...
+                    PedometerManager.setPedometerType(getBaseContext(), Annotation.PEDOMETER_SENSOR,1);
                 }
 
             }

@@ -43,15 +43,16 @@ public class DebugAdapter extends RecyclerView.Adapter<DebugAdapter.ViewHolder> 
         FootStep item = items.get(position);
 
 
-        holder.downstairs.setText("downstairs: "+item.getDownstairs());
-        holder.jogging.setText("jogging: " +item.getJogging());
-        holder.sitting.setText("sitting: "+item.getSitting());
-        holder.standing.setText("standing:"+ item.getStanding());
-        holder.upstairs.setText("upstairs:"+item.getUpstairs());
-        holder.walking.setText("walking: "+item.getWalking());
+        holder.downstairs.setText("downstairs: " + item.getDownstairs());
+        holder.jogging.setText("jogging: " + item.getJogging());
+        holder.sitting.setText("sitting: " + item.getSitting());
+        holder.standing.setText("standing:" + item.getStanding());
+        holder.upstairs.setText("upstairs:" + item.getUpstairs());
+        holder.walking.setText("walking: " + item.getWalking());
         holder.steps.setText("total steps: " + item.getTotalSteps());
         holder.googleFitness.setText("google fitness: " + item.getGoogleFitness());
         holder.date.setText(android.text.format.DateFormat.format("EEEE", item.getDate()));
+        holder.device.setText(item.getType()==0 ? "mobile": "watch");
     }
 
     @Override
@@ -75,11 +76,11 @@ public class DebugAdapter extends RecyclerView.Adapter<DebugAdapter.ViewHolder> 
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView date,downstairs, jogging, sitting, standing, upstairs, walking, steps,googleFitness;
+        TextView date, downstairs, jogging, sitting, standing, upstairs, walking, steps, googleFitness, device;
 
         ViewHolder(View itemView) {
             super(itemView);
-            date=itemView.findViewById(R.id.date);
+            date = itemView.findViewById(R.id.date);
             downstairs = itemView.findViewById(R.id.downstairs);
             jogging = itemView.findViewById(R.id.jogging);
             sitting = itemView.findViewById(R.id.sitting);
@@ -87,8 +88,8 @@ public class DebugAdapter extends RecyclerView.Adapter<DebugAdapter.ViewHolder> 
             upstairs = itemView.findViewById(R.id.upstairs);
             walking = itemView.findViewById(R.id.walking);
             steps = itemView.findViewById(R.id.steps);
-            googleFitness=itemView.findViewById(R.id.google_fitness);
-
+            googleFitness = itemView.findViewById(R.id.google_fitness);
+            device = itemView.findViewById(R.id.device);
         }
     }
 

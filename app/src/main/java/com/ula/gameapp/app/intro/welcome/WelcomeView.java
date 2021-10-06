@@ -25,10 +25,10 @@ import static com.google.android.gms.common.internal.Preconditions.checkNotNull;
 public class WelcomeView implements WelcomeContract.View {
 
     @BindView(R.id.img_chk) ImageView imgCheck;
+    @BindView(R.id.txt_terms) com.ula.gameapp.utils.views.FontBodyTextView txtTerms;
     @BindView(R.id.lnr_rules) LinearLayout lnrRules;
     @BindView(R.id.lnr_countdown) LinearLayout lnrCountdown;
     @BindView(R.id.countdown_view) CountdownView countdownView;
-
     private BaseContract.Presenter mPresenter;
     private boolean checked = false;
 
@@ -40,6 +40,7 @@ public class WelcomeView implements WelcomeContract.View {
     @Override
     public void setPresenter(@NonNull WelcomeContract.Presenter presenter) {
         mPresenter = checkNotNull(presenter);
+
     }
 
     @Override
@@ -81,5 +82,12 @@ public class WelcomeView implements WelcomeContract.View {
             imgCheck.setImageResource(R.mipmap.square_tick);
         else
             imgCheck.setImageResource(R.mipmap.square);
+
+    }
+
+    @Override
+    public void invisibleTerms() {
+        imgCheck.setVisibility(View.GONE);
+        txtTerms.setVisibility(View.GONE);
     }
 }

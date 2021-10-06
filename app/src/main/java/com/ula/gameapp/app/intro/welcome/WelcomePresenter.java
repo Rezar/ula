@@ -7,6 +7,7 @@
 package com.ula.gameapp.app.intro.welcome;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 
 import androidx.annotation.NonNull;
 
@@ -39,5 +40,10 @@ public class WelcomePresenter implements WelcomeContract.Presenter {
             mView.checkTerms(true);
         else
             mView.checkTerms(false);
+
+        SharedPreferences pref = activity.getSharedPreferences("UlaSettings", MODE_PRIVATE);
+        boolean intro = pref.getBoolean("intro", false);
+        if (intro)
+            mView.invisibleTerms();
     }
 }

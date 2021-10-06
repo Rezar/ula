@@ -9,15 +9,12 @@ package com.ula.gameapp.app.main.setting;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -36,14 +33,11 @@ import com.ula.gameapp.core.helper.PedometerManager;
 import com.ula.gameapp.item.AppConfig;
 import com.ula.gameapp.item.PetStatus;
 import com.ula.gameapp.item.Ula;
-import com.ula.gameapp.utils.Converter;
 import com.ula.gameapp.utils.GifLogHelper;
 import com.ula.gameapp.utils.enums.Age;
-import com.ula.gameapp.utils.enums.BodyShape;
 import com.ula.gameapp.utils.views.CustomCheckBox;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +45,6 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.OnItemSelected;
 
 import static com.ula.gameapp.core.helper.GoogleFit.REQUEST_OAUTH_REQUEST_CODE;
 
@@ -113,25 +106,38 @@ public class SettingFragment extends Fragment {
         fitCheckBox.setListener(check -> {
             if (check) {
                 fitCheckBox.setChecked(true);
-                sensorCheckBox.setChecked(false);
-               if( PedometerManager.setPedometerType(getContext(), Annotation.PEDOMETER_GOOGLE_FIT))
-                Snackbar.make(lnrRoot, "Please restart the app", 2000).show();
+                if (PedometerManager.setPedometerType(getContext(), Annotation.PEDOMETER_GOOGLE_FIT, 1))
+                    Snackbar.make(lnrRoot, "Please restart the app", 2000).show();
+            } else {
+                sensorCheckBox.setChecked(true);
+                if (PedometerManager.setPedometerType(getContext(), Annotation.PEDOMETER_GOOGLE_FIT, 0) && PedometerManager.setPedometerType(getContext(), Annotation.PEDOMETER_SENSOR, 1))
+                    Snackbar.make(lnrRoot, "Please restart the app", 2000).show();
             }
         });
 
         sensorCheckBox.setListener(check -> {
             if (check) {
-                fitCheckBox.setChecked(false);
                 sensorCheckBox.setChecked(true);
-                if (PedometerManager.setPedometerType(getContext(), Annotation.PEDOMETER_SENSOR))
+                if (PedometerManager.setPedometerType(getContext(), Annotation.PEDOMETER_SENSOR, 1))
+                    Snackbar.make(lnrRoot, "Please restart the app", 2000).show();
+            } else {
+                fitCheckBox.setChecked(true);
+                if (PedometerManager.setPedometerType(getContext(), Annotation.PEDOMETER_GOOGLE_FIT, 1) && PedometerManager.setPedometerType(getContext(), Annotation.PEDOMETER_SENSOR, 0))
                     Snackbar.make(lnrRoot, "Please restart the app", 2000).show();
             }
         });
 
-        if (PedometerManager.getPedometerType(getContext()) == Annotation.PEDOMETER_GOOGLE_FIT)
-            fitCheckBox.toggleCheckBox();
-        else
-        sensorCheckBox.toggleCheckBox();
+        Handler handler = new Handler(); // new handler
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                fitCheckBox.setChecked(PedometerManager.getTypeEnable(getContext(), Annotation.PEDOMETER_GOOGLE_FIT));
+                sensorCheckBox.setChecked(PedometerManager.getTypeEnable(getContext(), Annotation.PEDOMETER_SENSOR));
+
+                handler.postDelayed(this, 1000);
+            }
+        }, 1000);
 
         gifLogHelper = new GifLogHelper();
         gifLogHelper.loadMap(getContext());
@@ -141,7 +147,6 @@ public class SettingFragment extends Fragment {
 
         petViewModel = new ViewModelProvider(this).get(PetViewModel.class);
         settingsViewModel = new ViewModelProvider(this).get(SettingsViewModel.class);
-
 
 
         settingsViewModel.getAppConfig().observe(getViewLifecycleOwner(), appConfig -> {

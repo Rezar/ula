@@ -82,6 +82,7 @@ public class GoogleFit {
                     GoogleSignIn.getLastSignedInAccount(activity),
                     fitnessOptions
             );
+
         }
     }
 

@@ -28,15 +28,25 @@ public class PedometerManager {
         return pedometerType;
     }
 
+    public static Boolean getTypeEnable(Context context,int type) {
+        if(context==null)
+            return false;
+        SharedPreferences pref = context.getSharedPreferences("UlaSettings", Context.MODE_PRIVATE);
+        return pref.getInt(type+"", 0)==1;
+    }
+
+
     public static void loadPedometerType(Context context) {
         SharedPreferences pref = context.getSharedPreferences("UlaSettings", Context.MODE_PRIVATE);
         pedometerType = pref.getInt("pedometer_type", 0);
     }
 
-    public static boolean setPedometerType(Context context, @PedometerDef int type) {
+    public static boolean setPedometerType(Context context, @PedometerDef int type,int enable) {
         SharedPreferences pref = context.getSharedPreferences("UlaSettings", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
+        if(enable==1)
         editor.putInt("pedometer_type", type);
+        editor.putInt(type+"", enable);
         editor.apply();
         return true;
     }
@@ -51,8 +61,6 @@ public class PedometerManager {
                 startPedometerService(activity);
                 if (GoogleFit.isFitInstalled(activity))
                     GoogleFit.initializeGoogleFit(activity);
-                else
-                    startPedometerService(activity);
                 break;
         }
     }

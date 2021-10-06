@@ -36,7 +36,6 @@ import com.google.android.gms.fitness.result.DataReadResponse;
 import com.google.android.gms.tasks.Task;
 import com.ula.gameapp.App;
 import com.ula.gameapp.R;
-import com.ula.gameapp.ViewModels.FootStepViewModel;
 import com.ula.gameapp.ViewModels.SettingsViewModel;
 import com.ula.gameapp.app.main.StepViewModel;
 import com.ula.gameapp.core.helper.CacheManager;
@@ -57,7 +56,8 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.ula.gameapp.App.getContext;
+import static com.ula.gameapp.core.Annotation.PEDOMETER_GOOGLE_FIT;
+import static com.ula.gameapp.core.helper.PedometerManager.getTypeEnable;
 
 public class StatsFragment extends Fragment implements StatsContract.View {
     @BindView(R.id.lnr_root)
@@ -98,10 +98,13 @@ public class StatsFragment extends Fragment implements StatsContract.View {
             public void run() {
 
                 fetchData();
-                String data = sharedPreferences.getString("stepsData", "{}");
+                String mobileData = sharedPreferences.getString("stepsData-0", "{}");
+                String watchData = sharedPreferences.getString("stepsData-1", "{}");
+
                 try {
                     List<FootStep> stepList = new ArrayList<FootStep>();
-                    JSONObject obj = new JSONObject(data);
+                    JSONObject mobileObj = new JSONObject(mobileData);
+                    JSONObject watchObj = new JSONObject(watchData);
                     Calendar cal = Calendar.getInstance();
                     cal.setTime(new Date());
                     cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -110,18 +113,34 @@ public class StatsFragment extends Fragment implements StatsContract.View {
                     cal.set(Calendar.MILLISECOND, 0);
 
                     for (int i = 0; i < 7; i++) {
+                        int step1 = 0, step2 = 0;
+
                         String date = cal.getTime().toString();
-                        if (obj.has(date)) {
-                            JSONObject jsonObject = obj.getJSONObject(date);
+                        if (mobileObj.has(date)) {
+                            JSONObject jsonObject = mobileObj.getJSONObject(date);
+                            Log.v("data", jsonObject.toString());
+                            step1 += jsonObject.getInt("total_steps");
+                            step2 = jsonObject.getInt("google_fitness");
+                        }
+                        if (watchObj.has(date)) {
+                            JSONObject jsonObject = watchObj.getJSONObject(date);
                             Log.v("data", jsonObject.toString());
                             FootStep footStep = new FootStep();
-                            int step1 = jsonObject.getInt("total_steps");
-                            int step2 = jsonObject.getInt("google_fitness");
-                            footStep.setStepCount(Math.max(step1, step2));
-                            footStep.setDate(cal.getTime());
-                            stepList.add(footStep);
-                            cal.add(Calendar.DAY_OF_MONTH, -1);
+                            step1 += jsonObject.getInt("total_steps");
                         }
+
+                        FootStep footStep = new FootStep();
+
+                        if (getTypeEnable(getContext(), PEDOMETER_GOOGLE_FIT))
+                            footStep.setStepCount(Math.max(step1, step2));
+                        else
+                            footStep.setStepCount(step1);
+
+                        footStep.setDate(cal.getTime());
+                        if (footStep.getStepCount() > 0)
+                            stepList.add(footStep);
+                        cal.add(Calendar.DAY_OF_MONTH, -1);
+
                     }
                     if (stepList.size() == 0) {
                         FootStep footStep = new FootStep();
@@ -221,6 +240,8 @@ public class StatsFragment extends Fragment implements StatsContract.View {
 
     private void fetchData() {
 
+        if (getContext() == null)
+            return;
         SharedPreferences pref = getContext().getSharedPreferences("UlaSettings", Context.MODE_PRIVATE);
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
@@ -250,7 +271,7 @@ public class StatsFragment extends Fragment implements StatsContract.View {
                 GoogleSignIn.getLastSignedInAccount(getContext())).readData(readRequest);
 
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("ulaData", Context.MODE_PRIVATE);
-        String data = sharedPreferences.getString("stepsData", "{}");
+        String data = sharedPreferences.getString("stepsData-0", "{}");
 
         response.addOnSuccessListener(dataReadResponse -> {
 
@@ -281,8 +302,7 @@ public class StatsFragment extends Fragment implements StatsContract.View {
 
                 }
                 SharedPreferences.Editor editor2 = sharedPreferences.edit();
-                editor2.putString("stepsData", obj.toString());
-                Log.v("stepsData", obj.toString());
+                editor2.putString("stepsData-0", obj.toString());
                 editor2.apply();
 
             } catch (JSONException e) {
@@ -299,6 +319,7 @@ public class StatsFragment extends Fragment implements StatsContract.View {
             Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
         });
     }
+
 
     private void loadFromFit() {
         if (getContext() == null) return;
@@ -341,4 +362,6 @@ public class StatsFragment extends Fragment implements StatsContract.View {
             Log.e("FAIL", e.getMessage());
         });
     }
+
+
 }

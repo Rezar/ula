@@ -12,7 +12,6 @@ public class FootStep {
     private int id;
     private Date date;
     private int stepCount;
-
     private int totalSteps;
     private int googleFitness;
     private int downstairs;
@@ -21,6 +20,7 @@ public class FootStep {
     private int walking;
     private int sitting;
     private int standing;
+    private  int type;
 
     public int getId() {
         return id;
@@ -109,6 +109,10 @@ public class FootStep {
     public void setStanding(int standing) {
         this.standing = standing;
     }
+
+    public int getType() { return type; }
+
+    public void setType(int type) { this.type = type; }
 
 
 }

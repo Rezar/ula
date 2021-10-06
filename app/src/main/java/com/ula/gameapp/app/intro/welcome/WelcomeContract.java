@@ -17,6 +17,8 @@ class WelcomeContract<T> {
         void startCountdown(long time);
 
         void checkTerms(boolean state);
+
+        void invisibleTerms();
     }
 
     interface Presenter extends BaseContract.Presenter<View> {
