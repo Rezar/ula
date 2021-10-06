@@ -97,23 +97,27 @@ public class DebugFragment extends Fragment {
             @Override
             public void run() {
 
-                String data = sharedPreferences.getString("stepsData", "{}");
+                String mobileData = sharedPreferences.getString("stepsData-0", "{}");
+                String watchData = sharedPreferences.getString("stepsData-1", "{}");
+
+                List<FootStep> stepList = new ArrayList<FootStep>();
                 try {
-                    List<FootStep> stepList = new ArrayList<FootStep>();
-                    JSONObject obj = new JSONObject(data);
+
+                    JSONObject mobileObj = new JSONObject(mobileData);
+                    JSONObject watchObj = new JSONObject(watchData);
                     Calendar cal = Calendar.getInstance();
                     cal.setTime(new Date());
                     cal.set(Calendar.HOUR_OF_DAY, 0);
                     cal.set(Calendar.MINUTE, 0);
                     cal.set(Calendar.SECOND, 0);
                     cal.set(Calendar.MILLISECOND, 0);
-
                     for (int i = 0; i < 7; i++) {
                         String date = cal.getTime().toString();
-                        if (obj.has(date)) {
-                            JSONObject jsonObject = obj.getJSONObject(date);
+                        if (mobileObj.has(date)) {
+                            JSONObject jsonObject = mobileObj.getJSONObject(date);
                             Log.v("data", jsonObject.toString());
                             FootStep footStep = new FootStep();
+                            footStep.setType(0);
                             footStep.setTotalSteps(jsonObject.getInt("total_steps"));
                             footStep.setGoogleFitness(jsonObject.getInt("google_fitness"));
                             footStep.setDownstairs(jsonObject.getInt("downstairs"));
@@ -124,17 +128,44 @@ public class DebugFragment extends Fragment {
                             footStep.setWalking(jsonObject.getInt("walking"));
                             footStep.setDate(cal.getTime());
                             stepList.add(footStep);
-                            cal.add(Calendar.DAY_OF_MONTH, -1);
                         }
+                        if (watchObj.has(date)) {
+                            JSONObject jsonObject = watchObj.getJSONObject(date);
+                            Log.v("data", jsonObject.toString());
+                            FootStep footStep = new FootStep();
+                            footStep.setType(1);
+                            footStep.setTotalSteps(jsonObject.getInt("total_steps"));
+                            footStep.setGoogleFitness(jsonObject.getInt("google_fitness"));
+                            footStep.setDownstairs(jsonObject.getInt("downstairs"));
+                            footStep.setUpstairs(jsonObject.getInt("upstairs"));
+                            footStep.setSitting(jsonObject.getInt("sitting"));
+                            footStep.setStanding(jsonObject.getInt("standing"));
+                            footStep.setJogging(jsonObject.getInt("jogging"));
+                            footStep.setWalking(jsonObject.getInt("walking"));
+                            footStep.setDate(cal.getTime());
+                            stepList.add(footStep);
+                        }
+                        cal.add(Calendar.DAY_OF_MONTH, -1);
+
                     }
+
                     if (stepList.size() == 0) {
                         FootStep footStep = new FootStep();
                         footStep.setDate(cal.getTime());
+                        footStep.setType(0);
                         footStep.setStepCount(0);
                         stepList.add(footStep);
+
+                        FootStep footStep2 = new FootStep();
+                        footStep2.setDate(cal.getTime());
+                        footStep2.setStepCount(0);
+                        footStep2.setType(1);
+                        stepList.add(footStep2);
                     }
                     updateAdapter(stepList);
-                } catch (JSONException e) {
+
+                } catch (
+                        JSONException e) {
                     e.printStackTrace();
                 }
 
@@ -150,10 +181,8 @@ public class DebugFragment extends Fragment {
         applyChanges();
 
 
-
         petViewModel = new ViewModelProvider(this).get(PetViewModel.class);
         settingsViewModel = new ViewModelProvider(this).get(SettingsViewModel.class);
-
 
 
         settingsViewModel.getAgeList().observe(getViewLifecycleOwner(), ages -> {
@@ -196,7 +225,6 @@ public class DebugFragment extends Fragment {
                 currentStatus = petStatus;
             }
         });
-
 
 
     }
@@ -321,7 +349,6 @@ public class DebugFragment extends Fragment {
         BodyShape bodyShape = Converter.bodyShapeFromName(spinner.getSelectedItem().toString());
         settingsViewModel.setBodyShape(bodyShape);
     }
-
 
 
     private void fillBodyShapes(Age age) {

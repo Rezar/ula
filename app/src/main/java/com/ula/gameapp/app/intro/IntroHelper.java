@@ -30,7 +30,9 @@ import com.ula.gameapp.app.intro.tutorial.TutorialView;
 import com.ula.gameapp.app.intro.welcome.WelcomePresenter;
 import com.ula.gameapp.app.intro.welcome.WelcomeView;
 import com.ula.gameapp.app.main.MainActivity;
+import com.ula.gameapp.core.Annotation;
 import com.ula.gameapp.core.helper.GoogleFit;
+import com.ula.gameapp.core.helper.PedometerManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,9 +72,14 @@ public class IntroHelper {
         fragments.add(IntroFragment.newInstance(TutorialPresenter.class, TutorialView.class));
         fragments.add(IntroFragment.newInstance(GoalPresenter.class, GoalView.class));
 
+        PedometerManager.setPedometerType(activity, Annotation.PEDOMETER_SENSOR,1);
+
+//        SharedPreferences pref = activity.getSharedPreferences("UlaSettings", MODE_PRIVATE);
+//        boolean intro = pref.getBoolean("intro", false);
+
         // if user has Google Fit app, we need to ask for permission
-        if (GoogleFit.isFitInstalled(activity))
-            fragments.add(IntroFragment.newInstance(FitPresenter.class, FitView.class));
+//        if (GoogleFit.isFitInstalled(activity)&& !intro)
+//            fragments.add(IntroFragment.newInstance(FitPresenter.class, FitView.class));
 
         ButterKnife.bind(this, activity);
         loadFragment(true);

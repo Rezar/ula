@@ -37,25 +37,41 @@
         </activity>
         <activity android:name=".app.intro.IntroActivity" />
 
-        <service android:name=".core.service.ActivityTracker" />
+        <service
+            android:name=".core.service.ActivityTracker"
+            android:enabled="true" />
 
         <receiver
             android:name=".core.receiver.ResetSensorReceiver"
             android:enabled="true" />
 
-        <receiver
-            android:name=".core.receiver.BootReceiver"
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <service
+            android:name=".core.service.MessageService"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
-                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
+                <data
+                    android:host="*"
+                    android:pathPrefix="/my_path"
+                    android:scheme="wear" />
+            </intent-filter>
+        </service>
 
+        <receiver
+            android:name=".core.receiver.BootReceiver"
+            android:enabled="true">
+            <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.ACTION_BOOT_COMPLETED" />
-                <action android:name="android.intent.action.REBOOT" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
-                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
-                <action android:name="android.intent.action.ACTION_SHUTDOWN" />
+                <action android:name="android.intent.action.USER_PRESENT" />
+
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
 
@@ -64,7 +80,9 @@
             <intent-filter>
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
-        </receiver> <!-- <service android:name=".core.service.SensorListener"/> -->
+        </receiver>
+
+        <!-- <service android:name=".core.service.SensorListener"/> -->
 
 
     </application>
