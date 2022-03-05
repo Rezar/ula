@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -9,49 +9,73 @@
         android:id="@+id/date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:paddingLeft="30dp"
         android:paddingTop="20dp"
         android:paddingRight="30dp"
-        android:text="date : 180 steps"
+        android:text="Friday"
         android:textColor="@color/black"
         android:textSize="30dp"
         android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/device"
+    <LinearLayout
+        android:id="@+id/line1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:paddingLeft="30dp"
-        android:paddingTop="20dp"
-        android:paddingRight="30dp"
-        android:text="Mobile"
-        android:textColor="@color/black"
-        android:textSize="30dp" />
+        android:layout_below="@id/date"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingLeft="30dp"
+            android:paddingTop="20dp"
+            android:text="Mobile"
+            android:textColor="@color/black"
+            android:textSize="30dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/date"
+            android:layout_weight="1"
+            android:paddingTop="20dp"
+            android:paddingRight="30dp"
+            android:text="Watch"
+            android:textColor="@color/black"
+            android:textSize="30dp" />
+
+
+    </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_below="@id/line1"
         android:layout_marginStart="@dimen/view_margin_large"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="@dimen/view_margin_large"
         android:background="@drawable/divider"
         android:backgroundTint="@color/md_blue_800" />
 
+
     <LinearLayout
+        android:id="@+id/line2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
+        android:paddingLeft="30dp"
+        android:layout_below="@id/line1"
         android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/downstairs"
+                android:id="@+id/m_downstairs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="30dp"
@@ -60,7 +84,7 @@
                 android:textColor="@color/black" />
 
             <TextView
-                android:id="@+id/jogging"
+                android:id="@+id/m_jogging"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="30dp"
@@ -71,7 +95,7 @@
 
 
             <TextView
-                android:id="@+id/upstairs"
+                android:id="@+id/m_upstairs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
@@ -79,39 +103,109 @@
                 android:paddingRight="30dp"
                 android:text="upstairs : 180 steps"
                 android:textColor="@color/black" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/walking"
+                android:id="@+id/m_walking"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="30dp"
                 android:paddingTop="30dp"
                 android:text="walking : 180 steps"
                 android:textColor="@color/black" />
 
 
             <TextView
-                android:id="@+id/sitting"
+                android:id="@+id/m_sitting"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="30dp"
                 android:paddingTop="30dp"
                 android:text="sitting : -"
                 android:textColor="@color/black" />
 
             <TextView
-                android:id="@+id/standing"
+                android:id="@+id/m_standing"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="30dp"
                 android:paddingTop="30dp"
                 android:text="standing : -"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/m_steps"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="30dp"
+                android:paddingRight="30dp"
+                android:text="total steps: 180 steps"
+                android:textColor="@color/black" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/w_downstairs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="30dp"
+                android:paddingRight="30dp"
+                android:text="downstairs : 180 steps"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/w_jogging"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="30dp"
+                android:paddingRight="30dp"
+                android:text="jogging : 180 steps"
+                android:textColor="@color/black" />
+
+
+            <TextView
+                android:id="@+id/w_upstairs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="30dp"
+                android:paddingRight="30dp"
+                android:text="upstairs : 180 steps"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/w_walking"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="30dp"
+                android:text="walking : 180 steps"
+                android:textColor="@color/black" />
+
+
+            <TextView
+                android:id="@+id/w_sitting"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="30dp"
+                android:text="sitting : -"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/w_standing"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="30dp"
+                android:text="standing : -"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/w_steps"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="30dp"
+                android:paddingRight="30dp"
+                android:text="total steps: 180 steps"
                 android:textColor="@color/black" />
         </LinearLayout>
     </LinearLayout>
@@ -119,6 +213,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_below="@id/line2"
         android:layout_marginStart="@dimen/view_margin_large"
         android:layout_marginTop="30dp"
         android:layout_marginEnd="@dimen/view_margin_large"
@@ -126,28 +221,16 @@
         android:backgroundTint="@color/md_blue_800" />
 
 
-
-    <TextView
-        android:id="@+id/steps"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:paddingLeft="30dp"
-        android:paddingTop="30dp"
-        android:paddingRight="30dp"
-        android:text="total steps: 180 steps"
-        android:textColor="@color/black" />
-
     <TextView
         android:id="@+id/google_fitness"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
+        android:layout_below="@id/line2"
         android:paddingLeft="30dp"
-        android:paddingTop="30dp"
+        android:paddingTop="50dp"
         android:paddingRight="30dp"
         android:text="google fitness: 180 steps"
         android:textColor="@color/black" />
 
 
-</LinearLayout>
+</RelativeLayout>

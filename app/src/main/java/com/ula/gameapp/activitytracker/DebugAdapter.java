@@ -1,6 +1,7 @@
 package com.ula.gameapp.activitytracker;
 
 import android.annotation.SuppressLint;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +20,7 @@ import java.util.List;
 
 public class DebugAdapter extends RecyclerView.Adapter<DebugAdapter.ViewHolder> {
 
-    private List<FootStep> items;
+    private List<Pair<FootStep,FootStep>> items;
     private DecimalFormat formatter;
     private boolean displayStepsCount;
 
@@ -40,19 +41,29 @@ public class DebugAdapter extends RecyclerView.Adapter<DebugAdapter.ViewHolder> 
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull DebugAdapter.ViewHolder holder, int position) {
-        FootStep item = items.get(position);
 
+        FootStep itemM = items.get(position).first;
 
-        holder.downstairs.setText("downstairs: " + item.getDownstairs());
-        holder.jogging.setText("jogging: " + item.getJogging());
-        holder.sitting.setText("sitting: " + item.getSitting());
-        holder.standing.setText("standing:" + item.getStanding());
-        holder.upstairs.setText("upstairs:" + item.getUpstairs());
-        holder.walking.setText("walking: " + item.getWalking());
-        holder.steps.setText("total steps: " + item.getTotalSteps());
-        holder.googleFitness.setText("google fitness: " + item.getGoogleFitness());
-        holder.date.setText(android.text.format.DateFormat.format("EEEE", item.getDate()));
-        holder.device.setText(item.getType()==0 ? "mobile": "watch");
+        holder.downstairsM.setText("downstairs: " + itemM.getDownstairs());
+        holder.joggingM.setText("jogging: " + itemM.getJogging());
+        holder.sittingM.setText("sitting: " + itemM.getSitting());
+        holder.standingM.setText("standing:" + itemM.getStanding());
+        holder.upstairsM.setText("upstairs:" + itemM.getUpstairs());
+        holder.walkingM.setText("walking: " + itemM.getWalking());
+        holder.stepsM.setText("total steps: " + itemM.getTotalSteps());
+
+        FootStep itemW = items.get(position).second;
+
+        holder.downstairsW.setText("downstairs: " + itemW.getDownstairs());
+        holder.joggingW.setText("jogging: " + itemW.getJogging());
+        holder.sittingW.setText("sitting: " + itemW.getSitting());
+        holder.standingW.setText("standing:" + itemW.getStanding());
+        holder.upstairsW.setText("upstairs:" + itemW.getUpstairs());
+        holder.walkingW.setText("walking: " + itemW.getWalking());
+        holder.stepsW.setText("total steps: " + itemW.getTotalSteps());
+
+        holder.googleFitness.setText("google fitness: " + itemM.getGoogleFitness());
+        holder.date.setText("Date : "+android.text.format.DateFormat.format("EEEE", itemM.getDate()));
     }
 
     @Override
@@ -60,12 +71,12 @@ public class DebugAdapter extends RecyclerView.Adapter<DebugAdapter.ViewHolder> 
         return items.size();
     }
 
-    public void add(FootStep step) {
+    public void add(Pair<FootStep,FootStep> step) {
         items.add(step);
         notifyDataSetChanged();
     }
 
-    public void add(List<FootStep> step) {
+    public void add(List<Pair<FootStep,FootStep>> step) {
         items.addAll(step);
         notifyDataSetChanged();
     }
@@ -76,20 +87,29 @@ public class DebugAdapter extends RecyclerView.Adapter<DebugAdapter.ViewHolder> 
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView date, downstairs, jogging, sitting, standing, upstairs, walking, steps, googleFitness, device;
+        TextView date, downstairsM, joggingM, sittingM, standingM, upstairsM, walkingM, stepsM,downstairsW, joggingW, sittingW, standingW, upstairsW, walkingW,stepsW, googleFitness;
 
         ViewHolder(View itemView) {
             super(itemView);
             date = itemView.findViewById(R.id.date);
-            downstairs = itemView.findViewById(R.id.downstairs);
-            jogging = itemView.findViewById(R.id.jogging);
-            sitting = itemView.findViewById(R.id.sitting);
-            standing = itemView.findViewById(R.id.standing);
-            upstairs = itemView.findViewById(R.id.upstairs);
-            walking = itemView.findViewById(R.id.walking);
-            steps = itemView.findViewById(R.id.steps);
+            //for mobile
+            downstairsM = itemView.findViewById(R.id.m_downstairs);
+            joggingM = itemView.findViewById(R.id.m_jogging);
+            sittingM = itemView.findViewById(R.id.m_sitting);
+            standingM = itemView.findViewById(R.id.m_standing);
+            upstairsM = itemView.findViewById(R.id.m_upstairs);
+            walkingM = itemView.findViewById(R.id.m_walking);
+            stepsM = itemView.findViewById(R.id.m_steps);
+            //for watch
+            downstairsW = itemView.findViewById(R.id.w_downstairs);
+            joggingW = itemView.findViewById(R.id.w_jogging);
+            sittingW = itemView.findViewById(R.id.w_sitting);
+            standingW = itemView.findViewById(R.id.w_standing);
+            upstairsW = itemView.findViewById(R.id.w_upstairs);
+            walkingW = itemView.findViewById(R.id.w_walking);
+            stepsW = itemView.findViewById(R.id.w_steps);
+
             googleFitness = itemView.findViewById(R.id.google_fitness);
-            device = itemView.findViewById(R.id.device);
         }
     }
 

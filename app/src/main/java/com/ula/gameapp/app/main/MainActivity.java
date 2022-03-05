@@ -6,23 +6,19 @@
 
 package com.ula.gameapp.app.main;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -31,13 +27,11 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -54,33 +48,24 @@ import com.google.android.gms.fitness.result.DataReadResponse;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
-import com.google.android.gms.wearable.Node;
-import com.google.android.gms.wearable.Wearable;
 import com.microsoft.appcenter.AppCenter;
 import com.microsoft.appcenter.analytics.Analytics;
 import com.microsoft.appcenter.crashes.Crashes;
 import com.ula.gameapp.R;
-import com.ula.gameapp.ViewModels.FootStepViewModel;
 import com.ula.gameapp.ViewModels.PrimaryDataViewModel;
 import com.ula.gameapp.ViewModels.SettingsViewModel;
 import com.ula.gameapp.activitytracker.DebugFragment;
-import com.ula.gameapp.activitytracker.TensorFlowClassifier;
 import com.ula.gameapp.app.BaseActivity;
 import com.ula.gameapp.app.main.help.HelpFragment;
 import com.ula.gameapp.app.main.home.HomeFragment;
 import com.ula.gameapp.app.main.setting.SettingFragment;
 import com.ula.gameapp.app.main.stats.StatsFragment;
 import com.ula.gameapp.core.Annotation;
-import com.ula.gameapp.core.helper.CacheManager;
 import com.ula.gameapp.core.helper.GoogleFit;
 import com.ula.gameapp.core.helper.PedometerManager;
 import com.ula.gameapp.core.receiver.ResetSensorReceiver;
-import com.ula.gameapp.database.DatabaseClient;
-import com.ula.gameapp.database.dao.StepDao;
+import com.ula.gameapp.core.service.ActivityTracker;
 import com.ula.gameapp.item.AppConfig;
-import com.ula.gameapp.item.Step;
-import com.ula.gameapp.utils.CalendarUtil;
 import com.ula.gameapp.utils.JTimeUtil;
 import com.ula.gameapp.utils.views.NoSwipeViewPager;
 
@@ -94,8 +79,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -132,7 +115,7 @@ public class MainActivity extends BaseActivity  {
         AppCenter.start(getApplication(), "ae6b638e-1f24-474e-b99b-f2f6d6e0b735",
                 Analytics.class, Crashes.class);
 
-
+        new ActivityTracker.SendMessage("/my_path", "280", getApplicationContext()).start();
 
         stepViewModel = new ViewModelProvider(this).get(StepViewModel.class);
 
@@ -253,6 +236,13 @@ public class MainActivity extends BaseActivity  {
 
     private SensorManager getSensorManager() {
         return (SensorManager) getSystemService(SENSOR_SERVICE);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        new ActivityTracker.SendMessage("/my_path", "280", getApplicationContext()).start();
 
     }
 

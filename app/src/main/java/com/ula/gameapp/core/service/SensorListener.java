@@ -23,7 +23,6 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.IBinder;
-import android.provider.Settings;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
@@ -31,13 +30,9 @@ import androidx.core.app.NotificationCompat;
 import com.ula.gameapp.BuildConfig;
 import com.ula.gameapp.core.logger.CatLogger;
 import com.ula.gameapp.core.receiver.ShutdownReceiver;
-import com.ula.gameapp.item.FootStep;
 import com.ula.gameapp.utils.CalendarUtil;
 
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Background service which keeps the step-sensor listener alive to always get

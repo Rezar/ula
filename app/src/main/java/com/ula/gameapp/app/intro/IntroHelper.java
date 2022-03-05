@@ -21,8 +21,6 @@ import com.orhanobut.dialogplus.DialogPlus;
 import com.orhanobut.dialogplus.OnClickListener;
 import com.orhanobut.dialogplus.ViewHolder;
 import com.ula.gameapp.R;
-import com.ula.gameapp.app.intro.fit.FitPresenter;
-import com.ula.gameapp.app.intro.fit.FitView;
 import com.ula.gameapp.app.intro.goal.GoalPresenter;
 import com.ula.gameapp.app.intro.goal.GoalView;
 import com.ula.gameapp.app.intro.tutorial.TutorialPresenter;
