@@ -67,7 +67,6 @@ public class PedometerManager {
 
     private static void startPedometerService(Activity activity) {
         // start pedometer service
-//        Intent i = new Intent(activity, SensorListener.class);
         Intent i = new Intent(activity, ActivityTracker.class);
         activity.startService(i);
 

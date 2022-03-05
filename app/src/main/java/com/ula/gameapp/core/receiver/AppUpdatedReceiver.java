@@ -12,7 +12,6 @@ import android.content.Intent;
 
 import com.ula.gameapp.core.logger.CatLogger;
 import com.ula.gameapp.core.service.ActivityTracker;
-import com.ula.gameapp.core.service.SensorListener;
 
 public class AppUpdatedReceiver extends BroadcastReceiver {
 

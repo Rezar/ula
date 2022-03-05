@@ -1,5 +1,6 @@
 package com.ula.gameapp.core.service;
 
+
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -17,7 +18,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
-import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Log;
@@ -31,7 +31,6 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.Wearable;
 import com.ula.gameapp.activitytracker.TensorFlowClassifier;
-import com.ula.gameapp.core.helper.PedometerManager;
 import com.ula.gameapp.core.logger.CatLogger;
 import com.ula.gameapp.core.receiver.ShutdownReceiver;
 import com.ula.gameapp.utils.CalendarUtil;
@@ -48,12 +47,13 @@ import java.util.concurrent.ExecutionException;
 
 import static com.ula.gameapp.App.getContext;
 import static com.ula.gameapp.core.Annotation.PEDOMETER_GOOGLE_FIT;
-import static com.ula.gameapp.core.Annotation.PEDOMETER_SENSOR;
 import static com.ula.gameapp.core.helper.PedometerManager.getTypeEnable;
 
 //Bavan Divaani-azar
 
 public class ActivityTracker extends Service implements SensorEventListener {
+
+
 
 
     private static final int N_SAMPLES = 200;
@@ -79,7 +79,7 @@ public class ActivityTracker extends Service implements SensorEventListener {
 
         getSensorManager().registerListener(this, getSensorManager().getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_GAME);
         Sensor accel = getSensorManager().getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
-        if (accel != null) {
+            if (accel != null) {
             getSensorManager().registerListener(this, accel, SensorManager.SENSOR_DELAY_UI);
         }
         x = new ArrayList<>();
@@ -123,25 +123,26 @@ public class ActivityTracker extends Service implements SensorEventListener {
         }
 
 
+//        final Handler handler = new Handler();
+//        handler.postDelayed(new Runnable() {
+//            public void run() {
+//
+//                int dailyGoal = getContext().getSharedPreferences("UlaSettings",
+//                        Context.MODE_PRIVATE).getInt("daily_goal", 0);
+//                int step = getStep();
+//
+//                String datapath = "/my_path";
+//                String Message = "step " + step + " dailyGoal " + dailyGoal + " ";
+//                new SendMessage(datapath, Message, getApplicationContext()).start();
+//
+//                handler.postDelayed(this, 60000); //now is every 5 minutes
+//            }
+//        }, 60000); //Every 600 ms (5 minutes)
+
+
         IntentFilter messageFilter = new IntentFilter(Intent.ACTION_SEND);
         Receiver messageReceiver = new Receiver();
         LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, messageFilter);
-
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            public void run() {
-
-                int dailyGoal = getContext().getSharedPreferences("UlaSettings",
-                        Context.MODE_PRIVATE).getInt("daily_goal", 0);
-                int step = getStep();
-
-                String datapath = "/my_path";
-                String Message = "step " + step + " dailyGoal " + dailyGoal + " ";
-                new SendMessage(datapath, Message, getApplicationContext()).start();
-
-                handler.postDelayed(this, 60000); //now is every 5 minutes
-            }
-        }, 60000); //Every 120000 ms (5 minutes)
 
         return START_STICKY;
     }
@@ -155,21 +156,18 @@ public class ActivityTracker extends Service implements SensorEventListener {
             String message = intent.getStringExtra("message");
             Log.v("step_message", message);
             assert message != null;
-            SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("ulaData", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            String data = sharedPreferences.getString("stepsData-1", "{}");
-
-            try {
-                JSONObject dataObj = new JSONObject(data);
-                JSONObject messageObj = new JSONObject(message);
-                String date = messageObj.keys().next();
-                dataObj.put(date, messageObj.getJSONObject(date));
-                editor.putString("stepsData-1", dataObj.toString());
-                Log.v("date", dataObj.toString());
+            if (message.equals("280")) {
+                int dailyGoal = getContext().getSharedPreferences("UlaSettings",
+                        Context.MODE_PRIVATE).getInt("daily_goal", 0);
+                int step = getStep();
+                String datapath = "/my_path";
+                String Message = "step " + step + " dailyGoal " + dailyGoal + " ";
+                new SendMessage(datapath, Message, getApplicationContext()).start();
+            } else {
+                SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("ulaData", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("stepsData-1", message);
                 editor.apply();
-
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
 
         }
@@ -212,11 +210,14 @@ public class ActivityTracker extends Service implements SensorEventListener {
     @Override
     public void onSensorChanged(SensorEvent event) {
         Sensor sensor = event.sensor;
-        Log.v("sensor_model", sensor.getType() + "");
+
+        Log.v("sensor",sensor.getType()+"");
 
         activityPrediction();
         if (event.sensor.getType() == Sensor.TYPE_STEP_DETECTOR) {
             stepDetect();
+            Log.v("sensor","step");
+
         }
         if (event.sensor.getType() == 1) {
             x.add(event.values[0]);
@@ -244,7 +245,7 @@ public class ActivityTracker extends Service implements SensorEventListener {
             JSONObject watchObj = new JSONObject(watchData);
             String date = cal.getTime() + "";
 
-            int step1=0,step2=0;
+            int step1 = 0, step2 = 0;
 
             if (mobileObj.has(date)) {
                 JSONObject jsonObject = mobileObj.getJSONObject(date);
@@ -257,7 +258,7 @@ public class ActivityTracker extends Service implements SensorEventListener {
                 step1 += jsonObject.getInt("total_steps");
             }
 
-            if (getTypeEnable(getContext(),PEDOMETER_GOOGLE_FIT))
+            if (getTypeEnable(getContext(), PEDOMETER_GOOGLE_FIT))
                 return Math.max(step1, step2);
             else
                 return step1;
@@ -300,11 +301,11 @@ public class ActivityTracker extends Service implements SensorEventListener {
             JSONObject jsonObject = obj.getJSONObject(date);
             int step = 0;
             if (idx != -1) {
-            if (idx != 2 && idx != 3) {
-                step = jsonObject.getInt("total_steps");
-                step++;
-                jsonObject.put("total_steps", step);
-            }
+                if (idx != 2 && idx != 3) {
+                    step = jsonObject.getInt("total_steps");
+                    step++;
+                    jsonObject.put("total_steps", step);
+                }
                 step = jsonObject.getInt(labels[idx]);
                 step++;
                 jsonObject.put(labels[idx], step);
@@ -395,6 +396,12 @@ public class ActivityTracker extends Service implements SensorEventListener {
         super.onTaskRemoved(rootIntent);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Intent broadcastIntent = new Intent(".RestartService");
+        sendBroadcast(broadcastIntent);
+    }
 
     public static class SendMessage extends Thread {
         String path;

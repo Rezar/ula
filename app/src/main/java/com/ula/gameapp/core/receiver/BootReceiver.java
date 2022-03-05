@@ -6,8 +6,6 @@
 
 package com.ula.gameapp.core.receiver;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -15,15 +13,10 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.util.Log;
 
-import com.ula.gameapp.BuildConfig;
-import com.ula.gameapp.app.main.MainActivity;
+import com.google.firebase.BuildConfig;
 import com.ula.gameapp.core.logger.CatLogger;
 import com.ula.gameapp.core.service.ActivityTracker;
 import com.ula.gameapp.item.Step;
-
-import java.util.Calendar;
-
-import static android.content.Context.ALARM_SERVICE;
 
 public class BootReceiver extends BroadcastReceiver {
 

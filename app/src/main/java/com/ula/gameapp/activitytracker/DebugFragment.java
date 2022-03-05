@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -100,7 +101,7 @@ public class DebugFragment extends Fragment {
                 String mobileData = sharedPreferences.getString("stepsData-0", "{}");
                 String watchData = sharedPreferences.getString("stepsData-1", "{}");
 
-                List<FootStep> stepList = new ArrayList<FootStep>();
+                List<Pair<FootStep,FootStep>> stepList = new ArrayList<Pair<FootStep,FootStep>>();
                 try {
 
                     JSONObject mobileObj = new JSONObject(mobileData);
@@ -112,55 +113,65 @@ public class DebugFragment extends Fragment {
                     cal.set(Calendar.SECOND, 0);
                     cal.set(Calendar.MILLISECOND, 0);
                     for (int i = 0; i < 7; i++) {
+
                         String date = cal.getTime().toString();
-                        if (mobileObj.has(date)) {
-                            JSONObject jsonObject = mobileObj.getJSONObject(date);
-                            Log.v("data", jsonObject.toString());
-                            FootStep footStep = new FootStep();
-                            footStep.setType(0);
-                            footStep.setTotalSteps(jsonObject.getInt("total_steps"));
-                            footStep.setGoogleFitness(jsonObject.getInt("google_fitness"));
-                            footStep.setDownstairs(jsonObject.getInt("downstairs"));
-                            footStep.setUpstairs(jsonObject.getInt("upstairs"));
-                            footStep.setSitting(jsonObject.getInt("sitting"));
-                            footStep.setStanding(jsonObject.getInt("standing"));
-                            footStep.setJogging(jsonObject.getInt("jogging"));
-                            footStep.setWalking(jsonObject.getInt("walking"));
-                            footStep.setDate(cal.getTime());
-                            stepList.add(footStep);
-                        }
+                        FootStep footStepM=new FootStep(),footStepW=new FootStep();;
+                        boolean haveWatch=false, haveMobile=false;
+
+                        footStepM.setDate(cal.getTime());
+                        footStepM.setType(0);
+                        footStepM.setStepCount(0);
+                        footStepW.setDate(cal.getTime());
+                        footStepW.setType(1);
+                        footStepW.setStepCount(0);
+
                         if (watchObj.has(date)) {
                             JSONObject jsonObject = watchObj.getJSONObject(date);
                             Log.v("data", jsonObject.toString());
-                            FootStep footStep = new FootStep();
-                            footStep.setType(1);
-                            footStep.setTotalSteps(jsonObject.getInt("total_steps"));
-                            footStep.setGoogleFitness(jsonObject.getInt("google_fitness"));
-                            footStep.setDownstairs(jsonObject.getInt("downstairs"));
-                            footStep.setUpstairs(jsonObject.getInt("upstairs"));
-                            footStep.setSitting(jsonObject.getInt("sitting"));
-                            footStep.setStanding(jsonObject.getInt("standing"));
-                            footStep.setJogging(jsonObject.getInt("jogging"));
-                            footStep.setWalking(jsonObject.getInt("walking"));
-                            footStep.setDate(cal.getTime());
-                            stepList.add(footStep);
+                            footStepW.setType(1);
+                            footStepW.setTotalSteps(jsonObject.getInt("total_steps"));
+                            footStepW.setDownstairs(jsonObject.getInt("downstairs"));
+                            footStepW.setUpstairs(jsonObject.getInt("upstairs"));
+                            footStepW.setSitting(jsonObject.getInt("sitting"));
+                            footStepW.setStanding(jsonObject.getInt("standing"));
+                            footStepW.setJogging(jsonObject.getInt("jogging"));
+                            footStepW.setWalking(jsonObject.getInt("walking"));
+                            footStepW.setDate(cal.getTime());
+                            haveWatch=true;
                         }
+                        if (mobileObj.has(date)) {
+                            JSONObject jsonObject = mobileObj.getJSONObject(date);
+                            Log.v("data", jsonObject.toString());
+                            footStepM.setType(0);
+                            footStepM.setTotalSteps(jsonObject.getInt("total_steps"));
+                            footStepM.setGoogleFitness(jsonObject.getInt("google_fitness"));
+                            footStepM.setDownstairs(jsonObject.getInt("downstairs"));
+                            footStepM.setUpstairs(jsonObject.getInt("upstairs"));
+                            footStepM.setSitting(jsonObject.getInt("sitting"));
+                            footStepM.setStanding(jsonObject.getInt("standing"));
+                            footStepM.setJogging(jsonObject.getInt("jogging"));
+                            footStepM.setWalking(jsonObject.getInt("walking"));
+                            footStepM.setDate(cal.getTime());
+                            haveMobile=true;
+                        }
+
+                        if(haveWatch || haveMobile) {
+                            stepList.add(Pair.create(footStepM, footStepW));
+                        }
+
                         cal.add(Calendar.DAY_OF_MONTH, -1);
 
                     }
 
                     if (stepList.size() == 0) {
-                        FootStep footStep = new FootStep();
-                        footStep.setDate(cal.getTime());
-                        footStep.setType(0);
-                        footStep.setStepCount(0);
-                        stepList.add(footStep);
-
-                        FootStep footStep2 = new FootStep();
-                        footStep2.setDate(cal.getTime());
-                        footStep2.setStepCount(0);
-                        footStep2.setType(1);
-                        stepList.add(footStep2);
+                        FootStep footStepM=new FootStep(),footStepW=new FootStep();;
+                        footStepM.setDate(cal.getTime());
+                        footStepM.setType(0);
+                        footStepM.setStepCount(0);
+                        footStepW.setDate(cal.getTime());
+                        footStepW.setType(1);
+                        footStepW.setStepCount(0);
+                        stepList.add(Pair.create(footStepM,footStepW));
                     }
                     updateAdapter(stepList);
 
@@ -247,7 +258,7 @@ public class DebugFragment extends Fragment {
 
     }
 
-    private void updateAdapter(List<FootStep> steps) {
+    private void updateAdapter(List<Pair<FootStep,FootStep>> steps) {
         adapter.removeAll();
         adapter.add(steps);
         adapter.notifyDataSetChanged();
