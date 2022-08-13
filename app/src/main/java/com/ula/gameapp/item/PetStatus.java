@@ -12,8 +12,16 @@ public class PetStatus {
     private int Id;
     private int AnimationId;
     private int repeatCounter;
+    private int tapCounter;
+    private int startId;
+    private int endId;
+    private boolean hasLoop;
+    private boolean multiLoop;
     private BodyShape lastBodyShape;
     private Age lastAge;
+    private int scenario;
+
+
 
     public int getId() {
         return Id;
@@ -39,6 +47,14 @@ public class PetStatus {
         this.repeatCounter = repeatCounter;
     }
 
+    public int getTapCounter() {
+        return tapCounter;
+    }
+
+    public void setTapCounter(int tapCounter) {
+        this.tapCounter = tapCounter;
+    }
+
     public BodyShape getLastBodyShape() {
         return lastBodyShape;
     }
@@ -54,4 +70,41 @@ public class PetStatus {
     public void setLastAge(Age lastAge) {
         this.lastAge = lastAge;
     }
+
+    public void setHasLoop(boolean hasLoop) {
+        this.hasLoop= hasLoop;
+    }
+
+    public boolean getHasLoop() {
+        return hasLoop;
+    }
+
+
+    public void setMultiLoop(boolean multiLoop) {
+        this.multiLoop = multiLoop;
+    }
+
+    public boolean getMultiLoop() {
+        return multiLoop;
+    }
+
+    public void setStartId(int startId) {
+        this.startId = startId;
+    }
+
+    public int getStartId() { return startId; }
+
+    public void setEndId(int endId) {
+        this.endId = endId;
+    }
+
+    public int getEndId() { return endId; }
+
+    public void setScenario(int scenario) {
+        this.scenario = scenario;
+    }
+
+    public int getScenario() { return scenario; }
+
+
 }

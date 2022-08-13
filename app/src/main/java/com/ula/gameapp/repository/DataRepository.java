@@ -1,5 +1,6 @@
 package com.ula.gameapp.repository;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 
 import androidx.lifecycle.LiveData;
@@ -61,7 +62,7 @@ public class DataRepository {
     }
 
     private static synchronized DataRepository getSync() {
-        if(instance == null) {
+        if (instance == null) {
             instance = new DataRepository();
         }
         return instance;
@@ -82,7 +83,7 @@ public class DataRepository {
         playStatusMutableLiveData = new MutableLiveData<>();
     }
 
-    public LiveData<PrimaryDataResult> loadPrimaryData() {
+    public LiveData<PrimaryDataResult> loadPrimaryData(Context c) {
 
         PrimaryDataResult primaryDataResult = new PrimaryDataResult();
         primaryDataResult.setLoadingState(LoadingState.LOADING);
@@ -94,7 +95,7 @@ public class DataRepository {
         } else {
             appExecutors.diskIO().execute(() -> {
                 PrimaryDataProducer primaryDataProducer = new PrimaryDataProducer();
-                ArrayList<JAnimation> mList = primaryDataProducer.getAnimationsList();
+                ArrayList<JAnimation> mList = primaryDataProducer.getAnimationsList(c);
                 animationDao.insertAll(mList);
 
                 PetStatus lastStatus = new PetStatus();
@@ -130,6 +131,13 @@ public class DataRepository {
         petStatus.setLastAge(newStatus.getLastAge());
         petStatus.setLastBodyShape(newStatus.getLastBodyShape());
 //        petStatus.setRepeatCounter(newStatus.getRepeatCounter());
+
+        if (newStatus.getMultiLoop()) {
+            petStatus.setMultiLoop(true);
+            petStatus.setStartId(newStatus.getStartId());
+            petStatus.setEndId(newStatus.getEndId());
+//            petStatus.setRepeatCounter(0);
+        }
 
         petStatusDao.insert(petStatus);
     }
@@ -197,7 +205,7 @@ public class DataRepository {
 
         int presentationScore = 0;
 
-        for (FootStep step:
+        for (FootStep step :
                 stepList) {
             double performanceScore = 0;
 
@@ -251,14 +259,39 @@ public class DataRepository {
         PetStatus newStatus = new PetStatus();
         JAnimation currentAnimation = animationDao.getJAnimation(petStatus.getAnimationId());
 
-        tapsToGo.postValue((currentAnimation.getRepeatCount() + 1) - clickCount);
+        if(!petStatus.getMultiLoop())
+            tapsToGo.postValue((currentAnimation.getRepeatCount() + 1) - clickCount);
 
         if (clickCount == (currentAnimation.getRepeatCount() + 1) && currentAnimation.isHasLock()) {
             isLockLiveDate.postValue(true);
             return petStatus;
         }
 
-        if (clickCount < (currentAnimation.getRepeatCount() + 1)) {
+
+        if (petStatus.getMultiLoop()) {
+
+            int nextId = petStatus.getAnimationId();
+
+            if (nextId > petStatus.getEndId())
+                nextId = petStatus.getStartId();
+            else if(nextId == petStatus.getEndId())
+                nextId = petStatus.getStartId()-1;
+
+
+            JAnimation nextAnimation = animationDao.getJAnimation(
+                    animationDao.getNextId(nextId));
+
+            newStatus.setId(petStatus.getId() + 1);
+            newStatus.setLastAge(nextAnimation.getAge());
+            newStatus.setLastBodyShape(bodyShape);
+            newStatus.setAnimationId(nextAnimation.getId());
+            newStatus.setMultiLoop(petStatus.getMultiLoop());
+            newStatus.setStartId(petStatus.getStartId());
+            newStatus.setEndId(petStatus.getEndId());
+            newStatus.setScenario(petStatus.getScenario());
+
+
+        } else if (clickCount < (currentAnimation.getRepeatCount() + 1) || petStatus.getHasLoop()) {
             return petStatus;
         } else {
             JAnimation nextAnimation;
@@ -272,10 +305,19 @@ public class DataRepository {
                 newStatus.setLastAge(nextAnimation.getAge());
                 newStatus.setLastBodyShape(bodyShape);
                 newStatus.setAnimationId(nextAnimation.getId());
+                newStatus.setScenario(nextAnimation.getScenario());
+
+
+                if (nextAnimation.getMultiLoop()) {
+                    newStatus.setMultiLoop(true);
+                    newStatus.setStartId(nextAnimation.getStartId());
+                    newStatus.setEndId(nextAnimation.getEndId());
+                }
+
             } else {
 
-                nextAnimation = animationDao.getJAnimation(bodyShape, currentAnimation.getAge(),
-                        currentAnimation.getId());
+                nextAnimation = animationDao.getJAnimation(
+                        animationDao.getNextId(currentAnimation.getId()));
 
                 // Age changes to adult
                 if (nextAnimation == null) {
@@ -294,6 +336,14 @@ public class DataRepository {
                 newStatus.setLastAge(nextAnimation.getAge());
                 newStatus.setLastBodyShape(bodyShape);
                 newStatus.setAnimationId(nextAnimation.getId());
+                newStatus.setScenario(nextAnimation.getScenario());
+
+
+                if (nextAnimation.getMultiLoop()) {
+                    newStatus.setMultiLoop(true);
+                    newStatus.setStartId(nextAnimation.getStartId());
+                    newStatus.setEndId(nextAnimation.getEndId());
+                }
             }
 
         }
@@ -323,7 +373,7 @@ public class DataRepository {
         newStatus.setLastAge(jAnimation.getAge());
         newStatus.setLastBodyShape(jAnimation.getBodyShape());
         newStatus.setRepeatCounter(jAnimation.getRepeatCount());
-
+        newStatus.setScenario(jAnimation.getScenario());
         updatePetStatus(newStatus);
     }
 
@@ -359,13 +409,14 @@ public class DataRepository {
         return animationDao.getFileType(animationId);
     }
 
+
     public void onLockEnd() {
 
         PetStatus currentStatus = petStatusDao.getCurrentStatus();
         AppConfig appConfig = appConfigDao.getCurrentConfig();
 
-        if(currentStatus == null) return;
-        if(appConfig == null) return;
+        if (currentStatus == null) return;
+        if (appConfig == null) return;
 
         int repeatCount = animationDao.getJAnimation(currentStatus.getAnimationId())
                 .getRepeatCount() + 1;

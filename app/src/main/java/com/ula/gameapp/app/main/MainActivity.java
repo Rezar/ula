@@ -25,6 +25,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -34,6 +35,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 
+import com.amitshekhar.DebugDB;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.fitness.Fitness;
@@ -110,6 +112,8 @@ public class MainActivity extends BaseActivity  {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Log.v("bavan",DebugDB.getAddressLog());
         setContentView(R.layout.activity_main);
 
         AppCenter.start(getApplication(), "ae6b638e-1f24-474e-b99b-f2f6d6e0b735",
@@ -175,7 +179,7 @@ public class MainActivity extends BaseActivity  {
             editor.apply();
 
         }
-        loadPrimaryData();
+        loadPrimaryData(getContext());
 
         loadAppConfigs();
 
@@ -329,9 +333,9 @@ public class MainActivity extends BaseActivity  {
 
 
 
-    private void loadPrimaryData() {
+    private void loadPrimaryData(Context c) {
 
-        primaryDataViewModel.loadPrimaryData().observe(this, primaryDataResult -> {
+        primaryDataViewModel.loadPrimaryData(c).observe(this, primaryDataResult -> {
             switch (primaryDataResult.getLoadingState()) {
                 case LOADING:
 

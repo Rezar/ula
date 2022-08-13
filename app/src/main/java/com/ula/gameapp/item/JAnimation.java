@@ -23,11 +23,21 @@ public class JAnimation {
     @ColumnInfo(defaultValue = "1")
     private boolean display;
 
+    @ColumnInfo(defaultValue = "1")
+    private int tapsCount;
+
+    private boolean hasLoop;
+    private boolean multiLoop;
+    private int startId;
+    private int endId;
+
+    private int scenario;
+
     public JAnimation() {
     }
 
     public JAnimation(int id, FileType fileType, String fileName, int repeatCount,
-                      BodyShape bodyShape, Age age, EmotionType emotionType, boolean hasLock, boolean display) {
+                      BodyShape bodyShape, Age age, EmotionType emotionType, boolean hasLock, boolean display, int tapsCount,int scenario) {
         Id = id;
         this.fileType = fileType;
         this.fileName = fileName;
@@ -37,8 +47,50 @@ public class JAnimation {
         this.emotionType = emotionType;
         this.hasLock = hasLock;
         this.display = display;
+        this.tapsCount = tapsCount;
+        this.hasLoop = false;
+        this.multiLoop = false;
+        this.scenario= scenario;
+
     }
 
+    public JAnimation(int id, FileType fileType, String fileName, int repeatCount,
+                      BodyShape bodyShape, Age age, EmotionType emotionType, boolean hasLock, boolean display, int tapsCount, boolean hasLoop,int scenario) {
+        Id = id;
+        this.fileType = fileType;
+        this.fileName = fileName;
+        this.repeatCount = repeatCount;
+        this.bodyShape = bodyShape;
+        this.age = age;
+        this.emotionType = emotionType;
+        this.hasLock = hasLock;
+        this.display = display;
+        this.tapsCount = tapsCount;
+        this.hasLoop = hasLoop;
+        this.multiLoop = false;
+        this.scenario= scenario;
+
+    }
+
+    public JAnimation(int id, FileType fileType, String fileName, int repeatCount,
+                      BodyShape bodyShape, Age age, EmotionType emotionType, boolean hasLock, boolean display, int tapsCount, boolean multiLoop, int startId, int endId,int scenario) {
+        Id = id;
+        this.fileType = fileType;
+        this.fileName = fileName;
+        this.repeatCount = repeatCount;
+        this.bodyShape = bodyShape;
+        this.age = age;
+        this.emotionType = emotionType;
+        this.hasLock = hasLock;
+        this.display = display;
+        this.tapsCount = tapsCount;
+        this.hasLoop = false;
+        this.multiLoop = multiLoop;
+        this.startId = startId;
+        this.endId = endId;
+        this.scenario= scenario;
+
+    }
     public int getId() {
         return Id;
     }
@@ -110,4 +162,48 @@ public class JAnimation {
     public void setDisplay(boolean display) {
         this.display = display;
     }
+
+    public void setTapsCount(int tapsCount) {
+        this.tapsCount = tapsCount;
+    }
+
+    public int getTapsCount() {
+        return tapsCount;
+    }
+
+    public void setHasLoop(boolean hasLoop) {
+        this.hasLoop = hasLoop;
+    }
+
+    public boolean getHasLoop() {
+        return hasLoop;
+    }
+
+    public void setMultiLoop(boolean multiLoop) {
+        this.multiLoop = multiLoop;
+    }
+
+    public boolean getMultiLoop() {
+        return multiLoop;
+    }
+
+    public void setStartId(int startId) {
+        this.startId = startId;
+    }
+
+    public int getStartId() { return startId; }
+
+    public void setEndId(int endId) {
+        this.endId = endId;
+    }
+
+    public int getEndId() { return endId; }
+
+    public void setScenario(int scenario) {
+        this.scenario = scenario;
+    }
+
+    public int getScenario() { return scenario; }
 }
+
+
