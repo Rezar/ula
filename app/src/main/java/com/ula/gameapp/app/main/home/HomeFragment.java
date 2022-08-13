@@ -15,6 +15,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.Configuration;
 import android.graphics.PixelFormat;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -27,6 +28,7 @@ import android.util.Log;
 import android.util.Pair;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -129,6 +131,7 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTouch;
 import cn.iwgang.countdownview.CountdownView;
 import pl.droidsonroids.gif.AnimationListener;
 import pl.droidsonroids.gif.GifImageView;
@@ -348,6 +351,9 @@ public class HomeFragment extends Fragment implements HomeContract.View, Playbac
 
 
         playStatusComplete = true;
+        Typeface tf = Typeface.createFromAsset(getContext().getAssets(), "Font/djbfirstgradeteacher.ttf");
+        timerView.setTypeface(tf);
+
 
         /*StepViewModel stepViewModel = ViewModelProviders.of(getActivity()).get(StepViewModel.class);
         stepViewModel.getSteps().observe(this, new Observer<Integer>() {
@@ -380,6 +386,13 @@ public class HomeFragment extends Fragment implements HomeContract.View, Playbac
 //            petViewModel.updatePetStatus(newPetStatus);
 //        }
 //    }
+
+    @OnTouch({R.id.img, R.id.player_view})
+    public boolean onTouchEvent(MotionEvent event) {
+        doNotClickIcon.setX(event.getX());
+        doNotClickIcon.setY(event.getY());
+        return false;
+    }
 
     @OnClick({R.id.img, R.id.player_view})
     public void holderClick(View v) {
@@ -439,7 +452,7 @@ public class HomeFragment extends Fragment implements HomeContract.View, Playbac
                 public void run() {
                     doNotClickIcon.setVisibility(View.INVISIBLE);
                 }
-            }, 2000);
+            }, 1000);
         }
     }
 
@@ -511,10 +524,11 @@ public class HomeFragment extends Fragment implements HomeContract.View, Playbac
         if (animationFinishTime > System.currentTimeMillis()) {
 
 
-            movieNameView.setVisibility(View.VISIBLE);
+            movieNameView.setVisibility(View.INVISIBLE);
             playerView.setVisibility(View.INVISIBLE);
             timerView.setVisibility(View.VISIBLE);
             timerView.setEndTime(animationFinishTime);
+
 
             new Handler().postDelayed(
                     new Runnable() {
@@ -610,7 +624,6 @@ public class HomeFragment extends Fragment implements HomeContract.View, Playbac
                 } else if (animation.getFileType() == FileType.MOVIE) {
 
                     movieNameView.setText("Movie: " + animation.getFileName());
-
 
 
                     SurfaceHolder surfaceHolder = playerView.getHolder();

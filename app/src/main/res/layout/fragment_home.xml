@@ -104,10 +104,9 @@
 
             <ImageView
                 android:id="@+id/donotclick_icon_view"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_alignRight="@id/player_view"
-                android:layout_alignBottom="@id/player_view"
+                android:rotation="-10"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_margin="20dp"
                 android:visibility="invisible"
                 android:src="@drawable/dont_click" />
