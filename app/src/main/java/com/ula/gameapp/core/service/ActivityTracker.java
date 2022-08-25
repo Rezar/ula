@@ -211,7 +211,7 @@ public class ActivityTracker extends Service implements SensorEventListener {
     public void onSensorChanged(SensorEvent event) {
         Sensor sensor = event.sensor;
 
-        Log.v("sensor",sensor.getType()+"");
+//        Log.v("sensor",sensor.getType()+"");
 
         activityPrediction();
         if (event.sensor.getType() == Sensor.TYPE_STEP_DETECTOR) {

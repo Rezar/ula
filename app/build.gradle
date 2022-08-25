@@ -130,6 +130,9 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-core-utils:1.0.0'
 
 
+    //timer
+    implementation 'com.github.dhimant1990:TimerTextView:v1.0'
+
 }
 apply plugin: 'com.google.gms.google-services'
 repositories {

@@ -21,6 +21,8 @@ import com.ula.gameapp.item.JAnimation;
 import com.ula.gameapp.item.PetStatus;
 import com.ula.gameapp.utils.enums.Age;
 
+import java.io.IOException;
+
 public class HomePresenter implements HomeContract.Presenter {
 
     private HomeContract.View mView;
@@ -35,7 +37,7 @@ public class HomePresenter implements HomeContract.Presenter {
     }
 
     @Override
-    public void initial(PetStatus petStatus, JAnimation animation) {
+    public void initial(PetStatus petStatus, JAnimation animation) throws IOException {
         Context context = App.getContext();
         /*if (PedometerManager.getPedometerType(context) == Annotation.PEDOMETER_GOOGLE_FIT) {
             Timer timer = new Timer();
@@ -98,12 +100,12 @@ public class HomePresenter implements HomeContract.Presenter {
         clickOnGif = 0;
     }
 
-    public void loadUlaDrawable(PetStatus petStatus, JAnimation animation) {
+    public void loadUlaDrawable(PetStatus petStatus, JAnimation animation) throws IOException {
         if (petStatus == null) return;
 
         mView.toggleDrawableHolder(animation.getFileType());
         mView.showDrawable(animation);
-        //mView.showCountdown(ula.getLockMin());
+//        mView.showCountdown(ula.getLockMin());
 
     }
 

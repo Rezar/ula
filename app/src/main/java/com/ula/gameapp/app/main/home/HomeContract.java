@@ -10,6 +10,8 @@ import com.ula.gameapp.item.JAnimation;
 import com.ula.gameapp.item.PetStatus;
 import com.ula.gameapp.utils.enums.FileType;
 
+import java.io.IOException;
+
 class HomeContract {
 
     interface View {
@@ -20,7 +22,7 @@ class HomeContract {
 
         void toggleDrawableHolder(FileType fileType);
 
-        void showDrawable(JAnimation animation);
+        void showDrawable(JAnimation animation) throws IOException;
 
         void showCountdown(long time);
     }
@@ -29,9 +31,9 @@ class HomeContract {
 
         void setView(View view);
 
-        void initial(PetStatus petStatus, JAnimation animation);
+        void initial(PetStatus petStatus, JAnimation animation) throws IOException;
 
-        void onGifClicked();
+        void  onGifClicked();
 
         void decideGifUpdate();
 

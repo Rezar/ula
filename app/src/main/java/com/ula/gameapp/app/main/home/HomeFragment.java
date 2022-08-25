@@ -8,17 +8,29 @@ package com.ula.gameapp.app.main.home;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.res.AssetFileDescriptor;
 import android.content.res.Configuration;
+import android.graphics.PixelFormat;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Debug;
+import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Pair;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -30,6 +42,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.work.Constraints;
@@ -37,6 +50,7 @@ import androidx.work.ExistingWorkPolicy;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
+import com.dhims.timerview.TimerTextView;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlaybackException;
@@ -105,15 +119,19 @@ import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTouch;
 import cn.iwgang.countdownview.CountdownView;
 import pl.droidsonroids.gif.AnimationListener;
 import pl.droidsonroids.gif.GifImageView;
@@ -137,36 +155,64 @@ import static com.ula.gameapp.core.helper.JConstants.Consts.KEY_WINDOW;
 import static com.ula.gameapp.core.helper.JConstants.Consts.PREFER_EXTENSION_DECODERS_EXTRA;
 import static com.ula.gameapp.core.helper.JConstants.Consts.URI_LIST_EXTRA;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class HomeFragment extends Fragment implements HomeContract.View, PlaybackPreparer,
         PlayerControlView.VisibilityListener, View.OnClickListener {
 
     private final static String TAG = HomeFragment.class.getSimpleName();
 
-    @BindView(R.id.lnr_root) RelativeLayout lnrRoot;
-    @BindView(R.id.tv_steps) TextView tvSteps;
-    @BindView(R.id.lnr_details) LinearLayout lnrDetails;
-    @BindView(R.id.txt_details) FontBodyTextView txtDetails;
-    @BindView(R.id.iv_full_screen) ImageView ivFullScreen;
-    @BindView(R.id.gif) GifImageView gifImageView;
-    @BindView(R.id.img) ImageView imgImageView;
-    @BindView(R.id.countdown_view) CountdownView countdownView;
+    @BindView(R.id.lnr_root)
+    RelativeLayout lnrRoot;
+    @BindView(R.id.tv_steps)
+    TextView tvSteps;
+    @BindView(R.id.lnr_details)
+    LinearLayout lnrDetails;
+    @BindView(R.id.txt_details)
+    FontBodyTextView txtDetails;
+    @BindView(R.id.iv_full_screen)
+    ImageView ivFullScreen;
+    @BindView(R.id.gif)
+    GifImageView gifImageView;
+    @BindView(R.id.img)
+    ImageView imgImageView;
+    @BindView(R.id.countdown_view)
+    CountdownView countdownView;
+    @BindView(R.id.movie_name_view)
+    FontBodyTextView movieNameView;
+    @BindView(R.id.donotclick_icon_view)
+    ImageView doNotClickIcon;
+    @BindView(R.id.timer_view)
+    TimerTextView timerView;
+
 
     public HomeContract.Presenter mPresenter = null;
 
     private PetViewModel petViewModel;
     private PetStatus petStatus;
+    private boolean playStatusComplete;
     private FootStepViewModel footStepViewModel;
     private boolean isLock;
     private AppConfig appConfig;
     private DecimalFormat formatter;
 
     // Player
-    @BindView(R.id.player_view) PlayerView playerView;
+//    @BindView(R.id.player_view) PlayerView playerView;
+
+    @BindView(R.id.player_view)
+    SurfaceView playerView;
+    MediaPlayer mediaPlayer;
+
+
     private static final CookieManager DEFAULT_COOKIE_MANAGER;
+
     static {
         DEFAULT_COOKIE_MANAGER = new CookieManager();
         DEFAULT_COOKIE_MANAGER.setCookiePolicy(CookiePolicy.ACCEPT_ORIGINAL_SERVER);
     }
+
     private DataSource.Factory dataSourceFactory;
     private SimpleExoPlayer player;
     private FrameworkMediaDrm mediaDrm;
@@ -188,6 +234,8 @@ public class HomeFragment extends Fragment implements HomeContract.View, Playbac
     private Intent animationIntent = null;
     private boolean isPrepared = false;
 
+    private SharedPreferences sharedPreferences;
+
     private Bundle extras;
 
     public HomeFragment() {
@@ -199,6 +247,8 @@ public class HomeFragment extends Fragment implements HomeContract.View, Playbac
         super.onCreate(savedInstanceState);
 
         extras = getArguments();
+        sharedPreferences = getActivity().getSharedPreferences("ulaData", Context.MODE_PRIVATE);
+
     }
 
     @Override
@@ -212,9 +262,9 @@ public class HomeFragment extends Fragment implements HomeContract.View, Playbac
         }
 
         v.setOnClickListener(this);
-        playerView.setControllerVisibilityListener(this);
-        playerView.setErrorMessageProvider(new PlayerErrorMessageProvider());
-        playerView.requestFocus();
+//        playerView.setControllerVisibilityListener(this);
+//        playerView.setErrorMessageProvider(new PlayerErrorMessageProvider());
+//        playerView.requestFocus();
 
         if (savedInstanceState != null) {
             trackSelectorParameters = savedInstanceState.getParcelable(KEY_TRACK_SELECTOR_PARAMETERS);
@@ -236,6 +286,7 @@ public class HomeFragment extends Fragment implements HomeContract.View, Playbac
         mPresenter = new HomePresenter();
         mPresenter.setView(this);
 
+        mediaPlayer = new MediaPlayer();
         SettingsViewModel settingsViewModel = new ViewModelProvider(this)
                 .get(SettingsViewModel.class);
         settingsViewModel.getAppConfig().observe(getViewLifecycleOwner(), appConfig -> {
@@ -249,8 +300,12 @@ public class HomeFragment extends Fragment implements HomeContract.View, Playbac
         petViewModel.getPetStatus().observe(requireActivity(), petStatus -> {
             if (petStatus != null) {
                 this.petStatus = petStatus;
-                mPresenter.initial(petStatus,
-                        petViewModel.getAnimationById(petStatus.getAnimationId()));
+                try {
+                    mPresenter.initial(petStatus,
+                            petViewModel.getAnimationById(petStatus.getAnimationId()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 petViewModel.setPlayStatus(PlayStatus.PLAYING);
             }
         });
@@ -288,10 +343,17 @@ public class HomeFragment extends Fragment implements HomeContract.View, Playbac
             }
         });
 
+
         countdownView.setOnCountdownEndListener(cv -> {
 
             petViewModel.setIsLock(false);
         });
+
+
+        playStatusComplete = true;
+        Typeface tf = Typeface.createFromAsset(getContext().getAssets(), "Font/djbfirstgradeteacher.ttf");
+        timerView.setTypeface(tf);
+
 
         /*StepViewModel stepViewModel = ViewModelProviders.of(getActivity()).get(StepViewModel.class);
         stepViewModel.getSteps().observe(this, new Observer<Integer>() {
@@ -308,21 +370,92 @@ public class HomeFragment extends Fragment implements HomeContract.View, Playbac
         tvSteps.setText(String.format("Today steps: %d", steps));
     }
 
-    @OnClick({R.id.img, R.id.gif})
-    public void holderClick(View v) {
-        mPresenter.onGifClicked();
-        mPresenter.decideGifUpdate();
-        //petViewModel.updatePetStatus(petStatus);
+//
+//    @OnClick({R.id.img, R.id.gif})
+//    public void holderClick(View v) {
+//        mPresenter.onGifClicked();
+//        mPresenter.decideGifUpdate();
+//        //petViewModel.updatePetStatus(petStatus);
+//
+//        if (petStatus != null && !isLock && appConfig != null) {
+//            PetStatus newPetStatus =
+//                    petViewModel.getNextState(petStatus, mPresenter.getClickCount(), appConfig);
+//            if (newPetStatus.getId() != petStatus.getId()) {
+//                mPresenter.resetGifClick();
+//            }
+//            petViewModel.updatePetStatus(newPetStatus);
+//        }
+//    }
 
-        if (petStatus != null && !isLock && appConfig != null) {
+    @OnTouch({R.id.img, R.id.player_view})
+    public boolean onTouchEvent(MotionEvent event) {
+        doNotClickIcon.setX(event.getX());
+        doNotClickIcon.setY(event.getY());
+        return false;
+    }
+
+    @OnClick({R.id.img, R.id.player_view})
+    public void holderClick(View v) {
+
+        if (playStatusComplete) {
+
+            mPresenter.onGifClicked();
+            mPresenter.decideGifUpdate();
+            //petViewModel.updatePetStatus(petStatus);
+
+            int tapCount = petStatus.getTapCounter() - 1;
+            petStatus.setTapCounter(tapCount);
+
+            if (petStatus != null && !isLock && appConfig != null && tapCount <= 0) {
+                PetStatus newPetStatus =
+                        petViewModel.getNextState(petStatus, mPresenter.getClickCount(), appConfig);
+                if (newPetStatus.getId() != petStatus.getId()) {
+                    mPresenter.resetGifClick();
+                }
+                petViewModel.updatePetStatus(newPetStatus);
+
+            }
+        } else if (petStatus.getHasLoop()) {
+            petStatus.setHasLoop(false);
+
+            mPresenter.onGifClicked();
+            mPresenter.decideGifUpdate();
+
+            int tapCount = petStatus.getTapCounter() - 1;
+            petStatus.setTapCounter(tapCount);
+//            if (petStatus != null && !isLock && appConfig != null && tapCount <= 0) {
+//                PetStatus newPetStatus =
+//                        petViewModel.getNextState(petStatus, mPresenter.getClickCount(), appConfig);
+//                if (newPetStatus.getId() != petStatus.getId()) {
+//                    mPresenter.resetGifClick();
+//                }
+//                petViewModel.updatePetStatus(newPetStatus);
+//
+//            }
+
+        } else if (petStatus.getMultiLoop()) {
+            petStatus.setMultiLoop(false);
+            petStatus.setAnimationId(petStatus.getEndId() + 1);
+            mPresenter.onGifClicked();
+            mPresenter.decideGifUpdate();
+
+            int tapCount = petStatus.getTapCounter() - 1;
+            petStatus.setTapCounter(tapCount);
+
             PetStatus newPetStatus =
                     petViewModel.getNextState(petStatus, mPresenter.getClickCount(), appConfig);
-            if (newPetStatus.getId() != petStatus.getId()) {
-                mPresenter.resetGifClick();
-            }
             petViewModel.updatePetStatus(newPetStatus);
+        } else {
+
+            doNotClickIcon.setVisibility(View.VISIBLE);
+            new Handler().postDelayed(new Runnable() {
+                public void run() {
+                    doNotClickIcon.setVisibility(View.INVISIBLE);
+                }
+            }, 1000);
         }
     }
+
 
     @SuppressLint("SourceLockedOrientationActivity")
     @OnClick({R.id.iv_full_screen})
@@ -382,42 +515,266 @@ public class HomeFragment extends Fragment implements HomeContract.View, Playbac
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
-    public void showDrawable(JAnimation animation) {
+    public void showDrawable(JAnimation animation) throws IOException {
 
-        if (animation.getFileType() == FileType.IMAGE) {
-            animationIntent = null;
+        Long animationFinishTime = sharedPreferences.getLong("animation-finish-time", 0);
+
+        if (animationFinishTime > System.currentTimeMillis()) {
+
+
+            movieNameView.setVisibility(View.INVISIBLE);
+            playerView.setVisibility(View.INVISIBLE);
+            timerView.setVisibility(View.VISIBLE);
+            timerView.setEndTime(animationFinishTime);
+
+
+            new Handler().postDelayed(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                movieNameView.setVisibility(View.VISIBLE);
+                                playerView.setVisibility(View.VISIBLE);
+                                showDrawable(getRandomAnimation(animation));
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }, animationFinishTime - System.currentTimeMillis());
+
+
+        } else {
+            timerView.setVisibility(View.INVISIBLE);
+            String animationData = sharedPreferences.getString("animationData", "{}");
+
+
             try {
-                InputStream ims = lnrRoot.getContext().getAssets().open("Gifs/" +
-                        animation.getFileName());
-                Drawable d = Drawable.createFromStream(ims, null);
-                imgImageView.setImageDrawable(d);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        } else if (animation.getFileType() == FileType.GIF) {
-            animationIntent = null;
-            GIFHelper gif = new GIFHelper().setContext(lnrRoot.getContext()).setGifHolder(gifImageView);
-            gif.fromAssets("Gifs/" + animation.getFileName());
-//            gif.setSpeed(ula.getSpeed());
-            gif.setRepeat(1);
-            gif.getDrawable().addAnimationListener(new AnimationListener() {
-                @Override
-                public void onAnimationCompleted(int loopNumber) {
-                    petViewModel.setPlayStatus(PlayStatus.COMPLETE);
-                }
-            });
-            gif.play();
-        } else if (animation.getFileType() == FileType.MOVIE) {
-            animationIntent = new Intent();
-            animationIntent.setAction(JConstants.ACTION.ACTION_AUDIO);
-//            String pathName = Paths.INSTANCE.getMoviesDir() + animation.getFileName();
-            String pathName = Paths.INSTANCE.getExternalStoragePath() + "test.mp4";
-            Uri videoUri = Uri.fromFile(new File(pathName));
-            animationIntent.setData(videoUri);
 
-            initializePlayer();
+                JSONObject obj = new JSONObject(animationData);
+                JSONObject ageObj = obj.getJSONObject(animation.getAge().toString());
+                JSONObject bodyShapeObj = ageObj.getJSONObject(animation.getBodyShape().toString());
+                JSONObject scenarioObj = bodyShapeObj.getJSONObject(String.valueOf(animation.getScenario()));
+
+
+                int animCount = scenarioObj.getInt("count");
+                if (animation.isHasLock()) {
+                    animCount++;
+                    scenarioObj.put("count", animCount);
+                }
+
+                JSONArray timesList = scenarioObj.getJSONArray("times");
+
+                JSONObject mD = new JSONObject();
+
+                mD.put("name", animation.getFileName());
+                mD.put("date", System.currentTimeMillis());
+                timesList.put(mD);
+
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("animationData", obj.toString());
+                editor.apply();
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+            try {
+                JSONObject animationObj = new JSONObject(animationData);
+                if (!animationObj.has(animation.getFileName())) {
+                    JSONObject jsonObject = new JSONObject();
+                    List<Long> timesList = new ArrayList<Long>();
+                    timesList.add(System.currentTimeMillis());
+                    jsonObject.put("timesList", timesList);
+
+                    animationObj.put(animation.getFileName(), jsonObject);
+                }
+                petStatus.setTapCounter(animation.getTapsCount());
+
+                if (animation.getFileType() == FileType.IMAGE) {
+                    movieNameView.setText("Image: " + animation.getFileName());
+                    animationIntent = null;
+                    try {
+                        InputStream ims = lnrRoot.getContext().getAssets().open("Movies/" +
+                                animation.getFileName());
+                        Drawable d = Drawable.createFromStream(ims, null);
+                        imgImageView.setImageDrawable(d);
+                        petViewModel.setPlayStatus(PlayStatus.COMPLETE);
+
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                } else if (animation.getFileType() == FileType.GIF) {
+
+                    movieNameView.setText("Gif: " + animation.getFileName());
+                    animationIntent = null;
+                    GIFHelper gif = new GIFHelper().setContext(lnrRoot.getContext()).setGifHolder(gifImageView);
+                    gif.fromAssets("GIFS/" + animation.getFileName());
+//          gif.setSpeed(ula.getSpeed());
+                    gif.setRepeat(1);
+                    gif.getDrawable().addAnimationListener(new AnimationListener() {
+                        @Override
+                        public void onAnimationCompleted(int loopNumber) {
+                            petViewModel.setPlayStatus(PlayStatus.COMPLETE);
+                        }
+                    });
+                    gif.play();
+                } else if (animation.getFileType() == FileType.MOVIE) {
+
+                    movieNameView.setText("Movie: " + animation.getFileName());
+
+
+                    SurfaceHolder surfaceHolder = playerView.getHolder();
+                    mediaPlayer.setDisplay(surfaceHolder);
+
+                    mediaPlayer.reset();
+
+                    AssetFileDescriptor afd = getActivity().getAssets().openFd("Movies/" + animation.getFileName());
+                    Log.v("Movie", animation.getFileName());
+                    mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+                    mediaPlayer.prepare();
+                    mediaPlayer.start();
+                    animationIntent = null;
+
+                    setVideoSize();
+                    playStatusComplete = false;
+                    petStatus.setHasLoop(animation.getHasLoop());
+                    int taps = animation.getTapsCount();
+                    mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                        public void onCompletion(MediaPlayer mp) {
+                            if (animation.isHasLock()) {
+                                long futureTimestamp = System.currentTimeMillis() + (180 * 1000);
+                                timerView.setEndTime(futureTimestamp);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putLong("animation-finish-time", futureTimestamp);
+                                editor.apply();
+                                playerView.setVisibility(View.INVISIBLE);
+                                movieNameView.setVisibility(View.INVISIBLE);
+                                timerView.setVisibility(View.VISIBLE);
+
+                                new Handler().postDelayed(
+                                        new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                try {
+                                                    movieNameView.setVisibility(View.VISIBLE);
+                                                    playerView.setVisibility(View.VISIBLE);
+                                                    showDrawable(getRandomAnimation(animation));
+                                                } catch (IOException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        }, futureTimestamp - System.currentTimeMillis());
+//                                try {
+//                                    mPresenter.initial(petStatus,getRandomAnimation(animation));
+//                                } catch (IOException e) {
+//                                    e.printStackTrace();
+//                                }
+
+
+                            } else if ((taps == 0 || animation.getHasLoop()) || petStatus.getMultiLoop()) {
+
+                                mPresenter.onGifClicked();
+                                mPresenter.decideGifUpdate();
+
+                                PetStatus newPetStatus = petViewModel.getNextState(petStatus, mPresenter.getClickCount(), appConfig);
+
+                                if (newPetStatus.getId() != petStatus.getId()) {
+                                    mPresenter.resetGifClick();
+                                }
+                                petViewModel.updatePetStatus(newPetStatus);
+                            } else {
+                                playStatusComplete = true;
+                                petViewModel.setPlayStatus(PlayStatus.COMPLETE);
+                            }
+                        }
+                    });
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
+
+    }
+
+    private JAnimation getRandomAnimation(JAnimation animation) {
+        String animationData = sharedPreferences.getString("animationData", "{}");
+
+        try {
+            JSONObject obj = new JSONObject(animationData);
+            JSONObject ageObj = obj.getJSONObject(animation.getAge().toString());
+            JSONObject bodyShapeObj = ageObj.getJSONObject(animation.getBodyShape().toString());
+
+            Iterator<String> keys = bodyShapeObj.keys();
+
+            List<Integer> idList = new ArrayList<Integer>();
+
+            int min = -1;
+            boolean firstAnim = true;
+            while (keys.hasNext()) {
+                String key = keys.next();
+                if (bodyShapeObj.get(key) instanceof JSONObject) {
+                    // do something with jsonObject here
+                    JSONObject scenarioObj = bodyShapeObj.getJSONObject(key);
+                    int animCount = scenarioObj.getInt("count");
+                    if (firstAnim) {
+                        min = animCount;
+                        firstAnim = false;
+                    }
+                    if (min > animCount) {
+                        idList.clear();
+                        min = animCount;
+                    }
+
+                    if (min == animCount)
+                        idList.add(scenarioObj.getInt("startAnimId"));
+
+                }
+            }
+
+            int random = idList.get(new Random().nextInt(idList.size()));
+            petStatus.setAnimationId(random);
+            PetStatus newPetStatus = petViewModel.getNextState(petStatus, mPresenter.getClickCount(), appConfig);
+
+            if (newPetStatus.getId() != petStatus.getId()) {
+                mPresenter.resetGifClick();
+            }
+            petViewModel.updatePetStatus(newPetStatus);
+
+            return petViewModel.getAnimationById(random);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    private void setVideoSize() {
+
+        // // Get the dimensions of the video
+        int videoWidth = mediaPlayer.getVideoWidth();
+        int videoHeight = mediaPlayer.getVideoHeight();
+        float videoProportion = (float) videoWidth / (float) videoHeight;
+
+        // Get the width of the screen
+        int screenWidth = getActivity().getWindowManager().getDefaultDisplay().getWidth();
+        int screenHeight = getActivity().getWindowManager().getDefaultDisplay().getHeight();
+        float screenProportion = (float) screenWidth / (float) screenHeight;
+
+        // Get the SurfaceView layout parameters
+        android.view.ViewGroup.LayoutParams lp = playerView.getLayoutParams();
+        if (videoProportion > screenProportion) {
+            lp.width = screenWidth;
+            lp.height = (int) ((float) screenWidth / videoProportion);
+        } else {
+            lp.width = (int) (videoProportion * (float) screenHeight);
+            lp.height = screenHeight;
+        }
+        // Commit the layout parameters
+        playerView.setLayoutParams(lp);
     }
 
     @Override
@@ -464,7 +821,7 @@ public class HomeFragment extends Fragment implements HomeContract.View, Playbac
         Log.d("JWorker", "Enqueued");
     }
 
-    public void showSnackBar(Activity activity, String message){
+    public void showSnackBar(Activity activity, String message) {
         View rootView = activity.getWindow().getDecorView().findViewById(android.R.id.content);
         Snackbar.make(rootView, message, Snackbar.LENGTH_SHORT).show();
     }
@@ -474,7 +831,7 @@ public class HomeFragment extends Fragment implements HomeContract.View, Playbac
         super.onStart();
         if (Util.SDK_INT > 23) {
             if (playerView != null) {
-                playerView.onResume();
+                playerView.refreshDrawableState();
             }
 //            initializePlayer();
         }
@@ -485,9 +842,11 @@ public class HomeFragment extends Fragment implements HomeContract.View, Playbac
         super.onResume();
         if (Util.SDK_INT <= 23 || player == null) {
             if (playerView != null) {
-                playerView.onResume();
+                ;
             }
 //            initializePlayer();
+            if (petStatus != null)
+                petViewModel.updatePetStatus(petStatus);
         }
     }
 
@@ -496,7 +855,7 @@ public class HomeFragment extends Fragment implements HomeContract.View, Playbac
         super.onPause();
         if (Util.SDK_INT <= 23) {
             if (playerView != null) {
-                playerView.onPause();
+//                playerView.onPause();
             }
             releasePlayer();
         }
@@ -512,7 +871,7 @@ public class HomeFragment extends Fragment implements HomeContract.View, Playbac
 
         if (Util.SDK_INT > 23) {
             if (playerView != null) {
-                playerView.onPause();
+//                playerView.onPause();
             }
             releasePlayer();
         }
@@ -542,8 +901,8 @@ public class HomeFragment extends Fragment implements HomeContract.View, Playbac
             Uri[] uris;
             String[] extensions;
             if (JConstants.ACTION.ACTION_AUDIO.equals(action)) {
-                uris = new Uri[] {intent.getData()};
-                extensions = new String[] {intent.getStringExtra(EXTENSION_EXTRA)};
+                uris = new Uri[]{intent.getData()};
+                extensions = new String[]{intent.getStringExtra(EXTENSION_EXTRA)};
             } else if (ACTION_VIEW_LIST.equals(action)) {
                 String[] uriStrings = intent.getStringArrayExtra(URI_LIST_EXTRA);
                 uris = new Uri[uriStrings.length];
@@ -633,8 +992,8 @@ public class HomeFragment extends Fragment implements HomeContract.View, Playbac
             player.addListener(new PlayerEventListener());
             player.setPlayWhenReady(startAutoPlay);
             player.addAnalyticsListener(new EventLogger(trackSelector));
-            playerView.setPlayer(player);
-            playerView.setPlaybackPreparer(this);
+//            playerView.setPlayer(player);
+//            playerView.setPlaybackPreparer(this);
 //            debugViewHelper = new DebugTextViewHelper(player, debugTextView);
 //            debugViewHelper.start();
 
@@ -759,7 +1118,7 @@ public class HomeFragment extends Fragment implements HomeContract.View, Playbac
 
     private void setLoadingVisibility(int visibility) {
         if (visibility == View.VISIBLE) {
-            playerView.showController();
+//            playerView.showController();
         }
     }
 
@@ -788,12 +1147,15 @@ public class HomeFragment extends Fragment implements HomeContract.View, Playbac
             adsLoader.release();
             adsLoader = null;
             loadedAdTagUri = null;
-            playerView.getOverlayFrameLayout().removeAllViews();
+//            playerView.getOverlayFrameLayout().removeAllViews();
         }
     }
 
-    /** Returns an ads media source, reusing the ads loader if one exists. */
-    private @Nullable MediaSource createAdsMediaSource(MediaSource mediaSource, Uri adTagUri) {
+    /**
+     * Returns an ads media source, reusing the ads loader if one exists.
+     */
+    private @Nullable
+    MediaSource createAdsMediaSource(MediaSource mediaSource, Uri adTagUri) {
         // Load the extension source using reflection so the demo app doesn't have to depend on it.
         // The ads loader is reused for multiple playbacks, so that ad playback can resume.
         try {
@@ -809,7 +1171,7 @@ public class HomeFragment extends Fragment implements HomeContract.View, Playbac
                 adsLoader = loaderConstructor.newInstance(this, adTagUri);
                 adUiViewGroup = new FrameLayout(getContext());
                 // The demo app has a non-null overlay frame layout.
-                playerView.getOverlayFrameLayout().addView(adUiViewGroup);
+//                playerView.getOverlayFrameLayout().addView(adUiViewGroup);
             }
             AdsMediaSource.MediaSourceFactory adMediaSourceFactory =
                     new AdsMediaSource.MediaSourceFactory() {
@@ -820,7 +1182,7 @@ public class HomeFragment extends Fragment implements HomeContract.View, Playbac
 
                         @Override
                         public int[] getSupportedTypes() {
-                            return new int[] {C.TYPE_DASH, C.TYPE_SS, C.TYPE_HLS, C.TYPE_OTHER};
+                            return new int[]{C.TYPE_DASH, C.TYPE_SS, C.TYPE_HLS, C.TYPE_OTHER};
                         }
                     };
             return new AdsMediaSource(mediaSource, adMediaSourceFactory, adsLoader, adUiViewGroup);
@@ -898,7 +1260,9 @@ public class HomeFragment extends Fragment implements HomeContract.View, Playbac
         }
     }
 
-    /** Returns a new DataSource factory. */
+    /**
+     * Returns a new DataSource factory.
+     */
     private DataSource.Factory buildDataSourceFactory() {
         return App.getInstance().buildDataSourceFactory();
     }
