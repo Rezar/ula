@@ -1,3 +1,0 @@
-include ':gameapp'
-rootProject.name='GameApp'
-include ':app'

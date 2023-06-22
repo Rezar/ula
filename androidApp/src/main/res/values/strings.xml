@@ -1,0 +1,29 @@
+<resources>
+    <string name="nav_home">Home</string>
+    <string name="nav_stats">Stats</string>
+    <string name="nav_help">Help</string>
+    <string name="nav_setting">Setting</string>
+    <string name="nav_debug">Debug</string>
+
+    <!--Welcome-->
+
+    <!--Help Strings-->
+    <string-array name="FAQs">
+        <item name="FAQs1">1. How to use our app?</item>
+        <item name="FAQs2">2. How to read the graphs?</item>
+        <item name="FAQs3">3. How to reach your fitness goal to make the monster happy?</item>
+        <item name="FAQs4">4. Want to take a day off?</item>
+        <item name="FAQs5">5. How to use our app?</item>
+        <item name="FAQs6">6. How to use our app?</item>
+
+    </string-array>
+
+
+    <string name="a1">1</string>
+    <string name="a2">2</string>
+    <string name="a3">3</string>
+    <string name="a4">4</string>
+    <string name="a5">5</string>
+    <string name="a6">6</string>
+
+</resources>
