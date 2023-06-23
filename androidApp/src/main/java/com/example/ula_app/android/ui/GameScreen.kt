@@ -31,6 +31,7 @@ import com.example.ula_app.android.ui.game.HomeScreen
 import com.example.ula_app.android.ui.game.SettingScreen
 import com.example.ula_app.android.ui.game.StatsScreen
 import com.example.ula_app.android.ui.viewmodel.GoalViewModel
+import com.example.ula_app.android.ui.viewmodel.HelpViewModel
 import com.example.ula_app.android.ui.viewmodel.HomeViewModel
 import com.example.ula_app.android.ui.welcome.WelcomePage1
 import com.example.ula_app.android.ui.welcome.WelcomePage2
@@ -57,6 +58,7 @@ enum class WelcomeScreen() {
 fun Game(
     goalViewModel: GoalViewModel = viewModel(),
     homeViewModel: HomeViewModel = viewModel(),
+    helpViewModel: HelpViewModel = viewModel(),
     navController: NavHostController = rememberNavController()
 ) {
     // ui state
@@ -143,7 +145,7 @@ fun Game(
             }
             // Help
             composable(route = GameScreen.Help.name) {
-                HelpScreen()
+                HelpScreen(helpViewModel)
             }
             // Setting
             composable(route = GameScreen.Setting.name) {

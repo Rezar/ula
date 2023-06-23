@@ -66,6 +66,7 @@ dependencies {
     implementation ("androidx.media3:media3-exoplayer:1.0.2")
     implementation ("androidx.media3:media3-exoplayer-dash:1.0.2")
     implementation ("androidx.media3:media3-ui:1.0.2")
+//    implementation ("androidx.lifecycle:lifecycle-runtime-compose:2.6.0-rc01")
 
 
 //    implementation("androidx.datastore:datastore-preferences:1.0.0-alpha04")
