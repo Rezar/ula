@@ -2,6 +2,7 @@ package com.example.ula_app.android.data
 
 import android.net.Uri
 import com.example.ula_app.android.R
+import kotlinx.datetime.LocalTime
 
 
 object DataSource {
@@ -73,6 +74,11 @@ object DataSource {
     val daysToAges: List<Int> = listOf(
         1,
         5
+    )
+
+    val timeThreshold: List<LocalTime> = listOf(
+        LocalTime(hour = 11, minute = 59, second = 59),
+        LocalTime(hour = 23, minute = 59, second = 59)
     )
 
     val bottomNavigationBarItem: List<BottomNavigationBarItem> = listOf(
