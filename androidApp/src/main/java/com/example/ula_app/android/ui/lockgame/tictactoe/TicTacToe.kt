@@ -3,6 +3,7 @@ package com.example.ula_app.android.ui.lockgame.tictactoe
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
 import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -96,15 +98,16 @@ fun TicTacToe(
             BaseBoard()
             LazyVerticalGrid(
                 modifier = Modifier
-                    .size(Default.board.size)
-                    .aspectRatio(1f),
+                    .width(Default.board.size)
+                    .aspectRatio(1f)
+                    .padding(Default.board.padding),
                 columns = GridCells.Fixed(3)
             ) {
                 ticTacToeViewModel.boardState.forEach { (cellNo, cellValue) ->
                     item {
                         Column(
                             modifier = Modifier
-                                .size(Default.cell.size)
+                                .fillMaxWidth()
                                 .aspectRatio(1f)
                                 .clickable(
                                     interactionSource = MutableInteractionSource(),
@@ -129,6 +132,21 @@ fun TicTacToe(
                     }
                 }
             }
+            Column(
+                modifier = Modifier
+                    .width(Default.board.size)
+                    .padding(Default.board.padding)
+                    .aspectRatio(1f),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                AnimatedVisibility(
+                    visible = ticTacToeViewModel.checkWin(),
+                    enter = fadeIn(tween(2000))
+                ) {
+                    DrawVictoryLine(state = ticTacToeUiState)
+                }
+            }
         }
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -142,7 +160,7 @@ fun TicTacToe(
             )
             Button(
                 onClick = {
-
+                    ticTacToeViewModel.resetBoard()
                 },
                 shape = RoundedCornerShape(5.dp),
                 elevation = ButtonDefaults.elevation(5.dp),

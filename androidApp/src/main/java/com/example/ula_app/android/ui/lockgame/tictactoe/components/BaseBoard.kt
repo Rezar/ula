@@ -1,8 +1,10 @@
 package com.example.ula_app.android.ui.lockgame.tictactoe.components
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -16,7 +18,8 @@ import com.example.ula_app.android.ui.lockgame.tictactoe.Default
 fun BaseBoard() {
     Canvas(
         modifier = Modifier
-            .size(Default.board.size)
+            .width(Default.board.size)
+            .aspectRatio(1f)
             .padding(Default.board.padding),
     ) {
         drawLine(

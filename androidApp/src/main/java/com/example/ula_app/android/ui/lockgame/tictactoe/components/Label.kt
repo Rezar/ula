@@ -1,8 +1,10 @@
 package com.example.ula_app.android.ui.lockgame.tictactoe.components
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -15,7 +17,8 @@ import com.example.ula_app.android.ui.lockgame.tictactoe.Default
 fun Circle() {
     Canvas(
         modifier = Modifier
-            .size(Default.label.circle.size)
+            .width(Default.label.circle.size)
+            .aspectRatio(1f)
             .padding(Default.label.circle.padding)
     ) {
         drawCircle(
@@ -29,7 +32,8 @@ fun Circle() {
 fun Cross() {
     Canvas(
         modifier = Modifier
-            .size(Default.label.cross.size)
+            .width(Default.label.cross.size)
+            .aspectRatio(1f)
             .padding(Default.label.cross.padding)
     ) {
         drawLine(

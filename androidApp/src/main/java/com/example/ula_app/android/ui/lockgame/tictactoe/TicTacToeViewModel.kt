@@ -27,34 +27,50 @@ class TicTacToeViewModel : ViewModel() {
     )
 
     fun switchRole() {
-        when (_uiState.value.currentRole) {
+        when (uiState.value.currentRole) {
             // If current role is CIRCLE, then switch to CROSS.
-            CellValue.Circle ->
+            CellValue.Circle -> {
                 setCurrentRole(CellValue.Cross)
+                setHintText(TicTacToeHintText.role.cross)
+            }
             // If current role is CROSS, then switch to CIRCLE.
-            CellValue.Cross ->
+            CellValue.Cross -> {
                 setCurrentRole(CellValue.Circle)
+                setHintText(TicTacToeHintText.role.circle)
+            }
 
             else -> Log.e("${TAG}", "This is action is unsupported!")
         }
     }
 
+    fun resetBoard() {
+        boardState.forEach{ (i, _) ->
+            boardState[i] = CellValue.None
+        }
+
+        setCurrentRole(CellValue.Circle)
+        setGameResult(GameResult.None)
+        setHintText(TicTacToeHintText.role.circle)
+    }
+
     fun clickCell(cellNo: Int) {
-        if (boardState[cellNo] != CellValue.None) {
+        if (checkWin() || boardState[cellNo] != CellValue.None) {
             return
         }
 
-        boardState[cellNo] = _uiState.value.currentRole
+        boardState[cellNo] = uiState.value.currentRole
 
-        checkVictory(CellValue.Circle)
+        checkVictory(uiState.value.currentRole)
 
-        if (_uiState.value.gameResult != GameResult.None) {
-            when (_uiState.value.currentRole) {
+        if (checkWin()) {
+            when (uiState.value.currentRole) {
                 CellValue.Circle -> {
-                    setCircleWinCount(_uiState.value.circleWinCount + 1)
+                    setCircleWinCount(uiState.value.circleWinCount + 1)
+                    setHintText(TicTacToeHintText.win.circle)
                 }
                 CellValue.Cross -> {
-                    setCrossWinCount(_uiState.value.crossWinCount + 1)
+                    setCrossWinCount(uiState.value.crossWinCount + 1)
+                    setHintText(TicTacToeHintText.win.cross)
                 }
                 else -> {
 
@@ -65,7 +81,7 @@ class TicTacToeViewModel : ViewModel() {
 
         if (checkBoardFull()) {
             setGameResult(GameResult.Draw)
-            setDrawCount(_uiState.value.drawCount + 1)
+            setDrawCount(uiState.value.drawCount + 1)
             return
         }
 
@@ -73,7 +89,7 @@ class TicTacToeViewModel : ViewModel() {
     }
 
     fun checkVictory(cellValue: CellValue) {
-        when  {
+        when {
             boardState[1] == cellValue && boardState[2] == cellValue && boardState[3] == cellValue -> {
                 setGameResult(GameResult.Horizontal1)
             }
@@ -106,6 +122,10 @@ class TicTacToeViewModel : ViewModel() {
         return !boardState.containsValue(CellValue.None)
     }
 
+    fun checkWin(): Boolean {
+        return uiState.value.gameResult != GameResult.None && uiState.value.gameResult != GameResult.Draw
+    }
+
     fun setCircleWinCount(circleWinCount: Int) {
         _uiState.update { currentState ->
             currentState.copy(
@@ -130,7 +150,7 @@ class TicTacToeViewModel : ViewModel() {
         }
     }
 
-    fun setHintCount(hintText: String) {
+    fun setHintText(hintText: String) {
         _uiState.update { currentState ->
             currentState.copy(
                 hintText = hintText
