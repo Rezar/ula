@@ -118,7 +118,7 @@ class HomeViewModel() : ViewModel() {
 
 
         // Check whether the movie will be locked
-        // -----------------------------need to add stop how long to unlock--------------------------------------
+        // -----------------------------need to add buttons to navigate to little games or continue with fitness goal--------------------------------------
         if (currentMonsterMovie.hasLock) {
             sendMessage("Locked!!!")
             return

@@ -8,22 +8,39 @@
     <!--Welcome-->
 
     <!--Help Strings-->
-    <string-array name="FAQs">
-        <item name="FAQs1">1. How to use our app?</item>
-        <item name="FAQs2">2. How to read the graphs?</item>
-        <item name="FAQs3">3. How to reach your fitness goal to make the monster happy?</item>
-        <item name="FAQs4">4. Want to take a day off?</item>
-        <item name="FAQs5">5. How to use our app?</item>
-        <item name="FAQs6">6. How to use our app?</item>
+    <string name="FAQs1">1. How to use our app?</string>
+    <string name="FAQs2">2. How to read the graphs?</string>
+    <string name="FAQs3">3. How to reach your fitness goal to make the monster happy?</string>
+    <string name="FAQs4">4. Want to take a day off?</string>
+    <string name="FAQs5">5. How to use our app?</string>
+    <string name="FAQs6">6. How to use our app?</string>
 
-    </string-array>
+    <string name="A1">1</string>
+    <string name="A2">2</string>
+    <string name="A3">3</string>
+    <string name="A4">4</string>
+    <string name="A5">5</string>
+    <string name="A6">6</string>
 
+    <!--
+<string-array name="FAQs">
+    <item name="FAQs1">1. How to use our app?</item>
+    <item name="FAQs2">2. How to read the graphs?</item>
+    <item name="FAQs3">3. How to reach your fitness goal to make the monster happy?</item>
+    <item name="FAQs4">4. Want to take a day off?</item>
+    <item name="FAQs5">5. How to use our app?</item>
+    <item name="FAQs6">6. How to use our app?</item>
+</string-array>
+-->
 
-    <string name="a1">1</string>
-    <string name="a2">2</string>
-    <string name="a3">3</string>
-    <string name="a4">4</string>
-    <string name="a5">5</string>
-    <string name="a6">6</string>
+    <!--<string-array name="Answers">
+        <item name="A1">1</string>
+        <item name="A2">2</string>
+        <item name="A3">3</string>
+        <item name="A4">4</string>
+        <item name="A5">5</string>
+        <item name="A6">6</string>
+    </string-array>-->
+
 
 </resources>

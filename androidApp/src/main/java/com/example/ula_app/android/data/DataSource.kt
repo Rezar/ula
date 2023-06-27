@@ -15,6 +15,33 @@ object DataSource {
     )
 
     // Help tab data sources
+    data class FAQ(val question: Int, val answer: Int)
+    val questionsAnswers: List<FAQ> = listOf(
+        FAQ(
+            question = R.string.FAQs1,
+            answer = R.string.A1
+        ),
+        FAQ(
+            question = R.string.FAQs2,
+            answer = R.string.A2
+        ),
+        FAQ(
+            question = R.string.FAQs3,
+            answer = R.string.A3
+        ),
+        FAQ(
+            question = R.string.FAQs4,
+            answer = R.string.A4
+        ),
+        FAQ(
+            question = R.string.FAQs5,
+            answer = R.string.A5
+        ),
+        FAQ(
+            question = R.string.FAQs6,
+            answer = R.string.A6
+        ),
+    )
 
 
     // Home tab data sources
@@ -44,8 +71,8 @@ object DataSource {
     )
 
     val daysToAges: List<Int> = listOf(
-        3,
-        10
+        1,
+        5
     )
 
     val bottomNavigationBarItem: List<BottomNavigationBarItem> = listOf(
