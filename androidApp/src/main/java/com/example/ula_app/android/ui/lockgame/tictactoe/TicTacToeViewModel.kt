@@ -60,7 +60,7 @@ class TicTacToeViewModel : ViewModel() {
 
         boardState[cellNo] = uiState.value.currentRole
 
-        checkVictory(uiState.value.currentRole)
+        checkWinScenarios(uiState.value.currentRole)
 
         if (checkWin()) {
             when (uiState.value.currentRole) {
@@ -88,7 +88,7 @@ class TicTacToeViewModel : ViewModel() {
         switchRole()
     }
 
-    fun checkVictory(cellValue: CellValue) {
+    fun checkWinScenarios(cellValue: CellValue) {
         when {
             boardState[1] == cellValue && boardState[2] == cellValue && boardState[3] == cellValue -> {
                 setGameResult(GameResult.Horizontal1)
