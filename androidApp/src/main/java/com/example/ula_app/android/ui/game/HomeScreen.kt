@@ -100,6 +100,12 @@ fun HomeScreen(
         Box(
             modifier = Modifier.clickable {
                 // This is to update the video file that is going to play next
+                /*
+                * make the currentStep as a state so that if the currentStep changes the home tab
+                * will re-render and the bodyStatus will be checked through LaunchEffect.
+                *
+                * TODO: Link the currentStep to the sensor and make it as a state.
+                * */
                 homeViewModel.clickToUpdateMovies()
                 homeViewModel.printGoal(goalUiState.steps)
             }
@@ -120,23 +126,26 @@ fun HomeScreen(
                 }
             )
         }
+        Text(
+            text = homeUiState.id
+        )
 
-//        Text(text = "This is $TAG", fontSize = 18.sp)
+/*        Text(text = "This is $TAG", fontSize = 18.sp)
 
-//        Button(
-//            onClick = {
-//                // This is to update the video file that is going to play next
-//                homeViewModel.clickToUpdateMovies()
-//                homeViewModel.printGoal(goalUiState.steps)
-//            },
-//            colors = ButtonDefaults.buttonColors(
-//                backgroundColor = Color.LightGray
-//            )
-//        ) {
-//            Text(
-//                text = "Tap Me"
-//            )
-//        }
+        Button(
+            onClick = {
+                // This is to update the video file that is going to play next
+                homeViewModel.clickToUpdateMovies()
+                homeViewModel.printGoal(goalUiState.steps)
+            },
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = Color.LightGray
+            )
+        ) {
+            Text(
+                text = "Tap Me"
+            )
+        }*/
 
     }
 }

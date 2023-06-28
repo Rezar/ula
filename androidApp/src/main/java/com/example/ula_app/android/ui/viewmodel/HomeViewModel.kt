@@ -118,7 +118,9 @@ class HomeViewModel() : ViewModel() {
 
 
         // Check whether the movie will be locked
-        // -----------------------------need to add stop how long to unlock--------------------------------------
+        /*
+         * TODO: need to add buttons to navigate to little games or continue with fitness goal
+         * */
         if (currentMonsterMovie.hasLock) {
             sendMessage("Locked!!!")
             return
@@ -147,12 +149,14 @@ class HomeViewModel() : ViewModel() {
         currentStep: Int,
         goal: Int
     ) {
-        // If the user playing for less than 3 days, set the start movie as 0_0
+        // If the user playing for less than 1 days, set the start movie as 0_0
         if (DateTimeUtil.getDayDifference(DateTimeUtil.getCurrentDateTime(), firstDateTime)
             <= DataSource.daysToAges[0]) {
-            setId(eggHead)
+            if(uiState.value.id == eggHead){
+                setId(eggHead)
+            }
         }
-        // If the user playing within 3 to 10 days, then the age is child
+        // If the user playing within 1 to 5 days, then the age is child
         // start setting child body status
         else if(DateTimeUtil.getDayDifference(DateTimeUtil.getCurrentDateTime(), firstDateTime)
             <= DataSource.daysToAges[1] ||
@@ -160,7 +164,7 @@ class HomeViewModel() : ViewModel() {
             > DataSource.daysToAges[0]) {
             setChildBodyStatus(currentStep, goal)
         }
-        // If the user playing for more than 10 days, then the age is adult
+        // If the user playing for more than 5 days, then the age is adult
         // start setting adult body status
         else if(DateTimeUtil.getDayDifference(DateTimeUtil.getCurrentDateTime(), firstDateTime)
             > DataSource.daysToAges[1]) {
@@ -168,44 +172,110 @@ class HomeViewModel() : ViewModel() {
         }
     }
 
+    /*
+    * This is to set body status when the monster is a child
+    * param:
+    *       currentStep: user's current step count. Linked to the sensor and will be a type of state flow
+    *       goal: fitness goal from welcome page 3
+    * return:
+    * */
     fun setChildBodyStatus(
-        currentStep: Int = 5000,  // will be deleted
-        goal: Int  // pass in by ui files
+        currentStep: Int,
+        goal: Int
     ) {
-        Log.i("${TAG}", "goal: ${goal}, currentSteps: ${currentStep}")
-/*        when {
-            currentStep >= DataSource.childThreshold[1] * goal -> setId(childNormalHead)
-            DataSource.childThreshold[1] * goal <= currentStep && currentStep < DataSource.childThreshold[1] * goal -> setId(childFatHead)
-            currentStep < DataSource.childThreshold[0] * goal -> setId(childOverweightHead)
-        }*/
+
+        // If the cur time is out of checking range, do nothing. Otherwise check body status
+        if(!checkDayTime()){
+            return
+        }
+
         if (currentStep >= DataSource.childThreshold[1] * goal) {
-            setId(childNormalHead)
-        } else if (currentStep < DataSource.childThreshold[1] * goal || currentStep >= DataSource.childThreshold[0] * goal) {
-            setId(childFatHead)
+            if(!checkBodyStatus(uiState.value.bodyStatus, "Normal")) {
+                setId(childNormalHead)
+            }
+        } else if (currentStep < DataSource.childThreshold[1] * goal
+            || currentStep >= DataSource.childThreshold[0] * goal) {
+
+            if(!checkBodyStatus(uiState.value.bodyStatus, "Fat")) {
+                setId(childFatHead)
+            }
         } else if (currentStep < DataSource.childThreshold[0] * goal) {
-            setId(childOverweightHead)
+
+            if(!checkBodyStatus(uiState.value.bodyStatus, "Overweight")) {
+                setId(childOverweightHead)
+            }
         }
     }
 
+
+    /*
+    * This is to set body status when the monster is an adult
+    * param:
+    *       currentStep: user's current step count. Linked to the sensor and will be a type of state flow
+    *       goal: fitness goal from welcome page 3
+    * return:
+    * */
     fun setAdultBodyStatus(
-        currentStep: Int = 5000,  // will be deleted
-        goal: Int  // pass in by ui files
+        currentStep: Int,
+        goal: Int
     ) {
-/*        when {
-            currentStep >= DataSource.adultThreshold[2] * goal -> setId(adultFitHead)
-            DataSource.adultThreshold[1] * goal <= currentStep && currentStep < DataSource.adultThreshold[2] * goal -> setId(adultNormalHead)
-            DataSource.adultThreshold[0] * goal <= currentStep && currentStep < DataSource.adultThreshold[1] * goal -> setId(adultFatHead)
-            currentStep < DataSource.adultThreshold[0] * goal -> setId(adultOverweightHead)
-        }*/
-        if (currentStep >= DataSource.adultThreshold[2] * goal) {
-            setId(adultFitHead)
-        } else if (currentStep < DataSource.adultThreshold[2] * goal || currentStep >= DataSource.adultThreshold[1] * goal) {
-            setId(adultNormalHead)
-        } else if (currentStep < DataSource.adultThreshold[1] * goal || currentStep >= DataSource.adultThreshold[0] * goal) {
-            setId(adultFatHead)
-        } else if (currentStep < DataSource.adultThreshold[0] * goal) {
-            setId(adultOverweightHead)
+
+        // If the cur time is out of checking range, do nothing. Otherwise check body status
+        if(!checkDayTime()){
+            return
         }
+
+        if (currentStep >= DataSource.adultThreshold[2] * goal) {
+
+            if(!checkBodyStatus(uiState.value.bodyStatus, "Fit")) {
+                setId(adultFitHead)
+            }
+
+        } else if (currentStep < DataSource.adultThreshold[2] * goal
+            || currentStep >= DataSource.adultThreshold[1] * goal) {
+
+            if(!checkBodyStatus(uiState.value.bodyStatus, "Normal")) {
+                setId(adultNormalHead)
+            }
+
+        } else if (currentStep < DataSource.adultThreshold[1] * goal
+            || currentStep >= DataSource.adultThreshold[0] * goal) {
+
+            if(!checkBodyStatus(uiState.value.bodyStatus, "Fat")) {
+                setId(adultFatHead)
+            }
+
+        } else if (currentStep < DataSource.adultThreshold[0] * goal) {
+
+            if(!checkBodyStatus(uiState.value.bodyStatus, "Overweight")) {
+                setId(adultOverweightHead)
+            }
+        }
+    }
+
+    /*
+    * Check if the day of time need to check the body status.
+    * If we are within 00 to 12pm range, we will not check body status.
+    * param:
+    * return: true if need to check; false if don't need to check
+    * */
+    fun checkDayTime(): Boolean {
+
+        return (DateTimeUtil.getLocalDateTime() >= DataSource.timeThreshold[0]
+                || DateTimeUtil.getLocalDateTime() <= DataSource.timeThreshold[1])
+    }
+
+
+    /*
+    * Check if the body status is the same as the current status
+    * param:
+    * return: true if it's the same; false if it's not the same
+    * */
+    fun checkBodyStatus(
+        curStatus: String,
+        targetStatus: String
+    ): Boolean {
+        return curStatus == targetStatus
     }
 
 
