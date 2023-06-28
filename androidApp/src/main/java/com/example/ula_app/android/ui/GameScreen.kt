@@ -33,6 +33,7 @@ import com.example.ula_app.android.ui.game.SettingScreen
 import com.example.ula_app.android.ui.game.StatsScreen
 import com.example.ula_app.android.ui.viewmodel.GoalViewModel
 import com.example.ula_app.android.ui.viewmodel.HomeViewModel
+import com.example.ula_app.android.ui.viewmodel.UserPreferencesViewModel
 import com.example.ula_app.android.ui.welcome.WelcomePage1
 import com.example.ula_app.android.ui.welcome.WelcomePage2
 import com.example.ula_app.android.ui.welcome.WelcomePage3
@@ -57,12 +58,14 @@ enum class WelcomeScreen() {
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Game(
+    userPreferencesViewModel: UserPreferencesViewModel,
     goalViewModel: GoalViewModel = viewModel(),
     homeViewModel: HomeViewModel = viewModel(),
     navController: NavHostController = rememberNavController()
 ) {
     // ui state
     val goalUiState by goalViewModel.uiState.collectAsState()
+    val userPreferencesUiState by userPreferencesViewModel.userPreferencesState.collectAsState()
 
     Log.i("GameScreen", "${goalUiState.firstTime}")
 
@@ -96,7 +99,7 @@ fun Game(
         NavHost(
             navController = navController,
             // Show Welcome.Page1 as start destination if it's the first time, else show GameScreen.Home
-            startDestination = if (goalUiState.firstTime) WelcomeScreen.Page1.name else GameScreen.Home.name,
+            startDestination = if (userPreferencesUiState.firstTime) WelcomeScreen.Page1.name else GameScreen.Home.name,
             modifier = Modifier.padding(innerPadding)
         ) {
             // Welcome page1
@@ -126,8 +129,8 @@ fun Game(
                     },
                     onNextButtonClicked = {
                         goalViewModel.setSteps(it)
-                        goalViewModel.setFirstTime(false)  // still need to fix the set false function here
-                        goalViewModel.setFirstDateTime(DateTimeUtil.getCurrentDateTime())
+                        userPreferencesViewModel.setFirstTime(false)  // still need to fix the set false function here
+                        userPreferencesViewModel.setFirstDateTime(DateTimeUtil.getCurrentDateTime())
                         navController.navigate(GameScreen.Home.name)
                     }
                 )

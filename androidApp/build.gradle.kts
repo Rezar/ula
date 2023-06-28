@@ -69,9 +69,9 @@ dependencies {
 //    implementation ("androidx.lifecycle:lifecycle-runtime-compose:2.6.0-rc01")
 
 
-//    implementation("androidx.datastore:datastore-preferences:1.0.0-alpha04")
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 //    implementation("org.jetbrains.kotlin:kotlinx-coroutines-core:1.3.9")
 //    implementation("org.jetbrains.kotlin:kotlinx-coroutines-android:1.3.9")
-//    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0")
-//    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.2.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.2.0")
 }
