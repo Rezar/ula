@@ -77,8 +77,8 @@ fun DebugScreen() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Dropdown(
-                initialDropdownOption = ageOptions[ageOptionSelectedIndex],
-                initialExpand = ageOptionExpanded,
+                selectedIndex = ageOptionSelectedIndex,
+                expand = ageOptionExpanded,
                 dropdownTitle = "Age",
                 dropdownOptions = ageOptions,
                 onDropdownClicked = {
@@ -92,8 +92,8 @@ fun DebugScreen() {
             Spacer(modifier = Modifier.height(8.dp))
 
             Dropdown(
-                initialDropdownOption = bodyStatusOptions[ageOptionSelectedIndex],
-                initialExpand = bodyStatusOptionExpanded,
+                selectedIndex = ageOptionSelectedIndex,
+                expand = bodyStatusOptionExpanded,
                 dropdownTitle = "Body Status",
                 dropdownOptions = bodyStatusOptions,
                 onDropdownClicked = {
@@ -110,8 +110,8 @@ fun DebugScreen() {
 
 @Composable
 fun Dropdown(
-    initialDropdownOption: String,
-    initialExpand: Boolean,
+    selectedIndex: Int,
+    expand: Boolean,
     dropdownTitle: String,
     dropdownOptions: List<String>,
     onDropdownClicked: (Boolean) -> Unit,
@@ -139,7 +139,7 @@ fun Dropdown(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             ClickableText(
-                text = AnnotatedString(initialDropdownOption),
+                text = AnnotatedString(dropdownOptions[selectedIndex]),
                 style = TextStyle(
                     textAlign = TextAlign.Center,
                     color = Color.White
@@ -153,7 +153,7 @@ fun Dropdown(
                     .background(Color.DarkGray)
             )
             DropdownMenu(
-                expanded = initialExpand,
+                expanded = expand,
                 onDismissRequest = { onDropdownClicked(false) },
                 modifier = Modifier
                     .fillMaxWidth(0.56f)
