@@ -46,6 +46,7 @@ dependencies {
     implementation(Deps.composeNavigation)
     implementation(Deps.composeLifecycle)
     implementation(Deps.coilCompose)
+    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.0")
     implementation(Deps.kotlinDateTime)
 
     implementation(Deps.hiltAndroid)
