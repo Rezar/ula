@@ -1,5 +1,6 @@
 package com.example.ula_app.android.ui.lockgame.tictactoe
 
+import android.app.Activity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
@@ -23,7 +24,10 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -32,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -39,6 +44,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.ula_app.android.component.IconButton
 import com.example.ula_app.android.ui.lockgame.tictactoe.components.BaseBoard
 import com.example.ula_app.android.ui.lockgame.tictactoe.components.Circle
 import com.example.ula_app.android.ui.lockgame.tictactoe.components.Cross
@@ -59,6 +65,7 @@ fun TicTacToe(
 
     // UiState
     val ticTacToeUiState by ticTacToeViewModel.uiState.collectAsState()
+    val activity = (LocalContext.current as? Activity)
 
     Column(
         modifier = Modifier
@@ -68,6 +75,15 @@ fun TicTacToe(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
+
+        Button(
+            onClick = {
+                activity?.finish()
+            }
+        ) {
+            Text(text = "Back")
+        }
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,

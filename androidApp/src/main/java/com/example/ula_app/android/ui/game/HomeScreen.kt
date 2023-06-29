@@ -1,5 +1,6 @@
 package com.example.ula_app.android.ui.game
 
+import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -9,11 +10,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,6 +28,7 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
+import com.example.ula_app.android.TicTacToeActivity
 import com.example.ula_app.android.data.DataSource
 import com.example.ula_app.android.ui.viewmodel.GoalViewModel
 import com.example.ula_app.android.ui.viewmodel.HomeViewModel
@@ -68,7 +72,6 @@ fun HomeScreen(
     *
     * */
     LaunchedEffect(key1 = Unit, block = {
-//        val currentMonsterMovie = DataSource.monsterMovies.get(homeUiState.id)
 
         // The currentStep should be write as a function call that use the sensor to get current step
         // Should rewrite here after we build the sensor---------------------------------------------------------------------
@@ -107,7 +110,7 @@ fun HomeScreen(
                 * TODO: Link the currentStep to the sensor and make it as a state.
                 * */
                 homeViewModel.clickToUpdateMovies()
-                homeViewModel.printGoal(goalUiState.steps)
+//                homeViewModel.printGoal(goalUiState.steps)
             }
         ) {
             DisposableEffect(key1 = Unit) { onDispose { exoPlayer.release() } }
@@ -130,11 +133,69 @@ fun HomeScreen(
             text = homeUiState.id
         )
 
-/*        Text(text = "This is $TAG", fontSize = 18.sp)
+        if(homeUiState.openDialog) {
+            AlertDialog(
+                    onDismissRequest  = {homeViewModel.setOpenDialog(false)},
+                    title = {
+                        Text(text = "Want to play a little game? ")
+                    },
+                    confirmButton = {
+                        Button(
+                            onClick = {
+                                homeViewModel.setOpenDialog(false)
+                                context.startActivity(Intent(context, TicTacToeActivity::class.java))
+                            }
+                        ) {
+                            Text("Tic Tac Toe")
+                        }
+                    },
+                    dismissButton = {
+                        Button(
+                            onClick = {
+                                homeViewModel.setOpenDialog(false)
 
-        Button(
+                            }
+                        ) {
+                            Text("Nah, I am good...")
+                        }
+                    }
+            )
+        }
+
+
+/*        AlertDialog(
+            onDismissRequest  = {homeViewModel.setOpenDialog(false)},
+            title = {
+                Text(text = "Want to play a little game? ")
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        homeViewModel.setOpenDialog(false)
+                        context.startActivity(Intent(context, TicTacToeActivity::class.java))
+                    }
+                ) {
+                    Text("Tic Tac Toe")
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = {
+                        homeViewModel.setOpenDialog(false)
+                    }
+                ) {
+                        Text("Nah, I am good...")
+                }
+            }
+        )*/
+    }
+
+
+            /*Button(
             onClick = {
                 // This is to update the video file that is going to play next
+                // --------------------------------Should rewrite here after we build the sensor---------------------------------------------------------------------
+                homeViewModel.setAge(goalUiState.firstDateTime, 5000, goalUiState.steps)
                 homeViewModel.clickToUpdateMovies()
                 homeViewModel.printGoal(goalUiState.steps)
             },
@@ -147,6 +208,8 @@ fun HomeScreen(
             )
         }*/
 
-    }
+
+
+
 }
 
