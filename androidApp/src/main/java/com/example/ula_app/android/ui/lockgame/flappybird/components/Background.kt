@@ -1,13 +1,8 @@
 package com.example.ula_app.android.ui.lockgame.flappybird.components
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -15,7 +10,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.example.ula_app.android.R
-import com.example.ula_app.android.ui.lockgame.flappybird.Default
 
 @Composable
 fun Background() {
@@ -26,7 +20,7 @@ fun Background() {
         val (scene, road, earth) = createRefs()
 
         Image(
-            painter = painterResource(id = R.drawable.background),
+            painter = painterResource(id = R.drawable.background_scene),
             contentDescription = null,
             contentScale = ContentScale.FillBounds,
             modifier = Modifier.constrainAs(scene) {
@@ -38,8 +32,9 @@ fun Background() {
                 height = Dimension.fillToConstraints
             }
         )
+
         Image(
-            painter = painterResource(id = R.drawable.foreground_road),
+            painter = painterResource(id = R.drawable.background_road),
             contentDescription = null,
             contentScale = ContentScale.FillBounds,
             modifier = Modifier.constrainAs(road) {
@@ -51,7 +46,7 @@ fun Background() {
             }
         )
         Image(
-            painter = painterResource(id = R.drawable.foreground_earth),
+            painter = painterResource(id = R.drawable.background_earth),
             contentDescription = null,
             contentScale = ContentScale.FillBounds,
             modifier = Modifier.constrainAs(earth) {
@@ -65,8 +60,8 @@ fun Background() {
     }
 }
 
-//@Preview
-//@Composable
-//fun prev() {
-//    Background()
-//}
+@Preview
+@Composable
+fun prevBackground() {
+    Background()
+}

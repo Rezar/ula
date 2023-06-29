@@ -1,18 +1,21 @@
 package com.example.ula_app.android.ui.lockgame.flappybird.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.ula_app.android.R
+import com.example.ula_app.android.ui.lockgame.flappybird.Default
 
 @Composable
 fun Pipe(
-    offset: Dp = 50.dp
+    pipeHeight: Dp = Default.pipe.height
 ) {
     ConstraintLayout {
         val (pipeCover, pipePillar1, pipePillar2) = createRefs()
@@ -30,19 +33,10 @@ fun Pipe(
         Image(
             painter = painterResource(id = R.drawable.pipe_pillar),
             contentDescription = null,
-            modifier = Modifier.constrainAs(pipePillar1) {
+            contentScale = ContentScale.FillBounds,
+            modifier = Modifier.height(pipeHeight).constrainAs(pipePillar1) {
                 top.linkTo(pipeCover.bottom)
-                bottom.linkTo(pipePillar2.top)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-            }
-        )
-        Image(
-            painter = painterResource(id = R.drawable.pipe_pillar),
-            contentDescription = null,
-            modifier = Modifier.constrainAs(pipePillar2) {
-                top.linkTo(pipePillar1.bottom)
-                bottom.linkTo(parent.bottom, goneMargin = offset)
+                bottom.linkTo(parent.bottom)
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
             }
@@ -52,6 +46,6 @@ fun Pipe(
 
 @Preview
 @Composable
-fun prev() {
+fun prevPipe() {
     Pipe()
 }
