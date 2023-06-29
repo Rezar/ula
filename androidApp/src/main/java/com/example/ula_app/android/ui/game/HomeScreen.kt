@@ -68,7 +68,7 @@ fun HomeScreen(
     *
     * */
     LaunchedEffect(key1 = Unit, block = {
-        val currentMonsterMovie = DataSource.monsterMovies.get(homeUiState.id)
+//        val currentMonsterMovie = DataSource.monsterMovies.get(homeUiState.id)
 
         // The currentStep should be write as a function call that use the sensor to get current step
         // Should rewrite here after we build the sensor---------------------------------------------------------------------

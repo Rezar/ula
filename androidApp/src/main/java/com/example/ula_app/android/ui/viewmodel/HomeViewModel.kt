@@ -278,6 +278,41 @@ class HomeViewModel() : ViewModel() {
         return curStatus == targetStatus
     }
 
+    // For Debug tab UI only
+    fun setAgeAndBodyStatus(
+        age: String,
+        bodyStatus: String,
+    ) {
+        when{
+            age == "Egg" && bodyStatus == "NA" -> {
+                setId(eggHead)
+            }
+            age == "Child" && bodyStatus == "Normal" -> {
+                setId(childNormalHead)
+            }
+            age == "Child" && bodyStatus == "Fat" -> {
+                setId(childFatHead)
+            }
+            age == "Child" && bodyStatus == "Overweight" -> {
+                setId(childOverweightHead)
+            }
+            age == "Adult" && bodyStatus == "Normal" -> {
+                setId(adultNormalHead)
+            }
+            age == "Adult" && bodyStatus == "Fat" -> {
+                setId(adultFatHead)
+            }
+            age == "Adult" && bodyStatus == "Fit" -> {
+                setId(adultFitHead)
+            }
+            age == "Adult" && bodyStatus == "Overweight" -> {
+                setId(adultOverweightHead)
+            }
+            else -> {}
+
+        }
+    }
+
 
 /*    var id: String = "0_0"
     var tapCounter: Int = 0

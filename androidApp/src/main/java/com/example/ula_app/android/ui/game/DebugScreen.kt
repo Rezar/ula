@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Text
@@ -26,7 +28,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ula_app.android.data.DataSource
+import com.example.ula_app.android.ui.viewmodel.DebugViewModel
+import com.example.ula_app.android.ui.viewmodel.HomeViewModel
 
 private const val TAG = "DebugScreen"
 
@@ -34,7 +39,33 @@ private const val leftWeight = 0.3f
 private const val rightWeight = 1 - leftWeight
 
 @Composable
-fun DebugScreen() {
+fun DebugScreen(
+        homeViewModel: HomeViewModel = viewModel(),
+        debugViewModel: DebugViewModel = viewModel()
+) {
+    val ageOptions = listOf(
+        "",
+        DataSource.MonsterAgeOptions.Egg.name,
+        DataSource.MonsterAgeOptions.Child.name,
+        DataSource.MonsterAgeOptions.Adult.name
+    )
+
+    val bodyStatusOptions = listOf(
+        "",
+        DataSource.MonsterBodyStatusOptions.NA.name,
+        DataSource.MonsterBodyStatusOptions.Normal.name,
+        DataSource.MonsterBodyStatusOptions.Overweight.name,
+        DataSource.MonsterBodyStatusOptions.Fat.name,
+        DataSource.MonsterBodyStatusOptions.Fit.name,
+    )
+
+
+    val movieIdsOptions = mutableListOf<String>()
+    movieIdsOptions.add("")
+    movieIdsOptions += DataSource.eggRule + DataSource.childNormalRule + DataSource.childFatRule +
+            DataSource.childOverweightRule + DataSource.adultNormalRule + DataSource.adultFatRule +
+            DataSource.adultFitRule + DataSource.adultOverweightRule
+
     var ageOptionExpanded by remember {
         mutableStateOf(false)
     }
@@ -43,38 +74,40 @@ fun DebugScreen() {
         mutableStateOf(false)
     }
 
+    var movieIdOptionExpanded by remember {
+        mutableStateOf(false)
+    }
+
     var ageOptionSelectedIndex by remember {
-        mutableStateOf(0)
+        mutableStateOf(ageOptions[0])
     }
     var bodyStatusOptionSelectedIndex by remember {
-        mutableStateOf(0)
+        mutableStateOf(bodyStatusOptions[0])
+    }
+    var movieIdOptionSelectedIndex by remember {
+        mutableStateOf(movieIdsOptions[0])
     }
 
-    val ageOptions = listOf(
-        DataSource.MonsterAgeOptions.Egg.name,
-        DataSource.MonsterAgeOptions.Child.name,
-        DataSource.MonsterAgeOptions.Adult.name
-    )
-
-    val bodyStatusOptions = listOf(
-        DataSource.MonsterBodyStatusOptions.NA.name,
-        DataSource.MonsterBodyStatusOptions.Normal.name,
-        DataSource.MonsterBodyStatusOptions.Overweight.name,
-        DataSource.MonsterBodyStatusOptions.Fat.name,
-        DataSource.MonsterBodyStatusOptions.Fit.name,
-    )
-
     Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier
+            .fillMaxSize(),
+//        horizontalArrangement = Arrangement.Center,
     ) {
-        Text(text = "This is $TAG", fontSize = 18.sp)
 
+        // Specify the title
+        Text(
+            text = "Debug and Stay ALIVE!",
+            fontSize = 30.sp
+        )
+
+        Spacer(modifier = Modifier.height(35.dp))
+
+        // Create dropdown boxes
         Column(
-            modifier = Modifier
-                .fillMaxWidth(0.8f),
-            horizontalAlignment = Alignment.CenterHorizontally
+                modifier = Modifier
+                    .fillMaxWidth(0.8f),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Dropdown(
                 selectedIndex = ageOptionSelectedIndex,
@@ -92,7 +125,7 @@ fun DebugScreen() {
             Spacer(modifier = Modifier.height(8.dp))
 
             Dropdown(
-                selectedIndex = ageOptionSelectedIndex,
+                selectedIndex = bodyStatusOptionSelectedIndex,
                 expand = bodyStatusOptionExpanded,
                 dropdownTitle = "Body Status",
                 dropdownOptions = bodyStatusOptions,
@@ -104,28 +137,59 @@ fun DebugScreen() {
                 }
             )
 
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Dropdown(
+                selectedIndex = movieIdOptionSelectedIndex,
+                expand = movieIdOptionExpanded,
+                dropdownTitle = "movie Id",
+                dropdownOptions = movieIdsOptions,
+                onDropdownClicked = {
+                    movieIdOptionExpanded = it
+                },
+                onDropdownItemClicked = {
+                    movieIdOptionSelectedIndex = it
+                }
+            )
+
+            Button(
+                onClick = {
+                    if(debugViewModel.isOnlyChangeId(ageOptionSelectedIndex, bodyStatusOptionSelectedIndex, movieIdOptionSelectedIndex)){
+                        // change the movie with id only
+                        homeViewModel.setId(movieIdOptionSelectedIndex)
+                    } else {
+                        // change the age and body status
+                        homeViewModel.setAgeAndBodyStatus(ageOptionSelectedIndex, bodyStatusOptionSelectedIndex)
+                    }
+                },
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Black),
+                enabled = debugViewModel.isEnabledButton(ageOptionSelectedIndex, bodyStatusOptionSelectedIndex, movieIdOptionSelectedIndex)
+
+            ) {
+                Text(text = "Change the movie! ")
+            }
         }
     }
 }
 
 @Composable
 fun Dropdown(
-    selectedIndex: Int,
+    selectedIndex: String,
     expand: Boolean,
     dropdownTitle: String,
     dropdownOptions: List<String>,
     onDropdownClicked: (Boolean) -> Unit,
-    onDropdownItemClicked: (Int) -> Unit,
+    onDropdownItemClicked: (String) -> Unit,
 ) {
     Row(
         modifier = Modifier
-            .fillMaxWidth()
-            .height(24.dp)
+                .fillMaxWidth()
+                .height(24.dp)
     ) {
         Column(
             modifier = Modifier
-                .weight(leftWeight)
-                .fillMaxHeight(),
+                    .weight(leftWeight)
+                    .fillMaxHeight(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.Start
         ) {
@@ -133,13 +197,14 @@ fun Dropdown(
         }
         Column(
             modifier = Modifier
-                .weight(rightWeight)
-                .fillMaxHeight(),
+                    .weight(rightWeight)
+                    .fillMaxHeight(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             ClickableText(
-                text = AnnotatedString(dropdownOptions[selectedIndex]),
+                //text = AnnotatedString(dropdownOptions[selectedIndex]), // get the options text using the index
+                text = AnnotatedString(selectedIndex),
                 style = TextStyle(
                     textAlign = TextAlign.Center,
                     color = Color.White
@@ -148,22 +213,22 @@ fun Dropdown(
                     onDropdownClicked(true)
                 },
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-                    .background(Color.DarkGray)
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                        .background(Color.DarkGray)
             )
             DropdownMenu(
                 expanded = expand,
                 onDismissRequest = { onDropdownClicked(false) },
                 modifier = Modifier
-                    .fillMaxWidth(0.56f)
-                    .background(Color.White)
+                        .fillMaxWidth(0.56f)
+                        .background(Color.White)
             ) {
 
                 dropdownOptions.forEachIndexed { index, s ->
                     DropdownMenuItem(
                         onClick = {
-                            onDropdownItemClicked(index)
+                            onDropdownItemClicked(s)
                             onDropdownClicked(false)
                         },
                         modifier = Modifier
