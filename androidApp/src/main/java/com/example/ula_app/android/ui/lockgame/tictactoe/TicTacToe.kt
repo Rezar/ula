@@ -57,6 +57,7 @@ fun TicTacToe(
     ticTacToeViewModel: TicTacToeViewModel = viewModel()
 ) {
 
+    // UiState
     val ticTacToeUiState by ticTacToeViewModel.uiState.collectAsState()
 
     Column(
@@ -72,10 +73,14 @@ fun TicTacToe(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
+            // How many times O has won.
             Text(text = "Player 'O' : ${ticTacToeUiState.circleWinCount}", fontSize = 16.sp)
+            // How many times of draw.
             Text(text = "Draw : ${ticTacToeUiState.drawCount}", fontSize = 16.sp)
+            // How many times X has won.
             Text(text = "Player 'X' : ${ticTacToeUiState.crossWinCount}", fontSize = 16.sp)
         }
+        // Title of the game.
         Text(
             text = "Tic Tac Toe",
             fontSize = 50.sp,
@@ -83,6 +88,26 @@ fun TicTacToe(
             fontFamily = FontFamily.Cursive,
             color = Color.Blue
         )
+        /*
+        * TicTacToe Board.
+        *
+        * The board has 4 levels of UIs.
+        * Level 1: A blank rounded square:
+        *       -> the background the the TicTacToe board.
+        * Level 2: Cross lines:
+        *       -> the cross lines divide the blank square into 9 even square areas.
+        *       e.g.
+        *       ----------          -------------
+        *       |        |          | 1 | 2 | 3 |
+        *       -        -          -------------
+        *       |        |    ->    | 4 | 5 | 6 |
+        *       -        -          -------------
+        *       |        |          | 7 | 8 | 9 |
+        *       ----------          -------------
+        * Level 3: Labels: Circle, Cross, None
+        * Level 4: Win lines. e.g. Win by 1,2,3; Win by 1,5,9
+        * */
+        // Level 1
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -95,7 +120,9 @@ fun TicTacToe(
                 .background(Default.board.backgroundColor),
             contentAlignment = Alignment.Center
         ) {
+            // Level 2
             BaseBoard()
+            // Level 3
             LazyVerticalGrid(
                 modifier = Modifier
                     .width(Default.board.size)
@@ -118,6 +145,7 @@ fun TicTacToe(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center
                         ) {
+                            // Level 3
                             AnimatedVisibility(
                                 visible = ticTacToeViewModel.boardState[cellNo] != CellValue.None,
                                 enter = scaleIn(tween(1000))
@@ -132,6 +160,7 @@ fun TicTacToe(
                     }
                 }
             }
+            // Level 4
             Column(
                 modifier = Modifier
                     .width(Default.board.size)
@@ -144,20 +173,23 @@ fun TicTacToe(
                     visible = ticTacToeViewModel.checkWin(),
                     enter = fadeIn(tween(2000))
                 ) {
-                    DrawVictoryLine(state = ticTacToeUiState)
+                    WinLines(state = ticTacToeUiState)
                 }
             }
         }
+        // Show hint text and play again(reset the board).
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
+            // Hint Text.
             Text(
                 text = ticTacToeUiState.hintText,
                 fontSize = 24.sp,
                 fontStyle = FontStyle.Italic
             )
+            // Play again button.
             Button(
                 onClick = {
                     ticTacToeViewModel.resetBoard()
@@ -178,9 +210,11 @@ fun TicTacToe(
         }
     }
 }
-
+/*
+* Draw a win line based on only one win scenario.
+* */
 @Composable
-fun DrawVictoryLine(
+fun WinLines(
     state: TicTacToeState
 ) {
     when (state.gameResult) {
@@ -196,8 +230,8 @@ fun DrawVictoryLine(
     }
 }
 
-@Preview
-@Composable
-fun P() {
-    TicTacToe()
-}
+//@Preview
+//@Composable
+//fun Prev() {
+//    TicTacToe()
+//}
