@@ -33,9 +33,9 @@ val Default: Config = Config(
         initialSpeedX = 0f
     ),
     background = Background(
-        sceneWeight = 8f,
-        roadWeight = 1f,
-        earthWeight = 2f
+        sceneWeight = 0.85f,
+        roadWeight = 0.23f,
+        earthWeight = 0.77f
     ),
     pipe = Pipe(
         height = 50.dp,

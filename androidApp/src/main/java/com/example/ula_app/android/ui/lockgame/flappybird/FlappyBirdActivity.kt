@@ -14,7 +14,7 @@ class FlappyBirdActivity : ComponentActivity() {
         Log.i("${TAG}", "FlappyBird Activity is created.")
 
         setContent {
-
+            FlappyBird()
         }
     }
 }
