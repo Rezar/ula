@@ -30,6 +30,7 @@ import com.example.ula_app.android.ui.game.DebugScreen
 import com.example.ula_app.android.ui.game.HelpScreen
 import com.example.ula_app.android.ui.game.HomeScreen
 import com.example.ula_app.android.ui.game.SettingScreen
+import com.example.ula_app.android.ui.game.StatsDetailScreen
 import com.example.ula_app.android.ui.game.StatsScreen
 import com.example.ula_app.android.ui.viewmodel.DebugViewModel
 import com.example.ula_app.android.ui.viewmodel.GoalViewModel
@@ -44,7 +45,7 @@ import com.example.ula_app.android.util.DateTimeUtil
 enum class GameScreen() {
     Home,
     Stats,
-    Help,
+     Help,
     Setting,
     Debug
 }
@@ -146,7 +147,15 @@ fun Game(
             }
             // Stats
             composable(route = GameScreen.Stats.name) {
-                StatsScreen()
+                StatsScreen(
+                    detailClicked = {
+                        navController.navigate(GameScreen.StatsDetail.name)
+                    }
+                )
+            }
+            // Stats Detail
+            composable(route = GameScreen.StatsDetail.name) {
+                StatsDetailScreen()
             }
             // Help
             composable(route = GameScreen.Help.name) {
