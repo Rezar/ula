@@ -45,7 +45,7 @@ import com.example.ula_app.android.util.DateTimeUtil
 enum class GameScreen() {
     Home,
     Stats,
-     Help,
+    Help,
     Setting,
     Debug
 }
@@ -147,15 +147,7 @@ fun Game(
             }
             // Stats
             composable(route = GameScreen.Stats.name) {
-                StatsScreen(
-                    detailClicked = {
-                        navController.navigate(GameScreen.StatsDetail.name)
-                    }
-                )
-            }
-            // Stats Detail
-            composable(route = GameScreen.StatsDetail.name) {
-                StatsDetailScreen()
+                StatsScreen()
             }
             // Help
             composable(route = GameScreen.Help.name) {

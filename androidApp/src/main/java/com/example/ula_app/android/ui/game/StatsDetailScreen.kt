@@ -1,5 +1,7 @@
 package com.example.ula_app.android.ui.game
 
+import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -13,70 +15,97 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.Button
+import androidx.compose.material.Divider
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.ula_app.android.R
 
 data class Data(
     val weekday: String,
-    val currentSteps: Int,
-    val selectedIndex: Int
+    val currentSteps: Int
 )
 
 @Composable
-fun StatsDetailScreen() {
+fun StatsDetailScreen(
+    onBackClicked: () -> Unit = {}
+) {
+
     val list = listOf(
         Data(
             weekday = "Monday",
-            currentSteps = 1,
-            selectedIndex = 0
+            currentSteps = 1
         ),
         Data(
             weekday = "Tuesday",
-            currentSteps = 2,
-            selectedIndex = 1
+            currentSteps = 2
         ),
         Data(
             weekday = "Wednesday",
-            currentSteps = 3,
-            selectedIndex = 2
+            currentSteps = 3
         ),
         Data(
             weekday = "Thursday",
-            currentSteps = 4,
-            selectedIndex = 3
+            currentSteps = 4
         ),
         Data(
             weekday = "Friday",
-            currentSteps = 5,
-            selectedIndex = 4
+            currentSteps = 5
         ),
         Data(
             weekday = "Saturday",
-            currentSteps = 6,
-            selectedIndex = 5
+            currentSteps = 6
         ),
         Data(
             weekday = "Sunday",
-            currentSteps = 7,
-            selectedIndex = 6
+            currentSteps = 7
         ),
     )
 
-    LazyColumn(
+    Column(
         modifier = Modifier.fillMaxSize()
     ) {
-        items(list) { item ->
-            StatsDetailItem(
-                weekday = item.weekday,
-                currentSteps = item.currentSteps,
-                selectedIndex = item.selectedIndex
+        BackHandler(true) {
+            onBackClicked()
+        }
+        IconButton(
+            onClick = {
+                onBackClicked()
+            }
+        ) {
+            Icon(
+                imageVector = Icons.Filled.ArrowBack,
+                contentDescription = null
             )
+        }
+        Text(
+            text = "Stats Detail",
+            fontSize = 40.sp
+        )
+        LazyColumn(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            itemsIndexed(list) { index, item ->
+                StatsDetailItem(
+                    weekday = item.weekday,
+                    currentSteps = item.currentSteps,
+                    selectedIndex = index
+                )
+                if (index < list.size) {
+                    Divider(color = Color.Black, thickness = 0.5.dp)
+                }
+            }
         }
     }
 }
