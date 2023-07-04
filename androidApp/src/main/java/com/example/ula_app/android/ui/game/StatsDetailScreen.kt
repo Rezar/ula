@@ -74,7 +74,9 @@ fun StatsDetailScreen(
     )
 
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color.White)
     ) {
         BackHandler(true) {
             onBackClicked()
@@ -103,7 +105,10 @@ fun StatsDetailScreen(
                     selectedIndex = index
                 )
                 if (index < list.size) {
-                    Divider(color = Color.Black, thickness = 0.5.dp)
+                    Divider(
+                        color = Color.Black,
+                        thickness = 0.5.dp
+                    )
                 }
             }
         }
@@ -122,7 +127,6 @@ fun StatsDetailItem(
         modifier = Modifier
             .fillMaxWidth()
             .height(120.dp)
-            .background(color = Color.White)
             .padding(10.dp),
         verticalArrangement = Arrangement.Center,
     ) {
