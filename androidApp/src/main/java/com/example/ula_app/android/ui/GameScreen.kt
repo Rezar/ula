@@ -31,6 +31,7 @@ import com.example.ula_app.android.ui.game.HelpScreen
 import com.example.ula_app.android.ui.game.HomeScreen
 import com.example.ula_app.android.ui.game.SettingScreen
 import com.example.ula_app.android.ui.game.StatsScreen
+import com.example.ula_app.android.ui.game.StatsStepDetailScreen
 import com.example.ula_app.android.ui.viewmodel.DebugViewModel
 import com.example.ula_app.android.ui.viewmodel.GoalViewModel
 import com.example.ula_app.android.ui.viewmodel.HomeViewModel
@@ -44,9 +45,11 @@ import com.example.ula_app.android.util.DateTimeUtil
 enum class GameScreen() {
     Home,
     Stats,
+    StatsStepDetail,
     Help,
     Setting,
     Debug
+
 }
 
 // Screens in Welcome section.
@@ -159,6 +162,11 @@ fun Game(
             // Debug
             composable(route = GameScreen.Debug.name) {
                 DebugScreen(homeViewModel, debugViewModel)
+            }
+
+            // Stats - Step detail page
+            composable(route = GameScreen.StatsStepDetail.name) {
+                StatsStepDetailScreen()
             }
         }
     }

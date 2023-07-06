@@ -9,7 +9,7 @@ import com.example.ula_app.android.data.UserPreferences
 import kotlinx.coroutines.flow.first
 import kotlinx.datetime.Instant
 
-class UserPreferencesRepository(private val dataStore: DataStore<Preferences>) {
+class UserPreferencesRepository(private val dataStore: DataStore<UserPreferences>) {
 
     // set preference keys in Datastore
     private object PreferencesKeys {

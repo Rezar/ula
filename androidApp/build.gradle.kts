@@ -3,7 +3,8 @@ plugins {
     kotlin("android")
     id("kotlin-kapt")
     id("dagger.hilt.android.plugin")
-    kotlin("plugin.serialization") version Deps.kotlinVersion
+//    kotlin("plugin.serialization") version Deps.kotlinVersion
+    id("org.jetbrains.kotlin.plugin.serialization")
 }
 
 android {
@@ -70,6 +71,9 @@ dependencies {
 
 
     implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation(Deps.protoDataStore)
+    implementation(Deps.protoCollections) // this is to store a collections of data to the proto datastore
+    implementation(Deps.protoSerialization)
 //    implementation("org.jetbrains.kotlin:kotlinx-coroutines-core:1.3.9")
 //    implementation("org.jetbrains.kotlin:kotlinx-coroutines-android:1.3.9")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0")
