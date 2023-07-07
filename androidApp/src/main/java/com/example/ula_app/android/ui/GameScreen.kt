@@ -30,6 +30,7 @@ import com.example.ula_app.android.ui.game.DebugScreen
 import com.example.ula_app.android.ui.game.HelpScreen
 import com.example.ula_app.android.ui.game.HomeScreen
 import com.example.ula_app.android.ui.game.SettingScreen
+import com.example.ula_app.android.ui.game.StatsDetailScreen
 import com.example.ula_app.android.ui.game.StatsScreen
 import com.example.ula_app.android.ui.game.StatsStepDetailScreen
 import com.example.ula_app.android.ui.viewmodel.DebugViewModel
