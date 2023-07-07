@@ -126,15 +126,12 @@ class HomeViewModel() : ViewModel() {
 
 
         // Check whether the movie will be locked
-        /*
-         * TODO: need to add buttons to dialog box to little games or continue with fitness goal
-         * */
         if (currentMonsterMovie.hasLock) {
             sendMessage("Locked!!!")
 
             setOpenDialog(true)
 
-            return
+//            return
         }
 
         // record this tap
