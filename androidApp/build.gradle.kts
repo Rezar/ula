@@ -92,4 +92,5 @@ dependencies {
     implementation("com.patrykandpatrick.vico:compose-m3:1.7.1")
 
     implementation("androidx.compose.material3:material3:1.1.1")
+    implementation("com.mutualmobile:composesensors:1.1.0")
 }

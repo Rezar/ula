@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ula_app.android.ui.viewmodel.GoalViewModel
 import com.example.ula_app.android.ui.viewmodel.StepViewModel
+import com.mutualmobile.composesensors.rememberStepCounterSensorState
 
 private const val TAG = "StatsScreen"
 
@@ -45,6 +46,8 @@ fun StatsScreen(
     var currentScreen by remember {
         mutableStateOf("")
     }
+
+    val stepSensor = rememberStepCounterSensorState()
 
     when (currentScreen) {
         StatsScreenSegment.StatsDetail.name -> {
@@ -110,22 +113,24 @@ fun StatsScreen(
                                 .fillMaxWidth(),
 //                                .height(40.dp),
                             verticalAlignment = Alignment.Bottom,
+                            horizontalArrangement = Arrangement.Start
                         ) {
                             Text(
-                                text = "${goalUiState.steps}", //TODO: change and link it to the sensor to show the current steps
+//                                text = "${goalUiState.steps}", //TODO: change and link it to the sensor to show the current steps
+                                text = "${stepSensor.stepCount}", // read current step from sensor.
                                 fontSize = 30.sp
                             )
                             Column(
-//                                verticalArrangement = Arrangement.Bottom,
+                                verticalArrangement = Arrangement.Bottom,
 //                                modifier = Modifier.fillMaxHeight()
                             ){
+
                                 Text(
                                     text = "steps",
                                     color = Color.Gray,
                                     style = MaterialTheme.typography.h4
                                 )
                             }
-
                         }
 
                     }

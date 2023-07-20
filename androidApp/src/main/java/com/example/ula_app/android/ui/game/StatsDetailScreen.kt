@@ -116,7 +116,7 @@ fun StatsDetailItem(
         ) {
             Text(
                 text = "${weekday}",
-                modifier = Modifier.width(80.dp))
+                modifier = Modifier.width(120.dp))
             Spacer(modifier = Modifier.width(16.dp))
 
             // TODO: make it invisible if the user set it in the settings tab ----------------------------------------------------
