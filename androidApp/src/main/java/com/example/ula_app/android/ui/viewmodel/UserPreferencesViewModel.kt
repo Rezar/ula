@@ -32,7 +32,13 @@ class UserPreferencesViewModel(
             val datastoreObj = userPreferencesRepository.fetchInitialPreferences()
             _userPreferencesState.value = _userPreferencesState.value.copy(
                 firstTime = datastoreObj.firstTime,
-                firstDateTime = datastoreObj.firstDateTime
+                firstDateTime = datastoreObj.firstDateTime,
+                displaySteps = datastoreObj.displaySteps,
+                displayMonster = datastoreObj.displayMonster,
+                maxThreshold = datastoreObj.maxThreshold,
+                minThreshold = datastoreObj.minThreshold,
+                effectiveDays = datastoreObj.effectiveDays,
+                goal = datastoreObj.goal
             )
         }
     }
@@ -61,6 +67,90 @@ class UserPreferencesViewModel(
         _userPreferencesState.update { currentState ->
             currentState.copy(
                 firstDateTime = firstDateTime
+            )
+        }
+    }
+
+    /*
+    * set displaySteps and save it in the state flow
+    * */
+    fun setDisplaySteps(displaySteps: Boolean) = viewModelScope.launch {
+        withContext(Dispatchers.IO) {
+            userPreferencesRepository.updateDisplaySteps(displaySteps)
+        }
+        _userPreferencesState.update { currentState ->
+            currentState.copy(
+                displaySteps = displaySteps
+            )
+        }
+    }
+
+    /*
+    * set displayMonster and save it in the state flow
+    * */
+    fun setDisplayMonster(displayMonster: Boolean) = viewModelScope.launch {
+        withContext(Dispatchers.IO) {
+            userPreferencesRepository.updateDisplayMonster(displayMonster)
+        }
+        _userPreferencesState.update { currentState ->
+            currentState.copy(
+                displayMonster = displayMonster
+            )
+        }
+    }
+
+    /*
+    * set maxThreshold and save it in the state flow
+    * */
+    fun setMaxThreshold(maxThreshold: Double) = viewModelScope.launch {
+        withContext(Dispatchers.IO) {
+            userPreferencesRepository.updateMaxThreshold(maxThreshold)
+        }
+        _userPreferencesState.update { currentState ->
+            currentState.copy(
+                maxThreshold = maxThreshold
+            )
+        }
+    }
+
+    /*
+    * set minThreshold and save it in the state flow
+    * */
+    fun setMinThreshold(minThreshold: Double) = viewModelScope.launch {
+        withContext(Dispatchers.IO) {
+            userPreferencesRepository.updateMinThreshold(minThreshold)
+        }
+        _userPreferencesState.update { currentState ->
+            currentState.copy(
+                minThreshold = minThreshold
+            )
+        }
+    }
+
+    /*
+    * set firstDateTime and save it in the state flow
+    * */
+    fun setEffectiveDays(effectiveDays: Int) = viewModelScope.launch {
+        withContext(Dispatchers.IO) {
+            userPreferencesRepository.updateEffectiveDays(effectiveDays)
+        }
+        _userPreferencesState.update { currentState ->
+            currentState.copy(
+                effectiveDays = effectiveDays
+            )
+        }
+    }
+
+    /*
+    * set goal and save it in the state flow
+    * */
+    fun setGoal(goal: Int) = viewModelScope.launch {
+        withContext(Dispatchers.IO) {
+            userPreferencesRepository.updateGoal(goal)
+        }
+        _userPreferencesState.update { currentState ->
+            currentState.copy(
+                goal = goal
             )
         }
     }

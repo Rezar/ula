@@ -120,6 +120,7 @@ fun StatsDetailItem(
             Spacer(modifier = Modifier.width(16.dp))
 
             // TODO: make it invisible if the user set it in the settings tab ----------------------------------------------------
+
             Text(text = "${currentSteps} steps")
         }
 

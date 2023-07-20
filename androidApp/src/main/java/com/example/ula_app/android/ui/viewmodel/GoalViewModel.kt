@@ -28,20 +28,4 @@ class GoalViewModel : ViewModel() {
         }
     }
 
-    // Update the value of firstTime
-    fun setFirstTime(firstTime: Boolean) {
-        _uiState.update { currentState ->
-            currentState.copy(
-                firstTime = firstTime
-            )
-        }
-    }
-
-    fun setFirstDateTime(firstDateTime: Instant) {
-        _uiState.update {currentState ->
-            currentState.copy(
-                firstDateTime = firstDateTime
-            )
-        }
-    }
 }

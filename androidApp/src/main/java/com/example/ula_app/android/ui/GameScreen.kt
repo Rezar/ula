@@ -142,11 +142,10 @@ fun Game(
                             navController.navigate(WelcomeScreen.Page2.name)
                         },
                         onNextButtonClicked = {
-                            goalViewModel.setSteps(it)
+    //                        goalViewModel.setSteps(it)
+                            userPreferencesViewModel.setGoal(it)
                             userPreferencesViewModel.setFirstTime(false)
                             userPreferencesViewModel.setFirstDateTime(DateTimeUtil.getCurrentDateTime())
-//                        userPreferencesViewModel.
-//                        userPreferencesProtoViewModel.setFirstTime(false)
 
                             navController.navigate(GameScreen.Home.name)
                         }
@@ -176,7 +175,7 @@ fun Game(
             // Setting
             composable(route = GameScreen.Setting.name) {
                 AppTheme {
-                    SettingScreen()
+                    SettingScreen(userPreferencesViewModel)
                 }
             }
             // Debug
