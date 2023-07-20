@@ -38,6 +38,7 @@ class UserPreferencesViewModel(
                 maxThreshold = datastoreObj.maxThreshold,
                 minThreshold = datastoreObj.minThreshold,
                 effectiveDays = datastoreObj.effectiveDays,
+                effectiveDate = datastoreObj.effectiveDate,
                 goal = datastoreObj.goal
             )
         }
@@ -137,6 +138,20 @@ class UserPreferencesViewModel(
         _userPreferencesState.update { currentState ->
             currentState.copy(
                 effectiveDays = effectiveDays
+            )
+        }
+    }
+
+    /*
+    * set effectiveDate and save it in the state flow
+    * */
+    fun setEffectiveDate(effectiveDate: Instant) = viewModelScope.launch {
+        withContext(Dispatchers.IO) {
+            userPreferencesRepository.updateEffectiveDate(effectiveDate)
+        }
+        _userPreferencesState.update { currentState ->
+            currentState.copy(
+                effectiveDate = effectiveDate
             )
         }
     }

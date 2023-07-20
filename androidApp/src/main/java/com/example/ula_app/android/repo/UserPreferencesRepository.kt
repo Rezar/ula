@@ -10,7 +10,9 @@ import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.example.ula_app.android.data.UserPreferences
 import com.example.ula_app.android.ui.viewmodel.StepsWithDates
+import com.example.ula_app.android.util.DateTimeUtil
 import kotlinx.coroutines.flow.first
+import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 
 class UserPreferencesRepository(private val dataStore: DataStore<Preferences>) {
@@ -25,6 +27,7 @@ class UserPreferencesRepository(private val dataStore: DataStore<Preferences>) {
         val MAX_THRESHOLD = doublePreferencesKey("max_threshold")
         val MIN_THRESHOLD = doublePreferencesKey("min_threshold")
         val EFFECTIVE_DAYS = intPreferencesKey("effective_days")
+        val EFFECTIVE_DATE = longPreferencesKey("effective_date")
         val GOAL = intPreferencesKey("goal")
 
         val STEPS_WITH_DATE = stringPreferencesKey("steps_with_date")
@@ -107,6 +110,15 @@ class UserPreferencesRepository(private val dataStore: DataStore<Preferences>) {
     /*
     * set first time
     * */
+    suspend fun updateEffectiveDate(effectiveDate: Instant) {
+        dataStore.edit {preferences ->
+            preferences[PreferencesKeys.EFFECTIVE_DATE] = effectiveDate.epochSeconds
+        }
+    }
+
+    /*
+    * set first time
+    * */
     suspend fun updateGoal(goal: Int) {
         dataStore.edit {preferences ->
             preferences[PreferencesKeys.GOAL] = goal
@@ -131,11 +143,10 @@ class UserPreferencesRepository(private val dataStore: DataStore<Preferences>) {
         val maxThreshold = preferences[PreferencesKeys.MAX_THRESHOLD] ?: .2
         val minThreshold = preferences[PreferencesKeys.MIN_THRESHOLD] ?: .2
         val effectiveDays = preferences[PreferencesKeys.EFFECTIVE_DAYS] ?: 3
+        val effectiveDate = Instant.fromEpochSeconds(preferences[PreferencesKeys.EFFECTIVE_DATE] ?: DateTimeUtil.getCurrentDateTime().epochSeconds)
         val goal = preferences[PreferencesKeys.GOAL] ?: 5000
 
         val stepsWithDates = preferences[PreferencesKeys.STEPS_WITH_DATE] ?: ""
-
-        // deserialize
 
         return UserPreferences(firstTime,
             firstDateTime,
@@ -144,6 +155,7 @@ class UserPreferencesRepository(private val dataStore: DataStore<Preferences>) {
             maxThreshold,
             minThreshold,
             effectiveDays,
+            effectiveDate,
             goal,
             stepsWithDates)
     }

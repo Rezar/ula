@@ -33,19 +33,20 @@ import com.example.ula_app.android.data.DataSource
 import com.example.ula_app.android.ui.viewmodel.GoalViewModel
 import com.example.ula_app.android.ui.viewmodel.HomeViewModel
 import com.example.ula_app.android.ui.viewmodel.UserPreferencesViewModel
+import com.mutualmobile.composesensors.rememberStepCounterSensorState
 
 private const val TAG = "HomeScreen"
 
 @Composable
 fun HomeScreen(
     homeViewModel: HomeViewModel = viewModel(),
-//    goalViewModel: GoalViewModel = viewModel()
     userPreferencesViewModel: UserPreferencesViewModel = viewModel()
 ) {
 
     val homeUiState by homeViewModel.uiState.collectAsState()
-//    val goalUiState by goalViewModel.uiState.collectAsState()
     val userPreUiState by userPreferencesViewModel.userPreferencesState.collectAsState()
+
+    val stepSensor = rememberStepCounterSensorState()
 
     /*
     * This exoPlayer is to play and update the video every time the user opens the home tab
@@ -75,16 +76,14 @@ fun HomeScreen(
     *
     * TODO: After building the sensor and making it as a state, change the key to the "currentStep" instead of "unit"
     * */
-    LaunchedEffect(key1 = Unit, block = {
+    LaunchedEffect(key1 = stepSensor.stepCount, block = {
 
         // The currentStep should be write as a function call that use the sensor to get current step
         /*
         * make the currentStep as a state so that if the currentStep changes the home tab
         * will re-render and the bodyStatus will be checked through LaunchEffect.
-        *
-        * TODO: Link the currentStep to the sensor and make it as a state.
         * */
-        homeViewModel.setAge(userPreUiState.firstDateTime, 5000, userPreUiState.goal)
+        homeViewModel.setAge(userPreUiState.firstDateTime, stepSensor.stepCount.toInt(), userPreUiState.goal)
 
 //        if( currentMonsterMovie?.age == "Child") {
 //            homeViewModel.setChildBodyStatus(5000, goalUiState.steps)

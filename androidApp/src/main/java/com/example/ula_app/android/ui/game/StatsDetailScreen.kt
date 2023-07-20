@@ -56,6 +56,7 @@ fun StatsDetailScreen(
 
     Column(
         modifier = Modifier
+            .padding(20.dp)
             .fillMaxSize()
             .background(color = Color.White)
     ) {
@@ -118,7 +119,7 @@ fun StatsDetailItem(
         ) {
             Text(
                 text = "${weekday}",
-                modifier = Modifier.width(120.dp)
+                modifier = Modifier.width(140.dp)
             )
             Spacer(modifier = Modifier.width(16.dp))
 

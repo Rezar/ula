@@ -1,5 +1,6 @@
 package com.example.ula_app.android.ui.game
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -35,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ula_app.android.data.DataSource
 import com.example.ula_app.android.ui.viewmodel.UserPreferencesViewModel
+import com.example.ula_app.android.util.DateTimeUtil
 import kotlin.math.max
 
 private const val TAG = "SettingScreen"
@@ -63,6 +65,10 @@ fun SettingScreen(
 
     var effectiveDays by remember {
         mutableStateOf(TextFieldValue(userPreUiState.effectiveDays.toString()))
+    }
+
+    var effectiveDate by remember {
+        mutableStateOf(userPreUiState.effectiveDate)
     }
 
     var changeGoal by remember {
@@ -202,7 +208,8 @@ fun SettingScreen(
                 value = effectiveDays,
                 onValueChange = { newText ->
                     effectiveDays = newText
-                }
+                },
+                enabled = DateTimeUtil.getDayDifference(DateTimeUtil.getCurrentDateTime(), effectiveDate) > effectiveDays.text.toLong()
             )
 
         }
@@ -228,7 +235,8 @@ fun SettingScreen(
                 },
                 onDropdownItemClicked = {
                     changeGoal = it.toInt()
-                }
+                },
+                enable = DateTimeUtil.getDayDifference(DateTimeUtil.getCurrentDateTime(), effectiveDate) > effectiveDays.text.toLong()
             )
 
         }
@@ -246,7 +254,10 @@ fun SettingScreen(
                     userPreferencesViewModel.setMaxThreshold(maxThreshold.text.toDouble())
                     userPreferencesViewModel.setMinThreshold(minThreshold.text.toDouble())
                     userPreferencesViewModel.setEffectiveDays(effectiveDays.text.toInt())
+                    userPreferencesViewModel.setEffectiveDate(effectiveDate)
                     userPreferencesViewModel.setGoal(changeGoal)
+                    Log.i("SettingsScreen", "Effective?: ${DateTimeUtil.getDayDifference(DateTimeUtil.getCurrentDateTime(), effectiveDate) > effectiveDays.text.toLong()}")
+                    Log.i("SettingsScreen", "EffectiveDate: ${effectiveDate}")
                 },
                 colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Black),
             ){

@@ -180,6 +180,7 @@ fun Dropdown(
     dropdownOptions: List<String>,
     onDropdownClicked: (Boolean) -> Unit,
     onDropdownItemClicked: (String) -> Unit,
+    enable: Boolean = true
 ) {
     Row(
         modifier = Modifier
@@ -210,7 +211,10 @@ fun Dropdown(
                     color = Color.White
                 ),
                 onClick = {
-                    onDropdownClicked(true)
+
+                    if(enable) {
+                        onDropdownClicked(true)
+                    }
                 },
                 modifier = Modifier
                         .fillMaxWidth()
