@@ -73,7 +73,7 @@ fun StatsScreen(
                 Text(
                     text = "Summary",
                     modifier = Modifier,
-                    style = MaterialTheme.typography.h4
+                    style = MaterialTheme.typography.h1
                 )
 
                 Card(
@@ -94,11 +94,13 @@ fun StatsScreen(
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
-                                text = "Steps"
+                                text = "Steps",
+                                style = MaterialTheme.typography.h4
                             )
 
                             Text(
-                                text = "Fitness Detail >"
+                                text = "Fitness Detail >",
+                                style = MaterialTheme.typography.h4
                             )
                         }
 
@@ -119,7 +121,8 @@ fun StatsScreen(
                             ){
                                 Text(
                                     text = "steps",
-                                    color = Color.Gray
+                                    color = Color.Gray,
+                                    style = MaterialTheme.typography.h4
                                 )
                             }
 

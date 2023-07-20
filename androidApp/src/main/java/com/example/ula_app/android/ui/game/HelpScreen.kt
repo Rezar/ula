@@ -49,10 +49,7 @@ fun HelpScreen() {
     ) {
         Text(
             text = "FAQs",
-            style = TextStyle(
-                fontSize = 30.sp,
-                fontWeight = FontWeight.Bold
-            )
+            style = MaterialTheme.typography.h1
         )
         LazyColumn {
             itemsIndexed(DataSource.questionsAnswers) {index, questionAnswer ->

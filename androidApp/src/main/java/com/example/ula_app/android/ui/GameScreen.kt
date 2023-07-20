@@ -15,6 +15,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -31,6 +32,8 @@ import com.example.ula_app.android.ui.game.HelpScreen
 import com.example.ula_app.android.ui.game.HomeScreen
 import com.example.ula_app.android.ui.game.SettingScreen
 import com.example.ula_app.android.ui.game.StatsScreen
+import com.example.ula_app.android.ui.theme.AppTheme
+import com.example.ula_app.android.ui.theme.WelcomeTheme
 import com.example.ula_app.android.ui.viewmodel.DebugViewModel
 import com.example.ula_app.android.ui.viewmodel.GoalViewModel
 import com.example.ula_app.android.ui.viewmodel.HomeViewModel
@@ -110,39 +113,45 @@ fun Game(
         ) {
             // Welcome page1
             composable(route = WelcomeScreen.Page1.name) {
-                WelcomePage1(
-                    onNextButtonClicked = {
-                        navController.navigate(WelcomeScreen.Page2.name)
-                    }
-                )
+                WelcomeTheme {
+                    WelcomePage1(
+                        onNextButtonClicked = {
+                            navController.navigate(WelcomeScreen.Page2.name)
+                        }
+                    )
+                }
             }
             // Welcome page2
             composable(route = WelcomeScreen.Page2.name) {
-                WelcomePage2(
-                    onPreviousButtonClicked = {
-                        navController.navigate(WelcomeScreen.Page1.name)
-                    },
-                    onNextButtonClicked = {
-                        navController.navigate(WelcomeScreen.Page3.name)
-                    }
-                )
+                WelcomeTheme {
+                    WelcomePage2(
+                        onPreviousButtonClicked = {
+                            navController.navigate(WelcomeScreen.Page1.name)
+                        },
+                        onNextButtonClicked = {
+                            navController.navigate(WelcomeScreen.Page3.name)
+                        }
+                    )
+                }
             }
             // Welcome page3
             composable(route = WelcomeScreen.Page3.name) {
-                WelcomePage3(
-                    onPreviousButtonClicked = {
-                        navController.navigate(WelcomeScreen.Page2.name)
-                    },
-                    onNextButtonClicked = {
-                        goalViewModel.setSteps(it)
-                        userPreferencesViewModel.setFirstTime(false)
-                        userPreferencesViewModel.setFirstDateTime(DateTimeUtil.getCurrentDateTime())
+                WelcomeTheme {
+                    WelcomePage3(
+                        onPreviousButtonClicked = {
+                            navController.navigate(WelcomeScreen.Page2.name)
+                        },
+                        onNextButtonClicked = {
+                            goalViewModel.setSteps(it)
+                            userPreferencesViewModel.setFirstTime(false)
+                            userPreferencesViewModel.setFirstDateTime(DateTimeUtil.getCurrentDateTime())
 //                        userPreferencesViewModel.
 //                        userPreferencesProtoViewModel.setFirstTime(false)
 
-                        navController.navigate(GameScreen.Home.name)
-                    }
-                )
+                            navController.navigate(GameScreen.Home.name)
+                        }
+                    )
+                }
             }
             // Home
             composable(route = GameScreen.Home.name) {
@@ -153,15 +162,22 @@ fun Game(
             }
             // Stats
             composable(route = GameScreen.Stats.name) {
-                StatsScreen(stepViewModel, goalViewModel)
+                AppTheme {
+                    StatsScreen(stepViewModel, goalViewModel)
+                }
             }
             // Help
             composable(route = GameScreen.Help.name) {
-                HelpScreen()
+                AppTheme {
+                    HelpScreen()
+                }
+
             }
             // Setting
             composable(route = GameScreen.Setting.name) {
-                SettingScreen()
+                AppTheme {
+                    SettingScreen()
+                }
             }
             // Debug
             composable(route = GameScreen.Debug.name) {
@@ -199,7 +215,8 @@ fun BottomNavigationBar(
                     ) {
                         Icon(
                             painter = painterResource(id = item.icon),
-                            contentDescription = item.name
+                            contentDescription = item.name,
+                            modifier = Modifier.scale(item.scale)
                         )
                         if (selected) {
                             Text(

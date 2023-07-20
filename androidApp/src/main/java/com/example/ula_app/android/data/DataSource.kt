@@ -94,27 +94,32 @@ object DataSource {
         BottomNavigationBarItem(
             icon = R.drawable.ic_ula,
             name = "Home",
-            route = "home"
+            route = "home",
+            scale = 1f
         ),
         BottomNavigationBarItem(
             icon = R.drawable.ic_stats,
             name = "Stats",
-            route = "stats"
+            route = "stats",
+            scale = 1f
         ),
         BottomNavigationBarItem(
             icon = R.drawable.ic_help,
             name = "Help",
-            route = "help"
+            route = "help",
+            scale = 0.6f
         ),
         BottomNavigationBarItem(
             icon = R.drawable.ic_cog,
             name = "Setting",
-            route = "setting"
+            route = "setting",
+            scale = 1f
         ),
         BottomNavigationBarItem(
             icon = R.drawable.ic_bug,
             name = "Debug",
-            route = "debug"
+            route = "debug",
+            scale = 1.7f
         )
     )
 
