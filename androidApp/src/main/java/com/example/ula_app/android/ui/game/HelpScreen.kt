@@ -30,7 +30,6 @@ import com.example.ula_app.android.R
 import com.example.ula_app.android.data.DataSource
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.ui.node.modifierElementOf
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle

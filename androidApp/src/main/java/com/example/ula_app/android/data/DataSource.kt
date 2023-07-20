@@ -2,6 +2,7 @@ package com.example.ula_app.android.data
 
 import android.net.Uri
 import com.example.ula_app.android.R
+import com.example.ula_app.android.ui.viewmodel.StepViewModel
 import kotlinx.datetime.LocalTime
 
 
@@ -68,6 +69,14 @@ object DataSource {
     val adultThreshold: List<Double> = listOf(
         0.6,
         0.8,
+        1.2
+    )
+
+    val progressBarThreshold: List<Double> = listOf(
+        0.4,
+        0.6,
+        0.8,
+        1.0,
         1.2
     )
 

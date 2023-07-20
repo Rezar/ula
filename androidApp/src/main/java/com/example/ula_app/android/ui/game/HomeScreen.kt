@@ -68,13 +68,19 @@ fun HomeScreen(
     }
 
     /*
-    * It's a side-effect that will call the functions inside the block every time we access the home tab
+    * It's a side-effect that will call the functions inside the block every time we access the home tab.
     *
+    * TODO: After building the sensor and making it as a state, change the key to the "currentStep" instead of "unit"
     * */
     LaunchedEffect(key1 = Unit, block = {
 
         // The currentStep should be write as a function call that use the sensor to get current step
-        // Should rewrite here after we build the sensor---------------------------------------------------------------------
+        /*
+        * make the currentStep as a state so that if the currentStep changes the home tab
+        * will re-render and the bodyStatus will be checked through LaunchEffect.
+        *
+        * TODO: Link the currentStep to the sensor and make it as a state.
+        * */
         homeViewModel.setAge(goalUiState.firstDateTime, 5000, goalUiState.steps)
 
 //        if( currentMonsterMovie?.age == "Child") {
@@ -103,12 +109,6 @@ fun HomeScreen(
         Box(
             modifier = Modifier.clickable {
                 // This is to update the video file that is going to play next
-                /*
-                * make the currentStep as a state so that if the currentStep changes the home tab
-                * will re-render and the bodyStatus will be checked through LaunchEffect.
-                *
-                * TODO: Link the currentStep to the sensor and make it as a state.
-                * */
                 homeViewModel.clickToUpdateMovies()
 //                homeViewModel.printGoal(goalUiState.steps)
             }

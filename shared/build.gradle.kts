@@ -2,8 +2,8 @@ plugins {
     kotlin("multiplatform")
     kotlin("native.cocoapods")
     id("com.android.library")
-//    kotlin("plugin.serialization") version Deps.kotlinVersion
-    id("org.jetbrains.kotlin.plugin.serialization")
+    kotlin("plugin.serialization") version Deps.kotlinVersion
+//    id("org.jetbrains.kotlin.plugin.serialization")
     id("com.squareup.sqldelight")
 }
 

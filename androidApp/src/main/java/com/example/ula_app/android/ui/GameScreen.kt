@@ -30,12 +30,11 @@ import com.example.ula_app.android.ui.game.DebugScreen
 import com.example.ula_app.android.ui.game.HelpScreen
 import com.example.ula_app.android.ui.game.HomeScreen
 import com.example.ula_app.android.ui.game.SettingScreen
-import com.example.ula_app.android.ui.game.StatsDetailScreen
 import com.example.ula_app.android.ui.game.StatsScreen
-import com.example.ula_app.android.ui.game.StatsStepDetailScreen
 import com.example.ula_app.android.ui.viewmodel.DebugViewModel
 import com.example.ula_app.android.ui.viewmodel.GoalViewModel
 import com.example.ula_app.android.ui.viewmodel.HomeViewModel
+import com.example.ula_app.android.ui.viewmodel.StepViewModel
 import com.example.ula_app.android.ui.viewmodel.UserPreferencesViewModel
 import com.example.ula_app.android.ui.welcome.WelcomePage1
 import com.example.ula_app.android.ui.welcome.WelcomePage2
@@ -64,6 +63,7 @@ enum class WelcomeScreen() {
 @Composable
 fun Game(
         userPreferencesViewModel: UserPreferencesViewModel,
+        stepViewModel: StepViewModel = viewModel(),
         goalViewModel: GoalViewModel = viewModel(),
         homeViewModel: HomeViewModel = viewModel(),
         debugViewModel: DebugViewModel = viewModel(),
@@ -135,8 +135,11 @@ fun Game(
                     },
                     onNextButtonClicked = {
                         goalViewModel.setSteps(it)
-                        userPreferencesViewModel.setFirstTime(false)  // still need to fix the set false function here
+                        userPreferencesViewModel.setFirstTime(false)
                         userPreferencesViewModel.setFirstDateTime(DateTimeUtil.getCurrentDateTime())
+//                        userPreferencesViewModel.
+//                        userPreferencesProtoViewModel.setFirstTime(false)
+
                         navController.navigate(GameScreen.Home.name)
                     }
                 )
@@ -150,7 +153,7 @@ fun Game(
             }
             // Stats
             composable(route = GameScreen.Stats.name) {
-                StatsScreen()
+                StatsScreen(stepViewModel, goalViewModel)
             }
             // Help
             composable(route = GameScreen.Help.name) {
@@ -163,11 +166,6 @@ fun Game(
             // Debug
             composable(route = GameScreen.Debug.name) {
                 DebugScreen(homeViewModel, debugViewModel)
-            }
-
-            // Stats - Step detail page
-            composable(route = GameScreen.StatsStepDetail.name) {
-                StatsStepDetailScreen()
             }
         }
     }

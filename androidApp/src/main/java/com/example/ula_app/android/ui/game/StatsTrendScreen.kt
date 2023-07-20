@@ -7,18 +7,18 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.DrawStyle
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextStyle
@@ -27,7 +27,10 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import kotlin.math.max
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.ula_app.android.ui.viewmodel.GoalViewModel
+import com.example.ula_app.android.ui.viewmodel.StepViewModel
+import com.example.ula_app.android.util.DateTimeUtil
 import kotlin.math.min
 
 data class LineChart(
@@ -83,7 +86,7 @@ val Default: Config = Config(
         topPadding = 0f,
         bottomPadding = 0f,
         // If current step >= maxValue, it will shrink currentStep to maxValue and draw it on the plot.
-        maxValue = 5500f
+        maxValue = 25500f
     ),
     // Line.
     line = Line(
@@ -110,12 +113,6 @@ val Default: Config = Config(
     )
 )
 
-// Data of dates and footsteps.
-data class StepData(
-    val dates: String,
-    val steps: Float
-)
-
 // Level.
 data class Level(
     val level: Float,
@@ -126,11 +123,18 @@ data class Level(
 @OptIn(ExperimentalTextApi::class)
 @Composable
 fun StatsTrendScreen(
-    onBackClicked: () -> Unit = {}
+    onBackClicked: () -> Unit = {},
+    stepViewModel: StepViewModel = viewModel(),
+    goalViewModel: GoalViewModel = viewModel()
+
 ) {
 
-    // Example Data of steps with dates.
-    val exampleData = listOf<StepData>(
+    // stepHistory list from datastore or state
+    val stepHistoryUiState by stepViewModel.userState.collectAsState()
+    val goalUiState by goalViewModel.uiState.collectAsState()
+
+    val stepHistoryList = stepHistoryUiState.data
+/*        listOf<StepData>(
         StepData(
             dates = "11.11",
             steps = 1000f
@@ -151,7 +155,7 @@ fun StatsTrendScreen(
             dates = "11.15",
             steps = 3000f
         ),
-    )
+    )*/
 
     // Level in the LineChart.
     val levels: List<Level> = listOf(
@@ -160,19 +164,19 @@ fun StatsTrendScreen(
             leftPadding = 84f
         ),
         Level(
-            level = 1250f,
-            leftPadding = 0f
-        ),
-        Level(
-            level = 2500f,
-            leftPadding = 0f
-        ),
-        Level(
-            level = 3750f,
-            leftPadding = 0f
-        ),
-        Level(
             level = 5000f,
+            leftPadding = 0f
+        ),
+        Level(
+            level = 10000f,
+            leftPadding = 0f
+        ),
+        Level(
+            level = 15000f,
+            leftPadding = 0f
+        ),
+        Level(
+            level = 20000f,
             leftPadding = 0f
         )
     )
@@ -248,13 +252,13 @@ fun StatsTrendScreen(
             }*/
 
 
-            exampleData.forEachIndexed { index, item ->
+            stepHistoryList.forEachIndexed { index, item ->
                 // Draw dates under the x axis.
                 drawText(
                     textMeasurer,
-                    item.dates,
+                    DateTimeUtil.getLocalDate(item.date).toString(),
                     Offset(
-                        x = leftPadding + (size.width - rightPadding - 50f) / exampleData.size * index,
+                        x = leftPadding + (size.width - rightPadding - 50f) / stepHistoryList.size * index,
                         y = size.height - 60f
                     ),
                     style = TextStyle(
@@ -290,17 +294,17 @@ fun StatsTrendScreen(
             }
 
             val path = Path()
-            exampleData.forEachIndexed{ index, item ->
+            stepHistoryList.forEachIndexed{ index, item ->
 
                 if (index == 0) {
                     path.moveTo(
-                        x = 50f + leftPadding + (size.width - rightPadding - 50f) / exampleData.size * index,
-                        y = size.height - bottomPadding + 35f - min(Default.lineChart.maxValue, item.steps) / 5000 * (size.height - bottomPadding - (size.height - bottomPadding) / levels.size)
+                        x = 50f + leftPadding + (size.width - rightPadding - 50f) / stepHistoryList.size * index,
+                        y = size.height - bottomPadding + 35f - min(Default.lineChart.maxValue, item.steps.toFloat()) / 5000 * (size.height - bottomPadding - (size.height - bottomPadding) / levels.size)
                     )
                 } else {
                     path.lineTo(
-                        x = 50f + leftPadding + (size.width - rightPadding - 50f) / exampleData.size * index,
-                        y = size.height - bottomPadding + 35f - min(Default.lineChart.maxValue, item.steps) / 5000 * (size.height - bottomPadding - (size.height - bottomPadding) / levels.size)
+                        x = 50f + leftPadding + (size.width - rightPadding - 50f) / stepHistoryList.size * index,
+                        y = size.height - bottomPadding + 35f - min(Default.lineChart.maxValue, item.steps.toFloat()) / 5000 * (size.height - bottomPadding - (size.height - bottomPadding) / levels.size)
                     )
                 }
             }
@@ -314,15 +318,15 @@ fun StatsTrendScreen(
                 alpha = Default.line.alpha
             )
 
-            exampleData.forEachIndexed { index, item ->
-                Log.i("StatsTrendScreen", "x: ${50f + leftPadding + (size.width - rightPadding) / exampleData.size * index}, y: ${size.height - bottomPadding + 35f - item.steps / 5000 * (size.height - bottomPadding - (size.height - bottomPadding) / levels.size)}")
+            stepHistoryList.forEachIndexed { index, item ->
+                Log.i("StatsTrendScreen", "x: ${50f + leftPadding + (size.width - rightPadding) / stepHistoryList.size * index}, y: ${size.height - bottomPadding + 35f - item.steps / 5000 * (size.height - bottomPadding - (size.height - bottomPadding) / levels.size)}")
 
                 drawCircle(
                     color = Default.lineNode.color,
                     radius = Default.lineNode.radius,
                     center = Offset(
-                        x = 50f + leftPadding + (size.width - rightPadding - 50f) / exampleData.size * index,
-                        y = size.height - bottomPadding + 35f - min(Default.lineChart.maxValue, item.steps) / 5000 * (size.height - bottomPadding - (size.height - bottomPadding) / levels.size)
+                        x = 50f + leftPadding + (size.width - rightPadding - 50f) / stepHistoryList.size * index,
+                        y = size.height - bottomPadding + 35f - min(Default.lineChart.maxValue, item.steps.toFloat()) / 5000 * (size.height - bottomPadding - (size.height - bottomPadding) / levels.size)
                     ),
                     alpha = Default.lineNode.alpha
                 )

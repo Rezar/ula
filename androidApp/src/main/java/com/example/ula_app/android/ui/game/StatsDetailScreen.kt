@@ -14,9 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.Button
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -24,54 +22,37 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ula_app.android.R
-
-data class Data(
-    val weekday: String,
-    val currentSteps: Int
-)
+import com.example.ula_app.android.ui.viewmodel.StepViewModel
+import androidx.compose.runtime.getValue
+import com.example.ula_app.android.ui.viewmodel.GoalViewModel
+import com.example.ula_app.android.ui.viewmodel.StepsWithDates
+import com.example.ula_app.android.util.DateTimeUtil
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 
 @Composable
 fun StatsDetailScreen(
-    onBackClicked: () -> Unit = {}
+    onBackClicked: () -> Unit = {},
+    stepViewModel: StepViewModel = viewModel(),
+    goalViewModel: GoalViewModel = viewModel()
 ) {
 
-    val list = listOf(
-        Data(
-            weekday = "Monday",
-            currentSteps = 1
-        ),
-        Data(
-            weekday = "Tuesday",
-            currentSteps = 2
-        ),
-        Data(
-            weekday = "Wednesday",
-            currentSteps = 3
-        ),
-        Data(
-            weekday = "Thursday",
-            currentSteps = 4
-        ),
-        Data(
-            weekday = "Friday",
-            currentSteps = 5
-        ),
-        Data(
-            weekday = "Saturday",
-            currentSteps = 6
-        ),
-        Data(
-            weekday = "Sunday",
-            currentSteps = 7
-        ),
-    )
+    // stepHistory list from datastore or state
+    val stepHistoryUiState by stepViewModel.userState.collectAsState()
+    val goalUiState by goalViewModel.uiState.collectAsState()
+
+    Log.i("StatsDetailScreen", "goalSteps: ${goalUiState.steps}")
+
+    val stepHistoryList = stepHistoryUiState.data
 
     Column(
         modifier = Modifier
@@ -98,13 +79,13 @@ fun StatsDetailScreen(
         LazyColumn(
             modifier = Modifier.fillMaxSize()
         ) {
-            itemsIndexed(list) { index, item ->
+            itemsIndexed(stepHistoryList) { index, item ->
                 StatsDetailItem(
-                    weekday = item.weekday,
-                    currentSteps = item.currentSteps,
-                    selectedIndex = index
+                    weekday = DateTimeUtil.getDayOfWeek(item.date),
+                    currentSteps = item.steps,
+                    progressIndex = stepViewModel.getMonsterProgress(goalUiState.steps, item.steps)
                 )
-                if (index < list.size) {
+                if (index < stepHistoryList.size) {
                     Divider(
                         color = Color.Black,
                         thickness = 0.5.dp
@@ -117,9 +98,9 @@ fun StatsDetailScreen(
 
 @Composable
 fun StatsDetailItem(
-    weekday: String = "Monday",
+    weekday: String = "",
     currentSteps: Int = 5000,
-    selectedIndex: Int = 0
+    progressIndex: Int = 0
 ) {
 
 
@@ -137,9 +118,13 @@ fun StatsDetailItem(
                 text = "${weekday}",
                 modifier = Modifier.width(80.dp))
             Spacer(modifier = Modifier.width(16.dp))
+
+            // TODO: make it invisible if the user set it in the settings tab ----------------------------------------------------
             Text(text = "${currentSteps} steps")
         }
-        MonsterProgressBar(selectedIndex = selectedIndex)
+
+        // compare with goal to get the monster's index
+        MonsterProgressBar(selectedIndex = progressIndex)
 
     }
 }
@@ -154,6 +139,11 @@ fun StatsDetailItem(
 fun MonsterProgressBar(
     selectedIndex: Int = 0
 ) {
+
+    /*
+    * TODO: Add the monster progress images when building the settings tab. -------------------------------------------------------
+    * */
+
     // Stickman images.
     val stickman_1 = R.drawable.stickman_draft_bed
     val stickman_2 = R.drawable.stickman_draft_1
@@ -179,7 +169,7 @@ fun MonsterProgressBar(
             Image(
                 painter = painter,
                 contentDescription = null,
-                alpha = if (index == selectedIndex) 1f else 0.5f,
+                alpha = if (index <= selectedIndex) 1f else 0.5f,
                 modifier = Modifier.weight(painter.intrinsicSize.width / painter.intrinsicSize.height)
             )
         }

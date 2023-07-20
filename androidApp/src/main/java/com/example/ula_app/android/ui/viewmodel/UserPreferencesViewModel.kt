@@ -29,11 +29,10 @@ class UserPreferencesViewModel(
     * */
     private fun initFirstTime() = viewModelScope.launch {
         withContext(Dispatchers.IO) {
+            val datastoreObj = userPreferencesRepository.fetchInitialPreferences()
             _userPreferencesState.value = _userPreferencesState.value.copy(
-                firstTime = userPreferencesRepository.fetchInitialPreferences().firstTime
-            )
-            _userPreferencesState.value = _userPreferencesState.value.copy(
-                firstDateTime = userPreferencesRepository.fetchInitialPreferences().firstDateTime
+                firstTime = datastoreObj.firstTime,
+                firstDateTime = datastoreObj.firstDateTime
             )
         }
     }

@@ -167,7 +167,7 @@ class HomeViewModel() : ViewModel() {
         // If the user playing within 1 to 5 days, then the age is child
         // start setting child body status
         else if(DateTimeUtil.getDayDifference(DateTimeUtil.getCurrentDateTime(), firstDateTime)
-            <= DataSource.daysToAges[1] ||
+            <= DataSource.daysToAges[1] &&
             DateTimeUtil.getDayDifference(DateTimeUtil.getCurrentDateTime(), firstDateTime)
             > DataSource.daysToAges[0]) {
             setChildBodyStatus(currentStep, goal)
@@ -202,7 +202,7 @@ class HomeViewModel() : ViewModel() {
                 setId(childNormalHead)
             }
         } else if (currentStep < DataSource.childThreshold[1] * goal
-            || currentStep >= DataSource.childThreshold[0] * goal) {
+            && currentStep >= DataSource.childThreshold[0] * goal) {
 
             if(!checkBodyStatus(uiState.value.bodyStatus, "Fat")) {
                 setId(childFatHead)
@@ -240,14 +240,14 @@ class HomeViewModel() : ViewModel() {
             }
 
         } else if (currentStep < DataSource.adultThreshold[2] * goal
-            || currentStep >= DataSource.adultThreshold[1] * goal) {
+            && currentStep >= DataSource.adultThreshold[1] * goal) {
 
             if(!checkBodyStatus(uiState.value.bodyStatus, "Normal")) {
                 setId(adultNormalHead)
             }
 
         } else if (currentStep < DataSource.adultThreshold[1] * goal
-            || currentStep >= DataSource.adultThreshold[0] * goal) {
+            && currentStep >= DataSource.adultThreshold[0] * goal) {
 
             if(!checkBodyStatus(uiState.value.bodyStatus, "Fat")) {
                 setId(adultFatHead)
@@ -270,7 +270,7 @@ class HomeViewModel() : ViewModel() {
     fun checkDayTime(): Boolean {
 
         return (DateTimeUtil.getLocalDateTime() >= DataSource.timeThreshold[0]
-                || DateTimeUtil.getLocalDateTime() <= DataSource.timeThreshold[1])
+                && DateTimeUtil.getLocalDateTime() <= DataSource.timeThreshold[1])
     }
 
 
@@ -285,6 +285,11 @@ class HomeViewModel() : ViewModel() {
     ): Boolean {
         return curStatus == targetStatus
     }
+
+    /*
+    * Save the steps and date to datastore
+    * */
+
 
     // For Debug tab UI only
     fun setAgeAndBodyStatus(
