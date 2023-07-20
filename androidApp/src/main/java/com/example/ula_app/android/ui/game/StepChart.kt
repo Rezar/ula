@@ -24,6 +24,7 @@ import com.example.ula_app.android.data.Goal
 import com.example.ula_app.android.ui.viewmodel.GoalViewModel
 import com.example.ula_app.android.ui.viewmodel.StepViewModel
 import com.example.ula_app.android.ui.viewmodel.StepsWithDates
+import com.example.ula_app.android.ui.viewmodel.UserPreferencesViewModel
 import com.example.ula_app.android.util.DateTimeUtil
 import com.patrykandpatrick.vico.compose.axis.horizontal.bottomAxis
 import com.patrykandpatrick.vico.compose.axis.vertical.startAxis
@@ -62,11 +63,11 @@ import com.patrykandpatrick.vico.core.chart.layout.HorizontalLayout
 fun StepChart(
 //    onBackClicked: () -> Unit = {},
     stepViewModel: StepViewModel = viewModel(),
-    goalViewModel: GoalViewModel = viewModel()
+    userPreferencesViewModel: UserPreferencesViewModel = viewModel()
 ){
     // stepHistory list from datastore or state
     val stepHistoryUiState by stepViewModel.userState.collectAsState()
-    val goalUiState by goalViewModel.uiState.collectAsState()
+    val userPreUiState by userPreferencesViewModel.userPreferencesState.collectAsState()
     val stepHistoryList = stepHistoryUiState.data
     val chartEntryModelProducer = ChartEntryModelProducer(getSteps(stepHistoryList))
 
@@ -84,7 +85,7 @@ fun StepChart(
         endPaddingDp = DefaultDimens.COLUMN_OUTSIDE_SPACING.half,
     )
 
-    val thresholdLine = rememberThresholdLine(goalUiState)
+    val thresholdLine = rememberThresholdLine(userPreUiState.goal)
     val defaultColumns = currentChartStyle.columnChart.columns
 
 
@@ -151,11 +152,11 @@ fun getDays(stepHistory: List<StepsWithDates>): AxisValueFormatter<AxisPosition.
 
 @Composable
 fun rememberThresholdLine(
-    goalUiState: Goal
+    goalSteps: Int
 ): ThresholdLine{
 
     // threshold component definition
-    val THRESHOLD_LINE_VALUE = goalUiState.steps.toFloat()
+    val THRESHOLD_LINE_VALUE = goalSteps
     val thresholdLineLabelMarginValue = 4.dp
     val thresholdLineLabelHorizontalPaddingValue = 8.dp
     val thresholdLineLabelVerticalPaddingValue = 2.dp
@@ -175,7 +176,7 @@ fun rememberThresholdLine(
         typeface = Typeface.MONOSPACE,
     )
     return remember(line, label) {
-        ThresholdLine(thresholdValue = THRESHOLD_LINE_VALUE, lineComponent = line, labelComponent = label)
+        ThresholdLine(thresholdValue = THRESHOLD_LINE_VALUE.toFloat(), lineComponent = line, labelComponent = label)
     }
 }
 

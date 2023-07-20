@@ -32,17 +32,20 @@ import com.example.ula_app.android.TicTacToeActivity
 import com.example.ula_app.android.data.DataSource
 import com.example.ula_app.android.ui.viewmodel.GoalViewModel
 import com.example.ula_app.android.ui.viewmodel.HomeViewModel
+import com.example.ula_app.android.ui.viewmodel.UserPreferencesViewModel
 
 private const val TAG = "HomeScreen"
 
 @Composable
 fun HomeScreen(
     homeViewModel: HomeViewModel = viewModel(),
-    goalViewModel: GoalViewModel = viewModel()
+//    goalViewModel: GoalViewModel = viewModel()
+    userPreferencesViewModel: UserPreferencesViewModel = viewModel()
 ) {
 
     val homeUiState by homeViewModel.uiState.collectAsState()
-    val goalUiState by goalViewModel.uiState.collectAsState()
+//    val goalUiState by goalViewModel.uiState.collectAsState()
+    val userPreUiState by userPreferencesViewModel.userPreferencesState.collectAsState()
 
     /*
     * This exoPlayer is to play and update the video every time the user opens the home tab
@@ -81,7 +84,7 @@ fun HomeScreen(
         *
         * TODO: Link the currentStep to the sensor and make it as a state.
         * */
-        homeViewModel.setAge(goalUiState.firstDateTime, 5000, goalUiState.steps)
+        homeViewModel.setAge(userPreUiState.firstDateTime, 5000, userPreUiState.goal)
 
 //        if( currentMonsterMovie?.age == "Child") {
 //            homeViewModel.setChildBodyStatus(5000, goalUiState.steps)

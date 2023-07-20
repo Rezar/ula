@@ -9,6 +9,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Icon
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
@@ -26,6 +33,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.ula_app.android.data.DataSource
 import com.example.ula_app.android.ui.viewmodel.UserPreferencesViewModel
 import kotlin.math.max
 
@@ -35,26 +43,38 @@ private const val TAG = "SettingScreen"
 fun SettingScreen(
     userPreferencesViewModel: UserPreferencesViewModel = viewModel()
 ) {
+    val userPreUiState by userPreferencesViewModel.userPreferencesState.collectAsState()
 
     var stepCountSwitchON by remember {
-        mutableStateOf(false)
+        mutableStateOf(userPreUiState.displaySteps)
     }
 
     var progressMonsterSwitchON by remember {
-        mutableStateOf(false)
+        mutableStateOf(userPreUiState.displayMonster)
     }
 
     var maxThreshold by remember {
-        mutableStateOf(TextFieldValue(""))
+        mutableStateOf(TextFieldValue(userPreUiState.maxThreshold.toString()))
     }
 
     var minThreshold by remember {
-        mutableStateOf(TextFieldValue(""))
+        mutableStateOf(TextFieldValue(userPreUiState.minThreshold.toString()))
     }
 
     var effectiveDays by remember {
-        mutableStateOf(TextFieldValue(""))
+        mutableStateOf(TextFieldValue(userPreUiState.effectiveDays.toString()))
     }
+
+    var changeGoal by remember {
+//        mutableStateOf(DataSource.stepOptions[0])
+        mutableStateOf(userPreUiState.goal)
+    }
+
+    var goalOptionExpanded by remember {
+        mutableStateOf(false)
+    }
+
+
 
 
     Column(
@@ -75,7 +95,7 @@ fun SettingScreen(
                 checked = stepCountSwitchON,
                 onCheckedChange = { switchState ->
                     stepCountSwitchON = switchState
-                    userPreferencesViewModel.setDisplaySteps(true)
+//                    userPreferencesViewModel.setDisplaySteps(true)
                 },
                 colors = SwitchDefaults.colors(
                     checkedThumbColor = Color.Gray,
@@ -103,9 +123,7 @@ fun SettingScreen(
                     checked = progressMonsterSwitchON,
                     onCheckedChange = { switchState ->
                         progressMonsterSwitchON = switchState
-                        userPreferencesViewModel.setDisplayMonster(true)
                     },
-//                    thumbContent = thumbContent,
                     colors = SwitchDefaults.colors(
                         checkedThumbColor = Color.Gray,
                         checkedTrackColor = Color.LightGray
@@ -189,9 +207,6 @@ fun SettingScreen(
 
         }
 
-        /*
-        * TODO: add change goal
-        * */
         Row(
             modifier = Modifier
                 .padding(15.dp)
@@ -199,21 +214,47 @@ fun SettingScreen(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "Effective Day"
+                modifier = Modifier.width(200.dp),
+                text = "Change Goal"
             )
 
-            /*
-            * TODO: only allowing numbers------------------------------------------------------------------
-            * */
-            TextField(
-                modifier = Modifier.width(80.dp),
-                value = effectiveDays,
-                onValueChange = { newText ->
-                    effectiveDays = newText
+            Dropdown(
+                selectedIndex = changeGoal.toString(),
+                expand = goalOptionExpanded,
+                dropdownTitle = "",
+                dropdownOptions = DataSource.stepOptions,
+                onDropdownClicked = {
+                    goalOptionExpanded = it
+                },
+                onDropdownItemClicked = {
+                    changeGoal = it.toInt()
                 }
             )
 
         }
+
+        Row(
+            modifier = Modifier
+                .padding(15.dp)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.End
+        ) {
+            Button(
+                onClick = {
+                    userPreferencesViewModel.setDisplaySteps(stepCountSwitchON)
+                    userPreferencesViewModel.setDisplayMonster(progressMonsterSwitchON)
+                    userPreferencesViewModel.setMaxThreshold(maxThreshold.text.toDouble())
+                    userPreferencesViewModel.setMinThreshold(minThreshold.text.toDouble())
+                    userPreferencesViewModel.setEffectiveDays(effectiveDays.text.toInt())
+                    userPreferencesViewModel.setGoal(changeGoal)
+                },
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Black),
+            ){
+                Text(text = "Save!")
+            }
+        }
+
+
 
     }
 }

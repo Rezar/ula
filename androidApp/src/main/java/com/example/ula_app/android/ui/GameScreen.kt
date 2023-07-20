@@ -156,13 +156,13 @@ fun Game(
             composable(route = GameScreen.Home.name) {
                 HomeScreen(
                     homeViewModel = homeViewModel,
-                    goalViewModel = goalViewModel
+                    userPreferencesViewModel = userPreferencesViewModel
                 )
             }
             // Stats
             composable(route = GameScreen.Stats.name) {
                 AppTheme {
-                    StatsScreen(stepViewModel, goalViewModel)
+                    StatsScreen(stepViewModel, userPreferencesViewModel)
                 }
             }
             // Help

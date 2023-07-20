@@ -33,24 +33,24 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ula_app.android.R
 import com.example.ula_app.android.ui.viewmodel.StepViewModel
 import androidx.compose.runtime.getValue
-import com.example.ula_app.android.ui.viewmodel.GoalViewModel
-import com.example.ula_app.android.ui.viewmodel.StepsWithDates
+import com.example.ula_app.android.data.UserPreferences
+import com.example.ula_app.android.ui.viewmodel.UserPreferencesViewModel
 import com.example.ula_app.android.util.DateTimeUtil
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
 
 @Composable
 fun StatsDetailScreen(
     onBackClicked: () -> Unit = {},
     stepViewModel: StepViewModel = viewModel(),
-    goalViewModel: GoalViewModel = viewModel()
+//    goalViewModel: GoalViewModel = viewModel(),
+    userPreferencesViewModel: UserPreferencesViewModel = viewModel()
 ) {
 
     // stepHistory list from datastore or state
     val stepHistoryUiState by stepViewModel.userState.collectAsState()
-    val goalUiState by goalViewModel.uiState.collectAsState()
+    val userPreUiState by userPreferencesViewModel.userPreferencesState.collectAsState()
+//    val goalUiState by goalViewModel.uiState.collectAsState()
 
-    Log.i("StatsDetailScreen", "goalSteps: ${goalUiState.steps}")
+    Log.i("StatsDetailScreen", "goalSteps: ${userPreUiState.goal}")
 
     val stepHistoryList = stepHistoryUiState.data
 
@@ -83,7 +83,8 @@ fun StatsDetailScreen(
                 StatsDetailItem(
                     weekday = DateTimeUtil.getDayOfWeek(item.date),
                     currentSteps = item.steps,
-                    progressIndex = stepViewModel.getMonsterProgress(goalUiState.steps, item.steps)
+                    progressIndex = stepViewModel.getMonsterProgress(userPreUiState.goal, item.steps),
+                    userPreUiState = userPreUiState
                 )
                 if (index < stepHistoryList.size) {
                     Divider(
@@ -100,7 +101,8 @@ fun StatsDetailScreen(
 fun StatsDetailItem(
     weekday: String = "",
     currentSteps: Int = 5000,
-    progressIndex: Int = 0
+    progressIndex: Int = 0,
+    userPreUiState: UserPreferences
 ) {
 
 
@@ -116,16 +118,19 @@ fun StatsDetailItem(
         ) {
             Text(
                 text = "${weekday}",
-                modifier = Modifier.width(120.dp))
+                modifier = Modifier.width(120.dp)
+            )
             Spacer(modifier = Modifier.width(16.dp))
 
-            // TODO: make it invisible if the user set it in the settings tab ----------------------------------------------------
-
-            Text(text = "${currentSteps} steps")
+            // if the user choose to display steps in settings tab, then display the number.
+            // Otherwise do not display the steps
+            if (userPreUiState.displaySteps) {
+                Text(text = "${currentSteps} steps")
+            }
         }
 
         // compare with goal to get the monster's index
-        MonsterProgressBar(selectedIndex = progressIndex)
+        MonsterProgressBar(selectedIndex = progressIndex, userPreUiState = userPreUiState)
 
     }
 }
@@ -138,12 +143,9 @@ fun StatsDetailItem(
 * */
 @Composable
 fun MonsterProgressBar(
-    selectedIndex: Int = 0
+    selectedIndex: Int = 0,
+    userPreUiState: UserPreferences
 ) {
-
-    /*
-    * TODO: Add the monster progress images when building the settings tab. -------------------------------------------------------
-    * */
 
     // Stickman images.
     val stickman_1 = R.drawable.stickman_draft_bed
@@ -153,7 +155,7 @@ fun MonsterProgressBar(
     val stickman_5 = R.drawable.stickman_draft_4
     val stickman_6 = R.drawable.stickman_draft_5
 
-    val imageList = listOf(
+    val stickmanList = listOf(
         stickman_1,
         stickman_2,
         stickman_3,
@@ -162,6 +164,36 @@ fun MonsterProgressBar(
         stickman_6
     )
 
+    // Monster images.
+    val monster_1 = R.drawable.stickman_draft_monster_1
+    val monster_2 = R.drawable.stickman_draft_monster_2
+    val monster_3 = R.drawable.stickman_draft_monster_3
+    val monster_4 = R.drawable.stickman_draft_monster_4
+    val monster_5 = R.drawable.stickman_draft_monster_5
+    val monster_6 = R.drawable.stickman_draft_monster_6
+
+    val monsterList = listOf(
+        monster_1,
+        monster_2,
+        monster_3,
+        monster_4,
+        monster_5,
+        monster_6
+    )
+
+    if(userPreUiState.displayMonster) {
+        displayImage(selectedIndex = selectedIndex, imageList = monsterList)
+    } else {
+        displayImage(selectedIndex = selectedIndex, imageList = stickmanList)
+    }
+
+}
+
+@Composable
+fun displayImage(
+    selectedIndex: Int = 0,
+    imageList: List<Int>
+){
     Row(
         modifier = Modifier.fillMaxWidth()
     ) {

@@ -82,9 +82,9 @@ fun WelcomePage3(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         RadioButton(
-                            selected = it == selectedGoal.value,
+                            selected = it.toInt() == selectedGoal.value,
                             onClick = {
-                                selectedGoal.value = it
+                                selectedGoal.value = it.toInt()
                                 Log.i("WelcomePage_Page3", "Plan_${selectedGoal.value}")
                             }
                         )

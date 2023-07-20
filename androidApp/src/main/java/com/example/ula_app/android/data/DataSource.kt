@@ -10,10 +10,10 @@ object DataSource {
 
     // Welcome data sources
     val stepOptions = listOf(
-        5000,
-        10000,
-        15000,
-        20000
+        "5000",
+        "10000",
+        "15000",
+        "20000"
     )
 
     // Help tab data sources

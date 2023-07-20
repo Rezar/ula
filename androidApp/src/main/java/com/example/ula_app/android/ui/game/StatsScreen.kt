@@ -25,6 +25,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ula_app.android.ui.viewmodel.GoalViewModel
 import com.example.ula_app.android.ui.viewmodel.StepViewModel
 import com.mutualmobile.composesensors.rememberStepCounterSensorState
+import com.example.ula_app.android.ui.viewmodel.UserPreferencesViewModel
 
 private const val TAG = "StatsScreen"
 
@@ -36,12 +37,12 @@ enum class StatsScreenSegment() {
 @Composable
 fun StatsScreen(
     stepViewModel: StepViewModel = viewModel(),
-    goalViewModel: GoalViewModel = viewModel()
+    userPreferencesViewModel: UserPreferencesViewModel = viewModel()
 ) {
 
     // stepHistory list from datastore or state
-    val stepHistoryUiState by stepViewModel.userState.collectAsState()
-    val goalUiState by goalViewModel.uiState.collectAsState()
+//    val stepHistoryUiState by stepViewModel.userState.collectAsState()
+//    val userPreUiState by userPreferencesViewModel.userPreferencesState.collectAsState()
 
     var currentScreen by remember {
         mutableStateOf("")
@@ -56,7 +57,7 @@ fun StatsScreen(
                     currentScreen = ""
                 },
                 stepViewModel = stepViewModel,
-                goalViewModel = goalViewModel
+                userPreferencesViewModel = userPreferencesViewModel
             )
         }
 /*        StatsScreenSegment.StatsTrend.name -> {
@@ -124,7 +125,6 @@ fun StatsScreen(
                                 verticalArrangement = Arrangement.Bottom,
 //                                modifier = Modifier.fillMaxHeight()
                             ){
-
                                 Text(
                                     text = "steps",
                                     color = Color.Gray,
@@ -137,7 +137,7 @@ fun StatsScreen(
 
                 }
 
-                StepChart(stepViewModel, goalViewModel)
+                StepChart(stepViewModel, userPreferencesViewModel)
 
             }
 
