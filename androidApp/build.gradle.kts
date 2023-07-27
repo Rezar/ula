@@ -49,6 +49,7 @@ dependencies {
     implementation(Deps.composeLifecycle)
     implementation(Deps.coilCompose)
     implementation(Deps.kotlinDateTime)
+    implementation ("androidx.compose.runtime:runtime-livedata:1.0.3")
 
     implementation(Deps.hiltAndroid)
     kapt(Deps.hiltAndroidCompiler)
@@ -93,4 +94,8 @@ dependencies {
 
     implementation("androidx.compose.material3:material3:1.1.1")
     implementation("com.mutualmobile:composesensors:1.1.0")
+
+    implementation ("androidx.core:core-ktx:1.7.0")
+    implementation ("androidx.appcompat:appcompat:1.2.0")
+    implementation ("androidx.browser:browser:1.4.0")
 }

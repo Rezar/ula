@@ -22,6 +22,15 @@
         <activity
             android:name=".TicTacToeActivity">
         </activity>
+        <activity
+            android:name=".ui.lockgame.dinogame.DinoGameActivity">
+        </activity>
+        <activity
+            android:name=".ui.lockgame.snakegame.presentation.activity.SnakeGameActivity">
+        </activity>
+        <activity
+            android:name=".ui.lockgame.snakegame.presentation.activity.GameActivity">
+        </activity>
 
     </application>
 </manifest> 
