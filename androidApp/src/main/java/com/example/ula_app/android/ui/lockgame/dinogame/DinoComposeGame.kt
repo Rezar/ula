@@ -1,8 +1,11 @@
 package com.example.ula_app.android.ui.lockgame.dinogame
 
+import android.app.Activity
 import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Switch
@@ -16,6 +19,7 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.*
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -64,6 +68,8 @@ fun DinoGameScene(gameState: GameState) {
     val dinoColor = MaterialTheme.colors.dinoColor
     val cactusColor = MaterialTheme.colors.cactusColor
 
+    val activity = LocalContext.current as? Activity
+
     if (!gameState.isGameOver)
     {
         // Game Loop
@@ -104,6 +110,18 @@ fun DinoGameScene(gameState: GameState) {
                 }
             )
     ) {
+        Row(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Button(
+                onClick = {
+                    activity?.finish()
+                },
+                colors = ButtonDefaults.buttonColors(backgroundColor = Color.White, contentColor = Color.Black)
+            ) {
+                Text(text = "Back")
+            }
+        }
         ShowBoundsSwitchView()
         HighScoreTextViews(requireNotNull(currentScore), requireNotNull(highScore))
         Canvas(modifier = Modifier.weight(1f)) {
