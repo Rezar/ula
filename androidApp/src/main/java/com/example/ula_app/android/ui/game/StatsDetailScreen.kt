@@ -183,9 +183,9 @@ fun MonsterProgressBar(
     )
 
     // Monster images.
-    val monster_1 = R.drawable.stickman_draft_monster_1
-    val monster_2 =R.drawable.stickman_draft_monster_5
-    val monster_3 =R.drawable.stickman_draft_monster_4
+    val monster_1 =R.drawable.stickman_draft_monster_5
+    val monster_2 =R.drawable.stickman_draft_monster_4
+    val monster_3 =R.drawable.stickman_draft_monster_1
     val monster_4 = R.drawable.stickman_draft_monster_3
     val monster_5 = R.drawable.stickman_draft_monster_2
     val monster_6 = R.drawable.stickman_draft_monster_6

@@ -265,7 +265,7 @@ fun SettingScreen(
                                         enabled = DateTimeUtil.getDayDifference(DateTimeUtil.getCurrentDateTime(), effectiveDate) >= effectiveDays.text.toLong()
                                     )
 
-                                    Text(text = sliderValueDaily.toInt().toString())
+                                    Text(text = selectedGoal.toInt().toString())
 
                                 }
                             }

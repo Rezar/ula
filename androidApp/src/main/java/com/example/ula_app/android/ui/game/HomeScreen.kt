@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.material.*
@@ -18,7 +20,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.media3.common.MediaItem
@@ -135,46 +139,68 @@ fun HomeScreen(
 
         if(homeUiState.openDialog) {
             AlertDialog(
-                    onDismissRequest  = {homeViewModel.setOpenDialog(false)},
-                    title = {
-                        Text(text = "Want to play a little game? ")
-                    },
-                    confirmButton = {
+                onDismissRequest  = {homeViewModel.setOpenDialog(false)},
+                title = {
+                    Text(
+                        text = "Want to play a little game? ",
+                        style = MaterialTheme.typography.body1
+                    )
+                },
+
+                buttons = {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
                         Button(
                             onClick = {
                                 homeViewModel.setOpenDialog(false)
                                 context.startActivity(Intent(context, TicTacToeActivity::class.java))
-                            }
+                            },
+                            colors = ButtonDefaults.outlinedButtonColors(backgroundColor = Color.White, contentColor = Color.Black),
                         ) {
-                            Text("Tic Tac Toe")
+                            Text(
+                                text = "Tic Tac Toe",
+                                style = MaterialTheme.typography.caption
+                            )
                         }
                         Button(
                             onClick = {
                                 homeViewModel.setOpenDialog(false)
                                 context.startActivity(Intent(context, DinoGameActivity::class.java))
-                            }
+                            },
+                            colors = ButtonDefaults.buttonColors(backgroundColor = Color.White, contentColor = Color.Black)
                         ) {
-                            Text("Dino Game")
+                            Text("Dino Game",
+                                style = MaterialTheme.typography.caption)
                         }
                         Button(
                             onClick = {
                                 homeViewModel.setOpenDialog(false)
                                 context.startActivity(Intent(context, SnakeGameActivity::class.java))
-                            }
+                            },
+                            colors = ButtonDefaults.buttonColors(backgroundColor = Color.White, contentColor = Color.Black)
                         ) {
-                            Text("Snake Game")
+                            Text("Snake Game",
+                                style = MaterialTheme.typography.caption)
                         }
-                    },
-                    dismissButton = {
                         Button(
                             onClick = {
                                 homeViewModel.setOpenDialog(false)
 
-                            }
+                            },
+                            colors = ButtonDefaults.buttonColors(backgroundColor = Color.White, contentColor = Color.Black)
                         ) {
-                            Text("Nah, I am good...")
+                            Text("Nah, I am good...",
+                                style = MaterialTheme.typography.caption)
                         }
                     }
+                }
+
+
+
             )
         }
 
