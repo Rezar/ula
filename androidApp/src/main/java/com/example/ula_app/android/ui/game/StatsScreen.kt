@@ -117,7 +117,7 @@ fun StatsScreen(
                             horizontalArrangement = Arrangement.Start
                         ) {
                             Text(
-//                                text = "${goalUiState.steps}", //TODO: change and link it to the sensor to show the current steps
+//                                text = "${goalUiState.steps}",
                                 text = "${stepSensor.stepCount.toInt()}", // read current step from sensor.
                                 fontSize = 30.sp
                             )

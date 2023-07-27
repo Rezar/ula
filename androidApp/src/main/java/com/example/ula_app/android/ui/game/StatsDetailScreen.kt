@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -36,6 +37,7 @@ import androidx.compose.runtime.getValue
 import com.example.ula_app.android.data.UserPreferences
 import com.example.ula_app.android.ui.viewmodel.UserPreferencesViewModel
 import com.example.ula_app.android.util.DateTimeUtil
+import com.mutualmobile.composesensors.rememberStepCounterSensorState
 
 @Composable
 fun StatsDetailScreen(
@@ -87,12 +89,27 @@ fun StatsDetailScreen(
                     progressIndex = stepViewModel.getMonsterProgress(userPreUiState.goal, item.steps),
                     userPreUiState = userPreUiState
                 )
-                if (index < stepHistoryList.size) {
+
+                // create a linear progress bar
+                LinearProgressIndicator(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(3.dp),
+                    backgroundColor = Color.LightGray,
+                    color = Color.Red,
+                    progress =
+                        if(item.steps <= userPreUiState.goal)
+                                (item.steps/userPreUiState.goal.toFloat())
+                        else 1.0f,
+
+                )
+
+                /*if (index < stepHistoryList.size) {
                     Divider(
                         color = Color.Black,
                         thickness = 0.5.dp
                     )
-                }
+                }*/
             }
         }
     }
@@ -150,10 +167,10 @@ fun MonsterProgressBar(
 
     // Stickman images.
     val stickman_1 = R.drawable.stickman_draft_bed
-    val stickman_2 = R.drawable.stickman_draft_1
-    val stickman_3 = R.drawable.stickman_draft_2
-    val stickman_4 = R.drawable.stickman_draft_3
-    val stickman_5 = R.drawable.stickman_draft_4
+    val stickman_2 = R.drawable.stickman_draft_4
+    val stickman_3 = R.drawable.stickman_draft_3
+    val stickman_4 = R.drawable.stickman_draft_2
+    val stickman_5 = R.drawable.stickman_draft_1
     val stickman_6 = R.drawable.stickman_draft_5
 
     val stickmanList = listOf(
@@ -167,10 +184,10 @@ fun MonsterProgressBar(
 
     // Monster images.
     val monster_1 = R.drawable.stickman_draft_monster_1
-    val monster_2 = R.drawable.stickman_draft_monster_2
-    val monster_3 = R.drawable.stickman_draft_monster_3
-    val monster_4 = R.drawable.stickman_draft_monster_4
-    val monster_5 = R.drawable.stickman_draft_monster_5
+    val monster_2 =R.drawable.stickman_draft_monster_5
+    val monster_3 =R.drawable.stickman_draft_monster_4
+    val monster_4 = R.drawable.stickman_draft_monster_3
+    val monster_5 = R.drawable.stickman_draft_monster_2
     val monster_6 = R.drawable.stickman_draft_monster_6
 
     val monsterList = listOf(

@@ -81,7 +81,7 @@ fun HomeScreen(
         * make the currentStep as a state so that if the currentStep changes the home tab
         * will re-render and the bodyStatus will be checked through LaunchEffect.
         * */
-        homeViewModel.setAge(userPreUiState.firstDateTime, stepSensor.stepCount.toInt(), userPreUiState.goal)
+        homeViewModel.setAge(userPreUiState.firstDateTime, stepSensor.stepCount.toInt(), userPreUiState.goal, userPreUiState.maxThreshold, userPreUiState.minThreshold)
 
 //        if( currentMonsterMovie?.age == "Child") {
 //            homeViewModel.setChildBodyStatus(5000, goalUiState.steps)

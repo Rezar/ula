@@ -3,6 +3,7 @@ package com.example.ula_app.android.ui.welcome
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,18 +14,34 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.RadioButton
+import androidx.compose.material.SliderColors
+import androidx.compose.material3.SliderDefaults
+import androidx.compose.material.Tab
+import androidx.compose.material.TabRow
+import androidx.compose.material.TabRowDefaults
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Place
+import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material3.Slider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.ula_app.android.R
 import com.example.ula_app.android.component.IconButton
 import com.example.ula_app.android.data.DataSource.stepOptions
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.pagerTabIndicatorOffset
+import com.google.accompanist.pager.rememberPagerState
+import kotlinx.coroutines.launch
 
 @Composable
 fun WelcomePage3(
@@ -36,6 +53,23 @@ fun WelcomePage3(
     var selectedGoal = remember {
         mutableStateOf(0)
     }
+
+    var selectedGoalWeekly = remember {
+        mutableStateOf(0)
+    }
+
+    var tabIndex by remember { mutableStateOf(0)}
+    val tabTitles = listOf("Daily Goal", "Weekly Goal")
+
+    var sliderValueDaily by remember {
+        mutableStateOf(15000f)
+    }
+
+    var sliderValueWeekly by remember {
+        mutableStateOf(50000f)
+    }
+
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -69,8 +103,91 @@ fun WelcomePage3(
                     text = "Tell ULA the number of steps you intend to take. No, No, No you can not enter anything less than 5,000 steps >:)"
                 )
             }
-            Spacer(modifier = Modifier.height(60.dp))
+            Spacer(modifier = Modifier.height(40.dp))
+
+            // tab row
             Column(
+                modifier = Modifier
+                    .padding(20.dp)
+            ) {
+                TabRow(selectedTabIndex = tabIndex) {
+                    tabTitles.forEachIndexed {index, title ->
+                        Tab(
+                            selected = tabIndex == index,
+                            onClick = {
+                                tabIndex = index
+                            },
+                            text = {
+                                Text(
+                                    text = title,
+                                    style = MaterialTheme.typography.caption
+                                )
+                            }
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(40.dp))
+
+                when (tabIndex) {
+                    0 -> {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Slider(
+                                value = sliderValueDaily,
+                                onValueChange = { sliderValue_ ->
+                                    sliderValueDaily = sliderValue_
+                                },
+                                onValueChangeFinished = {
+                                    // this is called when the user completed selecting the value
+                                    selectedGoal.value = sliderValueDaily.toInt()
+                                    Log.d("MainActivity", "sliderValue = $sliderValueDaily")
+                                },
+                                valueRange = 5000f..30000f,
+                                steps = 4,
+                                colors = SliderDefaults.colors(
+                                    thumbColor = Color.Black,
+                                    activeTrackColor = Color.Gray
+                                )
+                            )
+
+                            Text(text = sliderValueDaily.toInt().toString())
+
+                        }
+                    }
+                    1 -> {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Slider(
+                                value = sliderValueWeekly,
+                                onValueChange = { sliderValue_ ->
+                                    sliderValueWeekly = sliderValue_
+                                },
+                                onValueChangeFinished = {
+                                    // this is called when the user completed selecting the value
+                                    selectedGoalWeekly.value = sliderValueWeekly.toInt()
+                                    Log.d("MainActivity", "sliderValue = $sliderValueWeekly")
+                                },
+                                valueRange = 20000f..100000f,
+                                steps = 7,
+                                colors = SliderDefaults.colors(
+                                    thumbColor = Color.Black,
+                                    activeTrackColor = Color.Gray
+                                )
+                            )
+
+                            Text(text = sliderValueWeekly.toInt().toString())
+
+                        }
+                    }
+                }
+            }
+
+
+
+            /*Column(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -93,7 +210,7 @@ fun WelcomePage3(
                         )
                     }
                 }
-            }
+            }*/
         }
 
         Row(

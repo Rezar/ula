@@ -70,6 +70,11 @@ dependencies {
     implementation ("androidx.media3:media3-exoplayer-dash:1.0.2")
     implementation ("androidx.media3:media3-ui:1.0.2")
 
+    // tab row
+    implementation("com.google.accompanist:accompanist-pager:0.28.0") // Pager
+    implementation("com.google.accompanist:accompanist-pager-indicators:0.28.0") // Pager Indicators
+
+
     // Datastore
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation("androidx.datastore:datastore:1.0.0")

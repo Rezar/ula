@@ -18,7 +18,8 @@ private val WelcomeTypography = Typography(
     h1 = TextStyle(
         fontFamily = DJBFirstGradeTeacherFamily,
         fontWeight = FontWeight.Normal,
-        fontSize = 36.sp
+        fontSize = 36.sp,
+        color = Color.Red
     ),
     body1 = TextStyle(
         fontFamily = DJBFirstGradeTeacherFamily,
@@ -26,9 +27,9 @@ private val WelcomeTypography = Typography(
         fontSize = 20.sp
     ),
     caption = TextStyle(
-        fontFamily = SFFontFamily,
+        fontFamily = DJBFirstGradeTeacherFamily,
         fontWeight = FontWeight.Normal,
-        fontSize = 16.sp
+        fontSize = 12.sp
     )
 )
 
@@ -46,10 +47,10 @@ private val AppTypography = Typography(
     body1 = TextStyle(
         fontFamily = DJBFirstGradeTeacherFamily,
         fontWeight = FontWeight.Normal,
-        fontSize = 20.sp
+        fontSize = 18.sp
     ),
     caption = TextStyle(
-        fontFamily = SFFontFamily,
+        fontFamily = DJBFirstGradeTeacherFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp
     )
