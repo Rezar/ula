@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.ula_app.android.R
@@ -110,7 +111,11 @@ fun WelcomePage3(
                 modifier = Modifier
                     .padding(20.dp)
             ) {
-                TabRow(selectedTabIndex = tabIndex) {
+                TabRow(
+                    selectedTabIndex = tabIndex,
+                    backgroundColor = Color.White,
+                    contentColor = Color.Black
+                ) {
                     tabTitles.forEachIndexed {index, title ->
                         Tab(
                             selected = tabIndex == index,
@@ -120,7 +125,8 @@ fun WelcomePage3(
                             text = {
                                 Text(
                                     text = title,
-                                    style = MaterialTheme.typography.caption
+                                    fontWeight = FontWeight.Bold,
+                                    style = MaterialTheme.typography.body2
                                 )
                             }
                         )
@@ -147,8 +153,8 @@ fun WelcomePage3(
                                 valueRange = 5000f..30000f,
                                 steps = 4,
                                 colors = SliderDefaults.colors(
-                                    thumbColor = Color.Black,
-                                    activeTrackColor = Color.Gray
+                                    thumbColor = Color(0xFFEF5366),
+                                    activeTrackColor = Color(0xFF80EF5366)
                                 )
                             )
 
@@ -173,8 +179,8 @@ fun WelcomePage3(
                                 valueRange = 20000f..100000f,
                                 steps = 7,
                                 colors = SliderDefaults.colors(
-                                    thumbColor = Color.Black,
-                                    activeTrackColor = Color.Gray
+                                    thumbColor = Color(0xFFEF5366),
+                                    activeTrackColor = Color(0xFF80EF5366)
                                 )
                             )
 

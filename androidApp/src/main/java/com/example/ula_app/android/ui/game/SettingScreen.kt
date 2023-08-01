@@ -30,20 +30,22 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
+import androidx.compose.material.Switch
+import androidx.compose.material.SwitchDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.ula_app.android.component.SettingFieldsRow
 import com.example.ula_app.android.data.DataSource
 import com.example.ula_app.android.ui.viewmodel.UserPreferencesViewModel
 import com.example.ula_app.android.util.DateTimeUtil
@@ -92,7 +94,7 @@ fun SettingScreen(
         mutableStateOf(false)
     }*/
 
-    // TODO: wait to add features
+    // TODO: wait to add features--------------------------------------------------------------------------------------------
     var selectedGoalWeekly by remember {
         mutableStateOf(0)
     }
@@ -126,86 +128,73 @@ fun SettingScreen(
                     .padding(15.dp)
             ) {
 
-                Row(
-                    modifier = Modifier
-                        .padding(15.dp)
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = "Display Step Counts"
-                    )
+                SettingFieldsRow(
+                    text = "Display Step Counts",
+                    input = {
 
-                    Switch(
-                        checked = stepCountSwitchON,
-                        onCheckedChange = { switchState ->
-                            stepCountSwitchON = switchState
-//                    userPreferencesViewModel.setDisplaySteps(true)
-                        },
-                        colors = SwitchDefaults.colors(
-                            checkedThumbColor = Color.Gray,
-                            checkedTrackColor = Color.LightGray
-                        )
-                    )
-
-                }
-
-                Row(
-                    modifier = Modifier
-                        .padding(15.dp)
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = "Display Character"
-                    )
-
-                    Column(
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ){
                         Switch(
-                            checked = progressMonsterSwitchON,
+                            checked = stepCountSwitchON,
                             onCheckedChange = { switchState ->
-                                progressMonsterSwitchON = switchState
+                                stepCountSwitchON = switchState
+//                    userPreferencesViewModel.setDisplaySteps(true)
                             },
                             colors = SwitchDefaults.colors(
-                                checkedThumbColor = Color.Gray,
-                                checkedTrackColor = Color.LightGray
+                                checkedThumbColor = MaterialTheme.colors.onPrimary,
+                                checkedTrackColor = MaterialTheme.colors.onSecondary,
+                                uncheckedThumbColor = Color.Gray,
+                                uncheckedTrackColor = Color.DarkGray
                             )
                         )
-
-                        Text(text = if (progressMonsterSwitchON) "Monster" else "Human")
-
                     }
+                )
+
+                SettingFieldsRow(
+                    text = "Display Character",
+                    input = {
+                        Column(
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.End
+                        ){
+                            Switch(
+                                checked = progressMonsterSwitchON,
+                                onCheckedChange = { switchState ->
+                                    progressMonsterSwitchON = switchState
+                                },
+                                colors = SwitchDefaults.colors(
+                                    checkedThumbColor = MaterialTheme.colors.onPrimary,
+                                    checkedTrackColor = MaterialTheme.colors.onSecondary,
+                                    uncheckedThumbColor = Color.Gray,
+                                    uncheckedTrackColor = Color.DarkGray
+                                )
+                            )
+
+                            Text(
+                                text = if (progressMonsterSwitchON) "Monster" else "Human",
+                                style = MaterialTheme.typography.h4
+                            )
+
+                        }
+                    }
+                )
 
 
-                }
-
-                Row(
-                    modifier = Modifier
-                        .padding(15.dp)
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = "Effective Day"
-                    )
-
-                    TextField(
-                        modifier = Modifier
-                            .width(80.dp),
-                        value = effectiveDays,
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number
-                        ),
-                        onValueChange = { newText ->
-                            effectiveDays = newText
-                        },
-                        enabled = DateTimeUtil.getDayDifference(DateTimeUtil.getCurrentDateTime(), effectiveDate) >= effectiveDays.text.toLong()
-                    )
-
-                }
+                SettingFieldsRow(
+                    text = "Effective Days",
+                    input = {
+                        TextField(
+                            modifier = Modifier
+                                .width(80.dp),
+                            value = effectiveDays,
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Number
+                            ),
+                            onValueChange = { newText ->
+                                effectiveDays = newText
+                            },
+                            enabled = DateTimeUtil.getDayDifference(DateTimeUtil.getCurrentDateTime(), effectiveDate) >= effectiveDays.text.toLong()
+                        )
+                    }
+                )
 
                 Column(
                     modifier = Modifier
@@ -215,14 +204,19 @@ fun SettingScreen(
                 ) {
                     Text(
                         modifier = Modifier.width(200.dp),
-                        text = "Change Goal"
+                        text = "Change Goal",
+                        style = MaterialTheme.typography.h4
                     )
 
                     Column(
                         modifier = Modifier
                             .padding(20.dp)
                     ) {
-                        TabRow(selectedTabIndex = tabIndex) {
+                        TabRow(
+                            selectedTabIndex = tabIndex,
+                            backgroundColor = Color.White,
+                            contentColor = Color.Black
+                        ) {
                             tabTitles.forEachIndexed {index, title ->
                                 Tab(
                                     selected = tabIndex == index,
@@ -232,6 +226,7 @@ fun SettingScreen(
                                     text = {
                                         Text(
                                             text = title,
+                                            fontWeight = FontWeight.Bold,
                                             style = MaterialTheme.typography.caption
                                         )
                                     }
@@ -259,8 +254,8 @@ fun SettingScreen(
                                         valueRange = 5000f..30000f,
                                         steps = 4,
                                         colors = SliderDefaults.colors(
-                                            thumbColor = Color.Black,
-                                            activeTrackColor = Color.Gray
+                                            thumbColor = MaterialTheme.colors.onPrimary,
+                                            activeTrackColor = MaterialTheme.colors.onSecondary
                                         ),
                                         enabled = DateTimeUtil.getDayDifference(DateTimeUtil.getCurrentDateTime(), effectiveDate) >= effectiveDays.text.toLong()
                                     )
@@ -286,8 +281,8 @@ fun SettingScreen(
                                         valueRange = 20000f..100000f,
                                         steps = 7,
                                         colors = SliderDefaults.colors(
-                                            thumbColor = Color.Black,
-                                            activeTrackColor = Color.Gray
+                                            thumbColor = MaterialTheme.colors.onPrimary,
+                                            activeTrackColor = MaterialTheme.colors.onSecondary
                                         ),
                                         enabled = DateTimeUtil.getDayDifference(DateTimeUtil.getCurrentDateTime(), effectiveDate) >= effectiveDays.text.toLong()
                                     )

@@ -25,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -32,6 +33,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.ula_app.android.component.SettingFieldsRow
 import com.example.ula_app.android.ui.viewmodel.UserPreferencesViewModel
 
 @Composable
@@ -72,96 +74,80 @@ fun SettingAdvancedScreen(
             )
         }
 
-        Row(
-            modifier = Modifier
-                .padding(15.dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = "Max Threshold (Percent)"
-            )
+        SettingFieldsRow(
+            text = "Max Threshold (Percentage)",
+            input = {
+                TextField(
+                    modifier = Modifier.width(80.dp),
+                    value = maxThreshold,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number
+                    ),
+                    onValueChange = { newText ->
+                        maxThreshold = newText
+                    }
+                )
+            }
+        )
 
-            /*
-            * TODO: only allowing numbers------------------------------------------------------------------
-            * */
-            TextField(
-                modifier = Modifier.width(80.dp),
-                value = maxThreshold,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number
-                ),
-                onValueChange = { newText ->
-                    maxThreshold = newText
+        SettingFieldsRow(
+            text = "Min Threshold (Percentage)",
+            input = {
+                TextField(
+                    modifier = Modifier.width(80.dp),
+                    value = minThreshold,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number
+                    ),
+                    onValueChange = { newText ->
+                        minThreshold = newText
+                    }
+                )
+            }
+        )
+
+        SettingFieldsRow(
+            text = "",
+            input = {
+                Button(
+                    onClick = {
+
+                        when {
+                            maxThreshold.text.toDouble() in 0.0..0.5
+                                    && minThreshold.text.toDouble() in 0.0..0.5 -> {
+                                // Update datastore
+                                userPreferencesViewModel.setMaxThreshold(maxThreshold.text.toDouble())
+                                userPreferencesViewModel.setMinThreshold(minThreshold.text.toDouble())
+
+                            }
+                            else -> {
+                                Toast.makeText(
+                                    context,
+                                    "Please enter a decimal number between 0 and 0.5 for the min and max thresholds! ",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                        }
+                    },
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Black),
+                ){
+                    Text(
+                        text = "Save!",
+                        style = MaterialTheme.typography.caption
+                    )
                 }
-            )
+            }
+        )
 
-        }
 
-        Row(
-            modifier = Modifier
-                .padding(15.dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = "Min Threshold (Percent)"
-            )
-
-            /*
-            * TODO: only allowing numbers------------------------------------------------------------------
-            * */
-            TextField(
-                modifier = Modifier.width(80.dp),
-                value = minThreshold,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number
-                ),
-                onValueChange = { newText ->
-                    minThreshold = newText
-                }
-            )
-
-        }
-
-        Row(
+/*        Row(
             modifier = Modifier
                 .padding(15.dp)
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.End
         ) {
-            Button(
-                onClick = {
 
-                    when {
-                        maxThreshold.text.toDouble() in 0.0..0.5
-                                && minThreshold.text.toDouble() in 0.0..0.5 -> {
-                            // Update datastore
-                            userPreferencesViewModel.setMaxThreshold(maxThreshold.text.toDouble())
-                            userPreferencesViewModel.setMinThreshold(minThreshold.text.toDouble())
-
-                        }
-                        else -> {
-                            Toast.makeText(
-                                context,
-                                "Please enter a decimal number between 0 and 0.5 for the min and max thresholds! ",
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
-                    }
-                },
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Black),
-            ){
-                Text(
-                    text = "Save!",
-                    style = MaterialTheme.typography.caption
-                )
-            }
-        }
-
-
-
-
+        }*/
     }
 
 

@@ -11,7 +11,9 @@ import androidx.compose.ui.unit.sp
 
 private val LightColorPalette = lightColors(
     primary = Color.Black,
-    secondary = Color.DarkGray
+    secondary = Color.DarkGray,
+    onPrimary = Color(0xFFEF5366),
+    onSecondary = Color(0xFF80EF5366)
 )
 
 private val WelcomeTypography = Typography(
@@ -25,6 +27,11 @@ private val WelcomeTypography = Typography(
         fontFamily = DJBFirstGradeTeacherFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 20.sp
+    ),
+    body2 = TextStyle(
+        fontFamily = DJBFirstGradeTeacherFamily,
+        fontWeight = FontWeight.Normal,
+        fontSize = 16.sp
     ),
     caption = TextStyle(
         fontFamily = DJBFirstGradeTeacherFamily,
@@ -47,7 +54,7 @@ private val AppTypography = Typography(
     body1 = TextStyle(
         fontFamily = DJBFirstGradeTeacherFamily,
         fontWeight = FontWeight.Normal,
-        fontSize = 18.sp
+        fontSize = 20.sp
     ),
     caption = TextStyle(
         fontFamily = DJBFirstGradeTeacherFamily,
