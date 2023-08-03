@@ -36,6 +36,7 @@ import com.example.ula_app.android.ui.viewmodel.UserPreferencesViewModel
 import com.mutualmobile.composesensors.rememberStepCounterSensorState
 import com.example.ula_app.android.ui.lockgame.dinogame.DinoGameActivity
 import com.example.ula_app.android.ui.lockgame.snakegame.presentation.activity.SnakeGameActivity
+import com.example.ula_app.android.ui.lockgame.flappybird.FlappyBirdActivity
 
 private const val TAG = "HomeScreen"
 
@@ -184,6 +185,16 @@ fun HomeScreen(
                             colors = ButtonDefaults.buttonColors(backgroundColor = Color.White, contentColor = Color.Black)
                         ) {
                             Text("Snake Game",
+                                style = MaterialTheme.typography.caption)
+                        }
+                        Button(
+                            onClick = {
+                                homeViewModel.setOpenDialog(false)
+                                context.startActivity(Intent(context, FlappyBirdActivity::class.java))
+                            },
+                            colors = ButtonDefaults.buttonColors(backgroundColor = Color.White, contentColor = Color.Black)
+                        ) {
+                            Text("Flappy Bird",
                                 style = MaterialTheme.typography.caption)
                         }
                         Button(
