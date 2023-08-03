@@ -9,6 +9,7 @@ buildscript {
         classpath(Deps.androidBuildTools)
         classpath(Deps.sqlDelightGradlePlugin)
         classpath(Deps.hiltGradlePlugin)
+        classpath(Deps.kotlinSerialization)
     }
 }
 

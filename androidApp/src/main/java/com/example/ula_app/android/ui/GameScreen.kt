@@ -15,6 +15,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -31,8 +32,12 @@ import com.example.ula_app.android.ui.game.HelpScreen
 import com.example.ula_app.android.ui.game.HomeScreen
 import com.example.ula_app.android.ui.game.SettingScreen
 import com.example.ula_app.android.ui.game.StatsScreen
+import com.example.ula_app.android.ui.theme.AppTheme
+import com.example.ula_app.android.ui.theme.WelcomeTheme
+import com.example.ula_app.android.ui.viewmodel.DebugViewModel
 import com.example.ula_app.android.ui.viewmodel.GoalViewModel
 import com.example.ula_app.android.ui.viewmodel.HomeViewModel
+import com.example.ula_app.android.ui.viewmodel.StepViewModel
 import com.example.ula_app.android.ui.viewmodel.UserPreferencesViewModel
 import com.example.ula_app.android.ui.welcome.WelcomePage1
 import com.example.ula_app.android.ui.welcome.WelcomePage2
@@ -43,9 +48,11 @@ import com.example.ula_app.android.util.DateTimeUtil
 enum class GameScreen() {
     Home,
     Stats,
+    StatsStepDetail,
     Help,
     Setting,
     Debug
+
 }
 
 // Screens in Welcome section.
@@ -58,10 +65,12 @@ enum class WelcomeScreen() {
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Game(
-    userPreferencesViewModel: UserPreferencesViewModel,
-    goalViewModel: GoalViewModel = viewModel(),
-    homeViewModel: HomeViewModel = viewModel(),
-    navController: NavHostController = rememberNavController()
+        userPreferencesViewModel: UserPreferencesViewModel,
+        stepViewModel: StepViewModel = viewModel(),
+        goalViewModel: GoalViewModel = viewModel(),
+        homeViewModel: HomeViewModel = viewModel(),
+        debugViewModel: DebugViewModel = viewModel(),
+        navController: NavHostController = rememberNavController()
 ) {
     // ui state
     val goalUiState by goalViewModel.uiState.collectAsState()
@@ -104,59 +113,74 @@ fun Game(
         ) {
             // Welcome page1
             composable(route = WelcomeScreen.Page1.name) {
-                WelcomePage1(
-                    onNextButtonClicked = {
-                        navController.navigate(WelcomeScreen.Page2.name)
-                    }
-                )
+                WelcomeTheme {
+                    WelcomePage1(
+                        onNextButtonClicked = {
+                            navController.navigate(WelcomeScreen.Page2.name)
+                        }
+                    )
+                }
             }
             // Welcome page2
             composable(route = WelcomeScreen.Page2.name) {
-                WelcomePage2(
-                    onPreviousButtonClicked = {
-                        navController.navigate(WelcomeScreen.Page1.name)
-                    },
-                    onNextButtonClicked = {
-                        navController.navigate(WelcomeScreen.Page3.name)
-                    }
-                )
+                WelcomeTheme {
+                    WelcomePage2(
+                        onPreviousButtonClicked = {
+                            navController.navigate(WelcomeScreen.Page1.name)
+                        },
+                        onNextButtonClicked = {
+                            navController.navigate(WelcomeScreen.Page3.name)
+                        }
+                    )
+                }
             }
             // Welcome page3
             composable(route = WelcomeScreen.Page3.name) {
-                WelcomePage3(
-                    onPreviousButtonClicked = {
-                        navController.navigate(WelcomeScreen.Page2.name)
-                    },
-                    onNextButtonClicked = {
-                        goalViewModel.setSteps(it)
-                        userPreferencesViewModel.setFirstTime(false)  // still need to fix the set false function here
-                        userPreferencesViewModel.setFirstDateTime(DateTimeUtil.getCurrentDateTime())
-                        navController.navigate(GameScreen.Home.name)
-                    }
-                )
+                WelcomeTheme {
+                    WelcomePage3(
+                        onPreviousButtonClicked = {
+                            navController.navigate(WelcomeScreen.Page2.name)
+                        },
+                        onNextButtonClicked = {
+    //                        goalViewModel.setSteps(it)
+                            userPreferencesViewModel.setGoal(it)
+                            userPreferencesViewModel.setFirstTime(false)
+                            userPreferencesViewModel.setFirstDateTime(DateTimeUtil.getCurrentDateTime())
+
+                            navController.navigate(GameScreen.Home.name)
+                        }
+                    )
+                }
             }
             // Home
             composable(route = GameScreen.Home.name) {
                 HomeScreen(
                     homeViewModel = homeViewModel,
-                    goalViewModel = goalViewModel
+                    userPreferencesViewModel = userPreferencesViewModel
                 )
             }
             // Stats
             composable(route = GameScreen.Stats.name) {
-                StatsScreen()
+                AppTheme {
+                    StatsScreen(stepViewModel, userPreferencesViewModel)
+                }
             }
             // Help
             composable(route = GameScreen.Help.name) {
-                HelpScreen()
+                AppTheme {
+                    HelpScreen()
+                }
+
             }
             // Setting
             composable(route = GameScreen.Setting.name) {
-                SettingScreen()
+                AppTheme {
+                    SettingScreen(userPreferencesViewModel)
+                }
             }
             // Debug
             composable(route = GameScreen.Debug.name) {
-                DebugScreen()
+                DebugScreen(homeViewModel, debugViewModel)
             }
         }
     }
@@ -190,7 +214,8 @@ fun BottomNavigationBar(
                     ) {
                         Icon(
                             painter = painterResource(id = item.icon),
-                            contentDescription = item.name
+                            contentDescription = item.name,
+                            modifier = Modifier.scale(item.scale)
                         )
                         if (selected) {
                             Text(

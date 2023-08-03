@@ -7,6 +7,7 @@ import com.example.ula_app.android.data.DataSource
 import com.example.ula_app.android.data.Goal
 import com.example.ula_app.android.data.ListNode
 import com.example.ula_app.android.data.MonsterCurrentStatus
+import com.example.ula_app.android.repo.UserPreferencesRepository
 import com.example.ula_app.android.util.DateTimeUtil
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -49,6 +50,14 @@ class HomeViewModel() : ViewModel() {
         _uiState.update { currentState ->
             currentState.copy(
                 tapCounter = tapCounter
+            )
+        }
+    }
+
+    fun setOpenDialog(openDialog: Boolean) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                openDialog = openDialog
             )
         }
     }
@@ -118,12 +127,12 @@ class HomeViewModel() : ViewModel() {
 
 
         // Check whether the movie will be locked
-        /*
-         * TODO: need to add buttons to navigate to little games or continue with fitness goal
-         * */
         if (currentMonsterMovie.hasLock) {
             sendMessage("Locked!!!")
-            return
+
+            setOpenDialog(true)
+
+//            return
         }
 
         // record this tap
@@ -147,7 +156,9 @@ class HomeViewModel() : ViewModel() {
     fun setAge(
         firstDateTime: Instant,
         currentStep: Int,
-        goal: Int
+        goal: Int,
+        maxThreshold: Double,
+        minThreshold: Double
     ) {
         // If the user playing for less than 1 days, set the start movie as 0_0
         if (DateTimeUtil.getDayDifference(DateTimeUtil.getCurrentDateTime(), firstDateTime)
@@ -159,16 +170,16 @@ class HomeViewModel() : ViewModel() {
         // If the user playing within 1 to 5 days, then the age is child
         // start setting child body status
         else if(DateTimeUtil.getDayDifference(DateTimeUtil.getCurrentDateTime(), firstDateTime)
-            <= DataSource.daysToAges[1] ||
+            <= DataSource.daysToAges[1] &&
             DateTimeUtil.getDayDifference(DateTimeUtil.getCurrentDateTime(), firstDateTime)
             > DataSource.daysToAges[0]) {
-            setChildBodyStatus(currentStep, goal)
+            setChildBodyStatus(currentStep, goal, maxThreshold, minThreshold)
         }
         // If the user playing for more than 5 days, then the age is adult
         // start setting adult body status
         else if(DateTimeUtil.getDayDifference(DateTimeUtil.getCurrentDateTime(), firstDateTime)
             > DataSource.daysToAges[1]) {
-            setAdultBodyStatus(currentStep, goal)
+            setAdultBodyStatus(currentStep, goal, maxThreshold, minThreshold)
         }
     }
 
@@ -181,7 +192,9 @@ class HomeViewModel() : ViewModel() {
     * */
     fun setChildBodyStatus(
         currentStep: Int,
-        goal: Int
+        goal: Int,
+        maxThreshold: Double,
+        minThreshold: Double
     ) {
 
         // If the cur time is out of checking range, do nothing. Otherwise check body status
@@ -189,17 +202,17 @@ class HomeViewModel() : ViewModel() {
             return
         }
 
-        if (currentStep >= DataSource.childThreshold[1] * goal) {
+        if (currentStep >= DataSource.childThreshold[1] * goal * (maxThreshold + 1)) {
             if(!checkBodyStatus(uiState.value.bodyStatus, "Normal")) {
                 setId(childNormalHead)
             }
         } else if (currentStep < DataSource.childThreshold[1] * goal
-            || currentStep >= DataSource.childThreshold[0] * goal) {
+            && currentStep >= DataSource.childThreshold[0] * goal) {
 
             if(!checkBodyStatus(uiState.value.bodyStatus, "Fat")) {
                 setId(childFatHead)
             }
-        } else if (currentStep < DataSource.childThreshold[0] * goal) {
+        } else if (currentStep < DataSource.childThreshold[0] * goal * (1 - minThreshold)) {
 
             if(!checkBodyStatus(uiState.value.bodyStatus, "Overweight")) {
                 setId(childOverweightHead)
@@ -217,7 +230,9 @@ class HomeViewModel() : ViewModel() {
     * */
     fun setAdultBodyStatus(
         currentStep: Int,
-        goal: Int
+        goal: Int,
+        maxThreshold: Double,
+        minThreshold: Double
     ) {
 
         // If the cur time is out of checking range, do nothing. Otherwise check body status
@@ -225,27 +240,27 @@ class HomeViewModel() : ViewModel() {
             return
         }
 
-        if (currentStep >= DataSource.adultThreshold[2] * goal) {
+        if (currentStep >= DataSource.adultThreshold[2] * goal* (maxThreshold + 1)) {
 
             if(!checkBodyStatus(uiState.value.bodyStatus, "Fit")) {
                 setId(adultFitHead)
             }
 
         } else if (currentStep < DataSource.adultThreshold[2] * goal
-            || currentStep >= DataSource.adultThreshold[1] * goal) {
+            && currentStep >= DataSource.adultThreshold[1] * goal) {
 
             if(!checkBodyStatus(uiState.value.bodyStatus, "Normal")) {
                 setId(adultNormalHead)
             }
 
         } else if (currentStep < DataSource.adultThreshold[1] * goal
-            || currentStep >= DataSource.adultThreshold[0] * goal) {
+            && currentStep >= DataSource.adultThreshold[0] * goal) {
 
             if(!checkBodyStatus(uiState.value.bodyStatus, "Fat")) {
                 setId(adultFatHead)
             }
 
-        } else if (currentStep < DataSource.adultThreshold[0] * goal) {
+        } else if (currentStep < DataSource.adultThreshold[0] * goal* (1 - minThreshold)) {
 
             if(!checkBodyStatus(uiState.value.bodyStatus, "Overweight")) {
                 setId(adultOverweightHead)
@@ -262,7 +277,7 @@ class HomeViewModel() : ViewModel() {
     fun checkDayTime(): Boolean {
 
         return (DateTimeUtil.getLocalDateTime() >= DataSource.timeThreshold[0]
-                || DateTimeUtil.getLocalDateTime() <= DataSource.timeThreshold[1])
+                && DateTimeUtil.getLocalDateTime() <= DataSource.timeThreshold[1])
     }
 
 
@@ -276,6 +291,46 @@ class HomeViewModel() : ViewModel() {
         targetStatus: String
     ): Boolean {
         return curStatus == targetStatus
+    }
+
+    /*
+    * Save the steps and date to datastore
+    * */
+
+
+    // For Debug tab UI only
+    fun setAgeAndBodyStatus(
+        age: String,
+        bodyStatus: String,
+    ) {
+        when{
+            age == "Egg" && bodyStatus == "NA" -> {
+                setId(eggHead)
+            }
+            age == "Child" && bodyStatus == "Normal" -> {
+                setId(childNormalHead)
+            }
+            age == "Child" && bodyStatus == "Fat" -> {
+                setId(childFatHead)
+            }
+            age == "Child" && bodyStatus == "Overweight" -> {
+                setId(childOverweightHead)
+            }
+            age == "Adult" && bodyStatus == "Normal" -> {
+                setId(adultNormalHead)
+            }
+            age == "Adult" && bodyStatus == "Fat" -> {
+                setId(adultFatHead)
+            }
+            age == "Adult" && bodyStatus == "Fit" -> {
+                setId(adultFitHead)
+            }
+            age == "Adult" && bodyStatus == "Overweight" -> {
+                setId(adultOverweightHead)
+            }
+            else -> {}
+
+        }
     }
 
 

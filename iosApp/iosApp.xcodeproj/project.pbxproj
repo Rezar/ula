@@ -65,7 +65,6 @@
 				550699ECC332884D152F0DF7 /* Pods-iosApp.debug.xcconfig */,
 				813FDFE4C438AF31ED93CF92 /* Pods-iosApp.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -213,7 +212,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"$SRCROOT/..\"\n./gradlew :shared:embedAndSignAppleFrameworkForXcode\n";
+			shellScript = "cd \"$SRCROOT/..\"\n./gradlew :shared:embedAndSignPodAppleFrameworkForXcode\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

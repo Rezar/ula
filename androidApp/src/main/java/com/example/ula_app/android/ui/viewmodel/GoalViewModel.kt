@@ -20,28 +20,12 @@ class GoalViewModel : ViewModel() {
     /*
     * Update the value of steps
     * */
-    fun setSteps(steps: Int) {
+/*    fun setSteps(steps: Int) {
         _uiState.update { currentState ->
             currentState.copy(
                 steps = steps
             )
         }
-    }
+    }*/
 
-    // Update the value of firstTime
-    fun setFirstTime(firstTime: Boolean) {
-        _uiState.update { currentState ->
-            currentState.copy(
-                firstTime = firstTime
-            )
-        }
-    }
-
-    fun setFirstDateTime(firstDateTime: Instant) {
-        _uiState.update {currentState ->
-            currentState.copy(
-                firstDateTime = firstDateTime
-            )
-        }
-    }
 }

@@ -2,6 +2,7 @@ package com.example.ula_app.android.data
 
 import android.net.Uri
 import com.example.ula_app.android.R
+import com.example.ula_app.android.ui.viewmodel.StepViewModel
 import kotlinx.datetime.LocalTime
 
 
@@ -9,10 +10,10 @@ object DataSource {
 
     // Welcome data sources
     val stepOptions = listOf(
-        5000,
-        10000,
-        15000,
-        20000
+        "5000",
+        "10000",
+        "15000",
+        "20000"
     )
 
     // Help tab data sources
@@ -45,6 +46,8 @@ object DataSource {
     )
 
 
+
+
     // Home tab data sources
     enum class MonsterAgeOptions {
         Egg,
@@ -71,6 +74,14 @@ object DataSource {
         1.2
     )
 
+    val progressBarThreshold: List<Double> = listOf(
+        0.4,
+        0.6,
+        0.8,
+        1.0,
+        1.2
+    )
+
     val daysToAges: List<Int> = listOf(
         1,
         5
@@ -85,27 +96,32 @@ object DataSource {
         BottomNavigationBarItem(
             icon = R.drawable.ic_ula,
             name = "Home",
-            route = "home"
+            route = "home",
+            scale = 1f
         ),
         BottomNavigationBarItem(
             icon = R.drawable.ic_stats,
             name = "Stats",
-            route = "stats"
+            route = "stats",
+            scale = 1f
         ),
         BottomNavigationBarItem(
             icon = R.drawable.ic_help,
             name = "Help",
-            route = "help"
+            route = "help",
+            scale = 0.6f
         ),
         BottomNavigationBarItem(
             icon = R.drawable.ic_cog,
             name = "Setting",
-            route = "setting"
+            route = "setting",
+            scale = 1f
         ),
         BottomNavigationBarItem(
             icon = R.drawable.ic_bug,
             name = "Debug",
-            route = "debug"
+            route = "debug",
+            scale = 1.7f
         )
     )
 
@@ -138,7 +154,7 @@ object DataSource {
         "8_2",
         "8_3",
 
-    )
+        )
 
     val childFatRule = listOf(
         "11_1_1",
@@ -343,32 +359,32 @@ object DataSource {
             MonsterAgeOptions.Egg.name,
             MonsterBodyStatusOptions.NA.name
         ),
-/*        "5_1" to MonsterMovie(
-            Uri.parse(androidResourcePath + R.raw.v5_1),
-            "5_1",
-            0,
-            5,
-            false,
-            true,
-            MonsterAgeOptions.Egg.name,
-            MonsterBodyStatusOptions.NA.name
-        ),
-        "5_2" to MonsterMovie(
-            Uri.parse(androidResourcePath + R.raw.v5_2),
-            "5_2",
-            1,
-            5,
-            false,
-            true,
-            MonsterAgeOptions.Egg.name,
-            MonsterBodyStatusOptions.NA.name
-        ),*/
+        /*        "5_1" to MonsterMovie(
+                    Uri.parse(androidResourcePath + R.raw.v5_1),
+                    "5_1",
+                    0,
+                    5,
+                    false,
+                    true,
+                    MonsterAgeOptions.Egg.name,
+                    MonsterBodyStatusOptions.NA.name
+                ),
+                "5_2" to MonsterMovie(
+                    Uri.parse(androidResourcePath + R.raw.v5_2),
+                    "5_2",
+                    1,
+                    5,
+                    false,
+                    true,
+                    MonsterAgeOptions.Egg.name,
+                    MonsterBodyStatusOptions.NA.name
+                ),*/
         "5_3" to MonsterMovie(
             Uri.parse(androidResourcePath + R.raw.v5_3),
             "5_3",
             1,
             5,
-            true,
+            false,
             true,
             MonsterAgeOptions.Egg.name,
             MonsterBodyStatusOptions.NA.name
@@ -556,7 +572,7 @@ object DataSource {
         "11_1_3" to MonsterMovie(
             Uri.parse(androidResourcePath + R.raw.v11_1_3),
             "11_1_3",
-            2,
+            1,
             11,
             true,
             false,
@@ -596,7 +612,7 @@ object DataSource {
         "12_1_1" to MonsterMovie(
             Uri.parse(androidResourcePath + R.raw.v12_1_1),
             "12_1_1",
-            0,
+            1,
             12,
             false,
             false,
@@ -636,7 +652,7 @@ object DataSource {
         "12_3_1" to MonsterMovie(
             Uri.parse(androidResourcePath + R.raw.v12_3_1),
             "12_3_1",
-            0,
+            1,
             12,
             false,
             false,
@@ -989,7 +1005,7 @@ object DataSource {
         "21_2" to MonsterMovie(
             Uri.parse(androidResourcePath + R.raw.v21_2),
             "21_2",
-            2,
+            3,
             21,
             false,
             false,
@@ -1189,7 +1205,7 @@ object DataSource {
         "26_4" to MonsterMovie(
             Uri.parse(androidResourcePath + R.raw.v26_4),
             "26_4",
-            3,
+            1,
             26,
             false,
             true,

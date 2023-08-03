@@ -4,4 +4,7 @@
     <color name="gray_400">#FFBDBDBD</color>
     <color name="gray_600">#FF757575</color>
     <color name="colorDayNightPurple">#B388FF</color>
+    <color name="pink">#EF5366</color>
+    <color name="pink40">#64EF5366</color>
+    <color name="pink50">#80EF5366</color>
 </resources>
