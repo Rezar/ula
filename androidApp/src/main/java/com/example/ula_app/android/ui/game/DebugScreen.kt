@@ -29,9 +29,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.ula_app.android.data.DataSource
-import com.example.ula_app.android.ui.viewmodel.DebugViewModel
-import com.example.ula_app.android.ui.viewmodel.HomeViewModel
+import com.example.ula_app.android.ui.viewmodel.AndroidDebugViewModel
+import com.example.ula_app.android.ui.viewmodel.AndroidHomeViewModel
+import com.example.ula_app.data.DataSource
+import com.example.ula_app.game.DebugViewModel
+import com.example.ula_app.game.HomeViewModel
 
 private const val TAG = "DebugScreen"
 
@@ -40,8 +42,8 @@ private const val rightWeight = 1 - leftWeight
 
 @Composable
 fun DebugScreen(
-        homeViewModel: HomeViewModel = viewModel(),
-        debugViewModel: DebugViewModel = viewModel()
+    homeViewModel: AndroidHomeViewModel = viewModel(),
+    debugViewModel: AndroidDebugViewModel = viewModel()
 ) {
     val ageOptions = listOf(
         "",

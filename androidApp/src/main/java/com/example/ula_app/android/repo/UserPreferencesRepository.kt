@@ -9,10 +9,7 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.example.ula_app.android.data.UserPreferences
-import com.example.ula_app.android.ui.viewmodel.StepsWithDates
-import com.example.ula_app.android.util.DateTimeUtil
 import kotlinx.coroutines.flow.first
-import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 
 class UserPreferencesRepository(private val dataStore: DataStore<Preferences>) {
@@ -143,7 +140,7 @@ class UserPreferencesRepository(private val dataStore: DataStore<Preferences>) {
         val maxThreshold = preferences[PreferencesKeys.MAX_THRESHOLD] ?: .2
         val minThreshold = preferences[PreferencesKeys.MIN_THRESHOLD] ?: .2
         val effectiveDays = preferences[PreferencesKeys.EFFECTIVE_DAYS] ?: 3
-        val effectiveDate = Instant.fromEpochSeconds(preferences[PreferencesKeys.EFFECTIVE_DATE] ?: DateTimeUtil.getCurrentDateTime().epochSeconds)
+        val effectiveDate = Instant.fromEpochSeconds(preferences[PreferencesKeys.EFFECTIVE_DATE] ?: 0L)
         val goal = preferences[PreferencesKeys.GOAL] ?: 5000
 
         val stepsWithDates = preferences[PreferencesKeys.STEPS_WITH_DATE] ?: ""

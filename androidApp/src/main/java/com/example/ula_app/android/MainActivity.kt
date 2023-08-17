@@ -5,9 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.datastore.dataStore
 import androidx.datastore.preferences.preferencesDataStore
-import com.example.ula_app.android.data.UserPreferencesSerializer
 import com.example.ula_app.android.repo.UserPreferencesRepository
 import com.example.ula_app.android.ui.Game
 import com.example.ula_app.android.ui.viewmodel.StepViewModel

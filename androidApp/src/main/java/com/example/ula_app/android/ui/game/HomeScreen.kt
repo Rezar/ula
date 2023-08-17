@@ -1,6 +1,7 @@
 package com.example.ula_app.android.ui.game
 
 import android.content.Intent
+import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -29,20 +30,22 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
-import com.example.ula_app.android.TicTacToeActivity
+import com.example.ula_app.android.ui.lockgame.tictactoe.TicTacToeActivity
 import com.example.ula_app.android.data.DataSource
-import com.example.ula_app.android.ui.viewmodel.HomeViewModel
+import com.example.ula_app.game.HomeViewModel
 import com.example.ula_app.android.ui.viewmodel.UserPreferencesViewModel
 import com.mutualmobile.composesensors.rememberStepCounterSensorState
 import com.example.ula_app.android.ui.lockgame.dinogame.DinoGameActivity
 import com.example.ula_app.android.ui.lockgame.snakegame.presentation.activity.SnakeGameActivity
 import com.example.ula_app.android.ui.lockgame.flappybird.FlappyBirdActivity
+import com.example.ula_app.android.ui.viewmodel.AndroidHomeViewModel
+import com.example.ula_app.presentation.UiMonsterMovie
 
 private const val TAG = "HomeScreen"
 
 @Composable
 fun HomeScreen(
-    homeViewModel: HomeViewModel = viewModel(),
+    homeViewModel: AndroidHomeViewModel = viewModel(),
     userPreferencesViewModel: UserPreferencesViewModel = viewModel()
 ) {
 
@@ -61,12 +64,19 @@ fun HomeScreen(
     exoPlayer.apply {
         setMediaItem(
             MediaItem.fromUri(
-                DataSource.monsterMovies.get(homeUiState.id)?.uri!!
+                Uri.parse(DataSource.androidResourcePath + UiMonsterMovie.allMonsterMovie.get(homeUiState.id)?.uri!!)
             )
         )
         playWhenReady = true  // automatically play the file after successfully loading media and resources
         prepare()
-        if (DataSource.monsterMovies.get(homeUiState.id)?.loop!!) {
+
+        // 1. get UiMonsterMovie class from androidMain
+        // 2. get allMonsterMovie (which is a map) in UiMonsterMovie class
+        // 3. search the movie by id
+        // 4. get commonMonsterMovie in allMonsterMovie
+        // 5. get the loop field inside the monsterMovie class in commonMonsterMovie
+        if (UiMonsterMovie
+                .allMonsterMovie.get(homeUiState.id)?.commonMonsterMovie?.monsterMovie?.loop!!) {
             repeatMode = Player.REPEAT_MODE_ONE
         } else {
             repeatMode = Player.REPEAT_MODE_OFF
@@ -86,7 +96,13 @@ fun HomeScreen(
         * make the currentStep as a state so that if the currentStep changes the home tab
         * will re-render and the bodyStatus will be checked through LaunchEffect.
         * */
-        homeViewModel.setAge(userPreUiState.firstDateTime, stepSensor.stepCount.toInt(), userPreUiState.goal, userPreUiState.maxThreshold, userPreUiState.minThreshold)
+        homeViewModel.setAge(
+            userPreUiState.firstDateTime.epochSeconds,
+            stepSensor.stepCount.toInt(),
+            userPreUiState.goal,
+            userPreUiState.maxThreshold,
+            userPreUiState.minThreshold
+        )
 
 //        if( currentMonsterMovie?.age == "Child") {
 //            homeViewModel.setChildBodyStatus(5000, goalUiState.steps)

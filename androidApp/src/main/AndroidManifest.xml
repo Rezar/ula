@@ -18,9 +18,8 @@
         </activity>
 
         <!--gaming activities-->
-        <!--TicTacToe-->
         <activity
-            android:name=".TicTacToeActivity">
+            android:name=".ui.lockgame.tictactoe.TicTacToeActivity">
         </activity>
         <activity
             android:name=".ui.lockgame.dinogame.DinoGameActivity">

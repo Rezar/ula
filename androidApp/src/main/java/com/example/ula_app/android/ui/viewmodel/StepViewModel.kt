@@ -2,8 +2,8 @@ package com.example.ula_app.android.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.ula_app.android.data.DataSource
 import com.example.ula_app.android.repo.UserPreferencesRepository
+import com.example.ula_app.data.DataSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,11 +13,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.Instant
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.Serializable
+//import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 
 
-@Serializable
+//@Serializable
 data class StepsWithDates(
     val date: Instant,
     val steps: Int
@@ -37,6 +37,7 @@ class StepViewModel(
     // Stats sample data
     val stepHistory = listOf(
         StepsWithDates(
+//            date = Instant.parse("2023-07-11T23:59:44.475Z").epochSeconds,
             date = Instant.parse("2023-07-11T23:59:44.475Z"),
             steps = 3000
         ),

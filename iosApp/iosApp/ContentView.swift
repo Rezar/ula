@@ -1,11 +1,14 @@
 import SwiftUI
 import shared
 
-struct Home: View {
-	let greet = Greeting().greet()
+import AVKit
 
+//@available(iOS 15.0, *)
+struct Home: View {
+	
+    
 	var body: some View {
-		Text(greet)
+        HomeScreen()
 	}
     
 }
@@ -42,37 +45,38 @@ struct Debug: View {
     
 }
 
+//@available(iOS 15.0, *)
 struct GameScreen: View {
     
     var body: some View {
         TabView{
             Home()
                 .tabItem{
-                    Text("Home")
+//                    Text("Home")
                     Image("ic_ula").resizable().frame(width: 32.0, height: 32.0).clipped()
                 }
             
             Stats()
                 .tabItem{
-                    Text("Stats")
+//                    Text("Stats")
                     Image("ic_stats").resizable().frame(width: 32.0, height: 32.0).clipped()
                 }
             
             Help()
                 .tabItem{
-                    Text("Help")
+//                    Text("Help")
                     Image("ic_help").resizable().frame(width: 32.0, height: 32.0).clipped()
                 }
             
             Setting()
                 .tabItem{
-                    Text("Setting")
+//                    Text("Setting")
                     Image("ic_cog").resizable().frame(width: 32.0, height: 32.0).clipped()
                 }
             
             Debug()
                 .tabItem{
-                    Text("Debug")
+//                    Text("Debug")
                     Image("ic_debug").resizable().frame(width: 32.0, height: 32.0).clipped()
                 }
         }

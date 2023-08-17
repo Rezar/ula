@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.LinearProgressIndicator
@@ -36,21 +35,18 @@ import com.example.ula_app.android.ui.viewmodel.StepViewModel
 import androidx.compose.runtime.getValue
 import com.example.ula_app.android.data.UserPreferences
 import com.example.ula_app.android.ui.viewmodel.UserPreferencesViewModel
-import com.example.ula_app.android.util.DateTimeUtil
-import com.mutualmobile.composesensors.rememberStepCounterSensorState
+import com.example.ula_app.util.DateTimeUtil
 
 @Composable
 fun StatsDetailScreen(
     onBackClicked: () -> Unit = {},
     stepViewModel: StepViewModel = viewModel(),
-//    goalViewModel: GoalViewModel = viewModel(),
     userPreferencesViewModel: UserPreferencesViewModel = viewModel()
 ) {
 
     // stepHistory list from datastore or state
     val stepHistoryUiState by stepViewModel.userState.collectAsState()
     val userPreUiState by userPreferencesViewModel.userPreferencesState.collectAsState()
-//    val goalUiState by goalViewModel.uiState.collectAsState()
 
     Log.i("StatsDetailScreen", "goalSteps: ${userPreUiState.goal}")
 

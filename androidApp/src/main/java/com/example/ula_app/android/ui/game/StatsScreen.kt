@@ -22,7 +22,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.ula_app.android.ui.viewmodel.GoalViewModel
 import com.example.ula_app.android.ui.viewmodel.StepViewModel
 import com.mutualmobile.composesensors.rememberStepCounterSensorState
 import com.example.ula_app.android.ui.viewmodel.UserPreferencesViewModel

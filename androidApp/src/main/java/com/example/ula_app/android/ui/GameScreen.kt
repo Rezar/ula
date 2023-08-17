@@ -1,6 +1,5 @@
 package com.example.ula_app.android.ui
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
@@ -34,15 +33,16 @@ import com.example.ula_app.android.ui.game.SettingScreen
 import com.example.ula_app.android.ui.game.StatsScreen
 import com.example.ula_app.android.ui.theme.AppTheme
 import com.example.ula_app.android.ui.theme.WelcomeTheme
-import com.example.ula_app.android.ui.viewmodel.DebugViewModel
-import com.example.ula_app.android.ui.viewmodel.GoalViewModel
-import com.example.ula_app.android.ui.viewmodel.HomeViewModel
+import com.example.ula_app.android.ui.viewmodel.AndroidDebugViewModel
+import com.example.ula_app.android.ui.viewmodel.AndroidHomeViewModel
+import com.example.ula_app.game.DebugViewModel
+import com.example.ula_app.game.HomeViewModel
 import com.example.ula_app.android.ui.viewmodel.StepViewModel
 import com.example.ula_app.android.ui.viewmodel.UserPreferencesViewModel
 import com.example.ula_app.android.ui.welcome.WelcomePage1
 import com.example.ula_app.android.ui.welcome.WelcomePage2
 import com.example.ula_app.android.ui.welcome.WelcomePage3
-import com.example.ula_app.android.util.DateTimeUtil
+import com.example.ula_app.util.DateTimeUtil
 
 // Screens in Game section.
 enum class GameScreen() {
@@ -65,18 +65,15 @@ enum class WelcomeScreen() {
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Game(
-        userPreferencesViewModel: UserPreferencesViewModel,
-        stepViewModel: StepViewModel = viewModel(),
-        goalViewModel: GoalViewModel = viewModel(),
-        homeViewModel: HomeViewModel = viewModel(),
-        debugViewModel: DebugViewModel = viewModel(),
-        navController: NavHostController = rememberNavController()
+    userPreferencesViewModel: UserPreferencesViewModel,
+    stepViewModel: StepViewModel = viewModel(),
+    homeViewModel: AndroidHomeViewModel = viewModel(),
+    debugViewModel: AndroidDebugViewModel = viewModel(),
+    navController: NavHostController = rememberNavController()
 ) {
     // ui state
-    val goalUiState by goalViewModel.uiState.collectAsState()
     val userPreferencesUiState by userPreferencesViewModel.userPreferencesState.collectAsState()
 
-    Log.i("GameScreen", "${goalUiState.firstTime}")
 
     // Collection of game screens.
     val gameScreens = listOf(

@@ -19,21 +19,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import com.example.ula_app.android.R
-import com.example.ula_app.android.data.DataSource
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.sp
+import com.example.ula_app.data.DataSource
+import com.example.ula_app.presentation.UiFAQ
 
 private const val TAG = "HelpScreen"
 
@@ -52,11 +47,11 @@ fun HelpScreen() {
             style = MaterialTheme.typography.h1
         )
         LazyColumn {
-            itemsIndexed(DataSource.questionsAnswers) {index, questionAnswer ->
+            itemsIndexed(UiFAQ.allFAQs) { index, questionAnswer ->
                 ExpandableCard(
                     id = index,
-                    title = stringResource(id = questionAnswer.question),
-                    description = stringResource(id = questionAnswer.answer)
+                    title = questionAnswer.faq.question,
+                    description = questionAnswer.faq.answer
                 )
             }
         }
