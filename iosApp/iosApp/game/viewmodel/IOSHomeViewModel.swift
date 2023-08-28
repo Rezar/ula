@@ -10,9 +10,8 @@ import Foundation
 import shared
 import AVKit
 
-//@available(iOS 15.0, *)
-extension HomeScreen {
-    @MainActor class IOSHomeViewModel: ObservableObject {
+
+class IOSHomeViewModel: ObservableObject {
         
         private let homeViewModel: HomeViewModel
         
@@ -82,4 +81,4 @@ extension HomeScreen {
         }
         
     }
-}
+

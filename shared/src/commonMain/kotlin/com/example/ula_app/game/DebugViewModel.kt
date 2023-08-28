@@ -1,5 +1,6 @@
 package com.example.ula_app.game
 
+import com.example.ula_app.data.DataSource
 import com.example.ula_app.data.dataclass.DebugSelections
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -50,6 +51,10 @@ class DebugViewModel(){
                 false
             }
         }
+    }
+
+    fun getMovieIdOptions (): List<String> {
+        return DataSource.movieIdOptions
     }
 
 

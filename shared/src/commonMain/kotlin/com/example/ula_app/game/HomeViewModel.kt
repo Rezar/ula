@@ -295,6 +295,7 @@ class HomeViewModel(
     }
 
     /*
+    * TODO
     * Save the steps and date to datastore
     * */
 

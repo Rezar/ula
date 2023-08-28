@@ -37,6 +37,21 @@ private const val TAG = "HelpScreen"
 @Preview
 fun HelpScreen() {
 
+
+    /*
+    * TODO: remove the UiFAQ, CommonFAQ. We will iterate to display the questions and answers
+    *  for Android and IOS separately
+    * */
+//    var answers = listOf(
+//        Answer1(),
+//        Answer2(),
+//        Answer3(),
+//        Answer4(),
+//        Answer5(),
+//        Answer6()
+//    )
+
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -52,6 +67,7 @@ fun HelpScreen() {
                     id = index,
                     title = questionAnswer.faq.question,
                     description = questionAnswer.faq.answer
+//                    description = answers.get(index) // TODO: After change the UiFAQ and CommonFAQ
                 )
             }
         }
@@ -65,6 +81,7 @@ fun HelpScreen() {
 fun ExpandableCard(
     id: Int,
     title: String,
+//    description: @Composable () -> Unit,   // TODO: After change the UiFAQ and CommonFAQ
     description: String,
     titleFontSize: TextUnit = MaterialTheme.typography.h6.fontSize,
     titleFontWeight: FontWeight = FontWeight.Bold,
@@ -128,10 +145,11 @@ fun ExpandableCard(
                 }
             }
             if (expandedState) {
-                if (id == 1) {
-                    /*TODO: Write different composable function for each questions
-                    *  if we have some design or drawings for the some answers. */
-                }
+                /*
+                *TODO: Write different composable function for each questions here!
+                * if we have some design or drawings for some answers.
+                * */
+
                 Text(
                     text = description,
                     fontSize = descriptionFontSize,
@@ -151,6 +169,26 @@ fun Answer1(){
 
 @Composable
 fun Answer2(){
+
+}
+
+@Composable
+fun Answer3(){
+
+}
+
+@Composable
+fun Answer4(){
+
+}
+
+@Composable
+fun Answer5(){
+
+}
+
+@Composable
+fun Answer6(){
 
 }
 

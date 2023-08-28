@@ -1,5 +1,6 @@
 package com.example.ula_app.android.ui.game
 
+import android.content.ContentResolver
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast

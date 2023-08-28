@@ -24,7 +24,7 @@ struct Stats: View {
 struct Help: View {
 
     var body: some View {
-        Text("Help")
+        HelpListScreen()
     }
     
 }
@@ -40,7 +40,7 @@ struct Setting: View {
 struct Debug: View {
 
     var body: some View {
-        Text("Debug")
+        DebugScreen()
     }
     
 }

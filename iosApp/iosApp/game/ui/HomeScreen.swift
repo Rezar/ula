@@ -11,7 +11,6 @@ import SwiftUI
 import shared
 import AVKit
 
-//@available(iOS 15.0, *)
 struct HomeScreen: View {
     
     @ObservedObject var homeViewModel: IOSHomeViewModel
@@ -19,13 +18,12 @@ struct HomeScreen: View {
     
     init() {
         self.homeViewModel = IOSHomeViewModel()
-//        _openDialog = false // if use @Binding, need to switch to this initialization
         
         if homeViewModel.avPlayer == nil {
             homeViewModel.avPlayer = AVPlayer(url: Bundle.main.url(
-                        forResource: "v" + homeViewModel.homeUiState.id,
-                        withExtension: "mp4"
-                    )!)  // initialize the video player according to the record of the state flow
+                forResource: "v" + homeViewModel.homeUiState.id,
+                withExtension: "mp4"
+            )!)  // initialize the video player according to the record of the state flow
         } else {
             homeViewModel.avPlayer?.replaceCurrentItem(with: AVPlayerItem(url: Bundle.main.url(
                 forResource: "v" + homeViewModel.homeUiState.id,
@@ -35,19 +33,18 @@ struct HomeScreen: View {
     }
     
     
-
     var body: some View {
         
-        let currentMovie =  UiMonsterMovie.Companion().allMonsterMovie[homeViewModel.homeUiState.id]?.commonMonsterMovie.monsterMovie
+        let currentMovie =  (UiMonsterMovie.Companion().allMonsterMovie[homeViewModel.homeUiState.id]?.commonMonsterMovie.monsterMovie)
         
         VStack {
             VideoPlayer(player: homeViewModel.avPlayer)
-                        .scaledToFit()
-                        .disabled(true)   // disable the controller
-                        .onAppear() {
-                            homeViewModel.avPlayer?.play()  // play the video as default
-                            addObserver(currentVideo: currentMovie)  // loop the video if the datasource record said so
-                        }
+                .scaledToFit()
+                .disabled(true)   // disable the controller
+                .onAppear() {
+                    homeViewModel.avPlayer?.play()  // play the video as default
+                    addObserver(currentVideo: currentMovie)  // loop the video if the datasource record said so
+                }
             
             Text(homeViewModel.homeUiState.id)
         }
@@ -76,20 +73,12 @@ struct HomeScreen: View {
             print(openDialog)
             
         }
-//        .alert("Want to play a little game? ", isPresented: $openDialog ) {
-//            Button("Tic Tac Toe", action: {})
-//            Button("Dino Game", action: {})
-//            Button("Snake Game", action: {})
-//            Button("Flappy Bird", action: {})
-//
-//            Button("Nah, I am good...", role: .cancel, action: {
-//                homeViewModel.setOpenDialog(openDialog: false)
-//            })
-//        }
         
         
         .confirmationDialog("Want to play a little game? ", isPresented: $openDialog) {
 
+            
+            // TODO: add the actions to link to the games
             Button("Tic Tac Toe", action: {})
             Button("Dino Game", action: {})
             Button("Snake Game", action: {})
@@ -131,10 +120,9 @@ struct HomeScreen: View {
     }
 }
 
-//@available(iOS 15.0, *)
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        HomeScreen()
-    }
-}
+//struct HomeScreen_Previews: PreviewProvider {
+//    static var previews: some View {
+//        HomeScreen()
+//    }
+//}
 

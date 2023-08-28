@@ -12,7 +12,12 @@
 		2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2152FB032600AC8F00CF470E /* iOSApp.swift */; };
 		750F4D952A8D972B0024120D /* IOSHomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 750F4D942A8D972B0024120D /* IOSHomeViewModel.swift */; };
 		750F4D972A8D97FB0024120D /* HomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 750F4D962A8D97FB0024120D /* HomeScreen.swift */; };
+		751EC1962A917F3700D28D9F /* IOSDebugViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 751EC1952A917F3700D28D9F /* IOSDebugViewModel.swift */; };
+		751EC1982A917F4800D28D9F /* DebugScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 751EC1972A917F4800D28D9F /* DebugScreen.swift */; };
 		7555FF83242A565900829871 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7555FF82242A565900829871 /* ContentView.swift */; };
+		75AAFD352A97C765000418E1 /* HelpScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75AAFD342A97C765000418E1 /* HelpScreen.swift */; };
+		75AAFD382A97DBEF000418E1 /* IOSFAQ.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75AAFD372A97DBEF000418E1 /* IOSFAQ.swift */; };
+		75AAFD3A2A97DE66000418E1 /* HelpListScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75AAFD392A97DE66000418E1 /* HelpListScreen.swift */; };
 		75B128692A8E8B35003715E4 /* v9_1.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 75B128082A8E8B32003715E4 /* v9_1.mp4 */; };
 		75B1286A2A8E8B35003715E4 /* v26_3.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 75B128092A8E8B32003715E4 /* v26_3.mp4 */; };
 		75B1286B2A8E8B35003715E4 /* v11_1_1.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 75B1280A2A8E8B32003715E4 /* v11_1_1.mp4 */; };
@@ -133,10 +138,15 @@
 		550699ECC332884D152F0DF7 /* Pods-iosApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iosApp.debug.xcconfig"; path = "Target Support Files/Pods-iosApp/Pods-iosApp.debug.xcconfig"; sourceTree = "<group>"; };
 		5F5384E0C71B1083728DB9A7 /* Pods_iosApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iosApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		750F4D942A8D972B0024120D /* IOSHomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOSHomeViewModel.swift; sourceTree = "<group>"; };
-		750F4D962A8D97FB0024120D /* HomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreen.swift; sourceTree = "<group>"; };
+		750F4D962A8D97FB0024120D /* HomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreen.swift; sourceTree = "<group>"; usesTabs = 0; };
+		751EC1952A917F3700D28D9F /* IOSDebugViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOSDebugViewModel.swift; sourceTree = "<group>"; };
+		751EC1972A917F4800D28D9F /* DebugScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugScreen.swift; sourceTree = "<group>"; };
 		7555FF7B242A565900829871 /* iosApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iosApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7555FF82242A565900829871 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		7555FF8C242A565B00829871 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		75AAFD342A97C765000418E1 /* HelpScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpScreen.swift; sourceTree = "<group>"; };
+		75AAFD372A97DBEF000418E1 /* IOSFAQ.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOSFAQ.swift; sourceTree = "<group>"; };
+		75AAFD392A97DE66000418E1 /* HelpListScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpListScreen.swift; sourceTree = "<group>"; };
 		75B128082A8E8B32003715E4 /* v9_1.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; name = v9_1.mp4; path = ../shared/src/commonMain/resources/raw/v9_1.mp4; sourceTree = "<group>"; };
 		75B128092A8E8B32003715E4 /* v26_3.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; name = v26_3.mp4; path = ../shared/src/commonMain/resources/raw/v26_3.mp4; sourceTree = "<group>"; };
 		75B1280A2A8E8B32003715E4 /* v11_1_1.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; name = v11_1_1.mp4; path = ../shared/src/commonMain/resources/raw/v11_1_1.mp4; sourceTree = "<group>"; };
@@ -269,6 +279,7 @@
 		750F4D912A8D95E10024120D /* game */ = {
 			isa = PBXGroup;
 			children = (
+				75AAFD362A97DBDC000418E1 /* data */,
 				7594CD342A8DF2F000CED7CF /* util */,
 				750F4D932A8D96D80024120D /* viewmodel */,
 				750F4D922A8D96CE0024120D /* ui */,
@@ -280,6 +291,9 @@
 			isa = PBXGroup;
 			children = (
 				750F4D962A8D97FB0024120D /* HomeScreen.swift */,
+				751EC1972A917F4800D28D9F /* DebugScreen.swift */,
+				75AAFD342A97C765000418E1 /* HelpScreen.swift */,
+				75AAFD392A97DE66000418E1 /* HelpListScreen.swift */,
 			);
 			path = ui;
 			sourceTree = "<group>";
@@ -288,6 +302,7 @@
 			isa = PBXGroup;
 			children = (
 				750F4D942A8D972B0024120D /* IOSHomeViewModel.swift */,
+				751EC1952A917F3700D28D9F /* IOSDebugViewModel.swift */,
 			);
 			path = viewmodel;
 			sourceTree = "<group>";
@@ -433,6 +448,14 @@
 			children = (
 			);
 			path = util;
+			sourceTree = "<group>";
+		};
+		75AAFD362A97DBDC000418E1 /* data */ = {
+			isa = PBXGroup;
+			children = (
+				75AAFD372A97DBEF000418E1 /* IOSFAQ.swift */,
+			);
+			path = data;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -665,8 +688,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				75AAFD352A97C765000418E1 /* HelpScreen.swift in Sources */,
 				750F4D972A8D97FB0024120D /* HomeScreen.swift in Sources */,
+				75AAFD382A97DBEF000418E1 /* IOSFAQ.swift in Sources */,
 				2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */,
+				751EC1962A917F3700D28D9F /* IOSDebugViewModel.swift in Sources */,
+				75AAFD3A2A97DE66000418E1 /* HelpListScreen.swift in Sources */,
+				751EC1982A917F4800D28D9F /* DebugScreen.swift in Sources */,
 				750F4D952A8D972B0024120D /* IOSHomeViewModel.swift in Sources */,
 				7555FF83242A565900829871 /* ContentView.swift in Sources */,
 			);
@@ -805,6 +833,7 @@
 					"$(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)",
 				);
 				INFOPLIST_FILE = iosApp/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -840,6 +869,7 @@
 					"$(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)",
 				);
 				INFOPLIST_FILE = iosApp/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
