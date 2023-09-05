@@ -1,6 +1,7 @@
 package com.example.ula_app.android.ui.game
 
 import android.graphics.Typeface
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,9 +13,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.ula_app.android.Singleton
 import com.example.ula_app.android.ui.viewmodel.StepViewModel
 import com.example.ula_app.android.ui.viewmodel.StepsWithDates
 import com.example.ula_app.android.ui.viewmodel.UserPreferencesViewModel
@@ -52,16 +55,23 @@ import com.patrykandpatrick.vico.core.marker.Marker
 import com.patrykandpatrick.vico.core.chart.dimensions.HorizontalDimensions
 import com.patrykandpatrick.vico.core.chart.layout.HorizontalLayout
 
+private const val TAG = "StepChart"
+
+
 @Composable
 fun StepChart(
 //    onBackClicked: () -> Unit = {},
-    stepViewModel: StepViewModel = viewModel(),
-    userPreferencesViewModel: UserPreferencesViewModel = viewModel()
 ){
+    val context = LocalContext.current
+    val userPreferencesViewModel= Singleton.getInstance<UserPreferencesViewModel>(context)
+    val stepViewModel= Singleton.getInstance<StepViewModel>(context)
+
     // stepHistory list from datastore or state
     val stepHistoryUiState by stepViewModel.userState.collectAsState()
     val userPreUiState by userPreferencesViewModel.userPreferencesState.collectAsState()
     val stepHistoryList = stepHistoryUiState.data
+
+    Log.e("$TAG", "$stepHistoryList")
     val chartEntryModelProducer = ChartEntryModelProducer(getSteps(stepHistoryList))
 
     // line components

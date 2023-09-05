@@ -1,4 +1,4 @@
-package com.example.ula_app.android.component
+package com.example.ula_app.android.ui.component
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Button

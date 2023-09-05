@@ -1,6 +1,7 @@
 package com.example.ula_app.android.ui.game
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,20 +23,26 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material.Switch
 import androidx.compose.material.SwitchDefaults
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.ula_app.android.component.SettingFieldsRow
+import com.example.ula_app.android.Singleton
+import com.example.ula_app.android.SnackBarManager
+import com.example.ula_app.android.ui.component.SettingFieldsRow
 import com.example.ula_app.android.ui.viewmodel.UserPreferencesViewModel
 import com.example.ula_app.util.DateTimeUtil
+import kotlinx.coroutines.launch
+import java.io.IOException
 
 private const val TAG = "SettingScreen"
 
@@ -44,9 +51,10 @@ enum class SettingAdvancedSegment(){
 }
 
 @Composable
-fun SettingScreen(
-    userPreferencesViewModel: UserPreferencesViewModel = viewModel()
-) {
+fun SettingScreen() {
+    val context = LocalContext.current
+
+    val userPreferencesViewModel: UserPreferencesViewModel = Singleton.getInstance<UserPreferencesViewModel>(context)
     val userPreUiState by userPreferencesViewModel.userPreferencesState.collectAsState()
 
     var currentScreen by remember {
@@ -319,15 +327,28 @@ fun SettingScreen(
                     // Save button
                     Button(
                         onClick = {
-                            userPreferencesViewModel.setDisplaySteps(stepCountSwitchON)
-                            userPreferencesViewModel.setDisplayMonster(progressMonsterSwitchON)
-                            userPreferencesViewModel.setEffectiveDays(effectiveDays.text.toInt())
-                            userPreferencesViewModel.setEffectiveDate(effectiveDate)
-                            userPreferencesViewModel.setGoal(selectedGoal)
-                            Log.i("SettingsScreen", "Effective?: ${
-                                DateTimeUtil.getDayDifference(
-                                    DateTimeUtil.getCurrentDateTime(), effectiveDate) > effectiveDays.text.toLong()}")
-                            Log.i("SettingsScreen", "EffectiveDate: ${effectiveDate}")
+                            try {
+                                userPreferencesViewModel.setDisplaySteps(stepCountSwitchON)
+                                userPreferencesViewModel.setDisplayMonster(progressMonsterSwitchON)
+                                userPreferencesViewModel.setEffectiveDays(effectiveDays.text.toInt())
+                                userPreferencesViewModel.setEffectiveDate(effectiveDate)
+                                userPreferencesViewModel.setGoal(selectedGoal)
+                                Log.i("SettingsScreen", "Effective?: ${
+                                    DateTimeUtil.getDayDifference(
+                                        DateTimeUtil.getCurrentDateTime(), effectiveDate) > effectiveDays.text.toLong()}")
+                                Log.i("SettingsScreen", "EffectiveDate: ${effectiveDate}")
+                                Toast.makeText(
+                                    context,
+                                    "Setting saved successfully",
+                                    Toast.LENGTH_LONG,
+                                ).show()
+                            } catch (e: IOException) {
+                                Toast.makeText(
+                                    context,
+                                    "Setting saved failure",
+                                    Toast.LENGTH_LONG,
+                                ).show()
+                            }
 
 
                         },

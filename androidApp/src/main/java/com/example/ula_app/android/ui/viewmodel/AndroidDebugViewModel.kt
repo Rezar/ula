@@ -1,10 +1,7 @@
 package com.example.ula_app.android.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ula_app.game.DebugViewModel
-import kotlinx.coroutines.coroutineScope
 
 class AndroidDebugViewModel(): ViewModel() {
 

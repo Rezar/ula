@@ -1,5 +1,6 @@
 package com.example.ula_app.android.repo
 
+import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -8,11 +9,15 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.example.ula_app.android.Singleton
 import com.example.ula_app.android.data.UserPreferences
 import kotlinx.coroutines.flow.first
 import kotlinx.datetime.Instant
 
-class UserPreferencesRepository(private val dataStore: DataStore<Preferences>) {
+class UserPreferencesRepository(
+    val context: Context
+) {
+    val dataStore = Singleton.getInstance<DataStore<Preferences>>(context)
 
     // set preference keys in Datastore
     private object PreferencesKeys {

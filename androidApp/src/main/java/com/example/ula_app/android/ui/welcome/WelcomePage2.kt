@@ -22,7 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.ula_app.android.R
-import com.example.ula_app.android.component.IconButton
+import com.example.ula_app.android.ui.component.IconButton
 
 @Composable
 fun WelcomePage2(

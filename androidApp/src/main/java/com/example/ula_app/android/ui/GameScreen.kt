@@ -8,7 +8,6 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -16,6 +15,7 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.navigation.NavController
@@ -24,6 +24,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.ula_app.android.Singleton
 import com.example.ula_app.android.data.BottomNavigationBarItem
 import com.example.ula_app.android.data.DataSource
 import com.example.ula_app.android.ui.game.DebugScreen
@@ -33,11 +34,6 @@ import com.example.ula_app.android.ui.game.SettingScreen
 import com.example.ula_app.android.ui.game.StatsScreen
 import com.example.ula_app.android.ui.theme.AppTheme
 import com.example.ula_app.android.ui.theme.WelcomeTheme
-import com.example.ula_app.android.ui.viewmodel.AndroidDebugViewModel
-import com.example.ula_app.android.ui.viewmodel.AndroidHomeViewModel
-import com.example.ula_app.game.DebugViewModel
-import com.example.ula_app.game.HomeViewModel
-import com.example.ula_app.android.ui.viewmodel.StepViewModel
 import com.example.ula_app.android.ui.viewmodel.UserPreferencesViewModel
 import com.example.ula_app.android.ui.welcome.WelcomePage1
 import com.example.ula_app.android.ui.welcome.WelcomePage2
@@ -65,12 +61,10 @@ enum class WelcomeScreen() {
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Game(
-    userPreferencesViewModel: UserPreferencesViewModel,
-    stepViewModel: StepViewModel = viewModel(),
-    homeViewModel: AndroidHomeViewModel = viewModel(),
-    debugViewModel: AndroidDebugViewModel = viewModel(),
     navController: NavHostController = rememberNavController()
 ) {
+
+    val userPreferencesViewModel: UserPreferencesViewModel = Singleton.getInstance<UserPreferencesViewModel>(LocalContext.current)
     // ui state
     val userPreferencesUiState by userPreferencesViewModel.userPreferencesState.collectAsState()
 
@@ -151,15 +145,14 @@ fun Game(
             }
             // Home
             composable(route = GameScreen.Home.name) {
-                HomeScreen(
-                    homeViewModel = homeViewModel,
-                    userPreferencesViewModel = userPreferencesViewModel
-                )
+                AppTheme {
+                    HomeScreen()
+                }
             }
             // Stats
             composable(route = GameScreen.Stats.name) {
                 AppTheme {
-                    StatsScreen(stepViewModel, userPreferencesViewModel)
+                    StatsScreen()
                 }
             }
             // Help
@@ -172,12 +165,12 @@ fun Game(
             // Setting
             composable(route = GameScreen.Setting.name) {
                 AppTheme {
-                    SettingScreen(userPreferencesViewModel)
+                    SettingScreen()
                 }
             }
             // Debug
             composable(route = GameScreen.Debug.name) {
-                DebugScreen(homeViewModel, debugViewModel)
+                DebugScreen()
             }
         }
     }

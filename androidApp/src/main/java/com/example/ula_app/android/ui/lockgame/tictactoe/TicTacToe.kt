@@ -44,7 +44,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.ula_app.android.component.IconButton
+import com.example.ula_app.android.ui.component.IconButton
 import com.example.ula_app.android.ui.lockgame.tictactoe.components.BaseBoard
 import com.example.ula_app.android.ui.lockgame.tictactoe.components.Circle
 import com.example.ula_app.android.ui.lockgame.tictactoe.components.Cross

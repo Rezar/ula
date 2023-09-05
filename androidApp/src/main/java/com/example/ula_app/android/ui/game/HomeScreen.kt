@@ -31,6 +31,7 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
+import com.example.ula_app.android.Singleton
 import com.example.ula_app.android.ui.lockgame.tictactoe.TicTacToeActivity
 import com.example.ula_app.android.data.DataSource
 import com.example.ula_app.game.HomeViewModel
@@ -45,10 +46,11 @@ import com.example.ula_app.presentation.UiMonsterMovie
 private const val TAG = "HomeScreen"
 
 @Composable
-fun HomeScreen(
-    homeViewModel: AndroidHomeViewModel = viewModel(),
-    userPreferencesViewModel: UserPreferencesViewModel = viewModel()
-) {
+fun HomeScreen() {
+    val context = LocalContext.current
+    val homeViewModel = Singleton.getInstance<AndroidHomeViewModel>(context)
+    val userPreferencesViewModel = Singleton.getInstance<UserPreferencesViewModel>(context)
+
 
     val homeUiState by homeViewModel.uiState.collectAsState()
     val userPreUiState by userPreferencesViewModel.userPreferencesState.collectAsState()
@@ -58,7 +60,6 @@ fun HomeScreen(
     /*
     * This exoPlayer is to play and update the video every time the user opens the home tab
     * */
-    val context = LocalContext.current
     val exoPlayer = remember {
         ExoPlayer.Builder(context).build()
     }

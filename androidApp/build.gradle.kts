@@ -48,7 +48,6 @@ dependencies {
     implementation(Deps.composeNavigation)
     implementation(Deps.composeLifecycle)
     implementation(Deps.coilCompose)
-    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.0")
     implementation(Deps.kotlinDateTime)
     implementation ("androidx.compose.runtime:runtime-livedata:1.0.3")
 
@@ -104,4 +103,7 @@ dependencies {
     implementation ("androidx.core:core-ktx:1.7.0")
     implementation ("androidx.appcompat:appcompat:1.2.0")
     implementation ("androidx.browser:browser:1.4.0")
+
+    implementation ("androidx.work:work-runtime-ktx:2.7.1")
+
 }

@@ -1,7 +1,9 @@
 package com.example.ula_app.android.ui.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.ula_app.android.Singleton
 import com.example.ula_app.android.data.UserPreferences
 import com.example.ula_app.android.repo.UserPreferencesRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,20 +16,22 @@ import kotlinx.coroutines.flow.update
 import kotlinx.datetime.Instant
 
 class UserPreferencesViewModel(
-    private val userPreferencesRepository: UserPreferencesRepository
+    context: Context
 ): ViewModel() {
+
+    val userPreferencesRepository = Singleton.getInstance<UserPreferencesRepository>(context)
 
     private val _userPreferencesState = MutableStateFlow(UserPreferences())
     val userPreferencesState: StateFlow<UserPreferences> = _userPreferencesState.asStateFlow()
 
     init {
-        initFirstTime()
+        init()
     }
 
     /*
-    * Read firstTime and firstDateTime from Datastore and update stateflow value
+    * Read firstTime, firstDateTime, displaySteps, displayMonster, maxThreshold, minThreshold, effectiveDays, effectiveDate, and goal from Datastore and update stateflow value
     * */
-    private fun initFirstTime() = viewModelScope.launch {
+    private fun init() = viewModelScope.launch {
         withContext(Dispatchers.IO) {
             val datastoreObj = userPreferencesRepository.fetchInitialPreferences()
             _userPreferencesState.value = _userPreferencesState.value.copy(

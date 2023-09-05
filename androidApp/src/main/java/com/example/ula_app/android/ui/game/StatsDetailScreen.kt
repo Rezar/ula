@@ -33,16 +33,19 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ula_app.android.R
 import com.example.ula_app.android.ui.viewmodel.StepViewModel
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
+import com.example.ula_app.android.Singleton
 import com.example.ula_app.android.data.UserPreferences
 import com.example.ula_app.android.ui.viewmodel.UserPreferencesViewModel
 import com.example.ula_app.util.DateTimeUtil
 
 @Composable
 fun StatsDetailScreen(
-    onBackClicked: () -> Unit = {},
-    stepViewModel: StepViewModel = viewModel(),
-    userPreferencesViewModel: UserPreferencesViewModel = viewModel()
+    onBackClicked: () -> Unit = {}
 ) {
+    val context = LocalContext.current
+    val userPreferencesViewModel= Singleton.getInstance<UserPreferencesViewModel>(context)
+    val stepViewModel= Singleton.getInstance<StepViewModel>(context)
 
     // stepHistory list from datastore or state
     val stepHistoryUiState by stepViewModel.userState.collectAsState()

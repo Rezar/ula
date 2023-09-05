@@ -33,14 +33,17 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.ula_app.android.component.SettingFieldsRow
+import com.example.ula_app.android.ui.component.SettingFieldsRow
 import com.example.ula_app.android.ui.viewmodel.UserPreferencesViewModel
+import java.io.IOException
 
 @Composable
 fun SettingAdvancedScreen(
     onBackClicked: () -> Unit = {},
     userPreferencesViewModel: UserPreferencesViewModel = viewModel()
 ) {
+
+    val context = LocalContext.current
 
     val userPreUiState by userPreferencesViewModel.userPreferencesState.collectAsState()
 
@@ -51,8 +54,6 @@ fun SettingAdvancedScreen(
     var minThreshold by remember {
         mutableStateOf(TextFieldValue(userPreUiState.minThreshold.toString()))
     }
-
-    val context = LocalContext.current
 
     Column (
         modifier = Modifier
@@ -115,10 +116,22 @@ fun SettingAdvancedScreen(
                         when {
                             maxThreshold.text.toDouble() in 0.0..0.5
                                     && minThreshold.text.toDouble() in 0.0..0.5 -> {
-                                // Update datastore
-                                userPreferencesViewModel.setMaxThreshold(maxThreshold.text.toDouble())
-                                userPreferencesViewModel.setMinThreshold(minThreshold.text.toDouble())
-
+                                try {
+                                    // Update datastore
+                                    userPreferencesViewModel.setMaxThreshold(maxThreshold.text.toDouble())
+                                    userPreferencesViewModel.setMinThreshold(minThreshold.text.toDouble())
+                                    Toast.makeText(
+                                        context,
+                                        "Setting saved successfully",
+                                        Toast.LENGTH_LONG,
+                                    ).show()
+                                } catch (e: IOException) {
+                                    Toast.makeText(
+                                        context,
+                                        "Setting saved failure",
+                                        Toast.LENGTH_LONG,
+                                    ).show()
+                                }
                             }
                             else -> {
                                 Toast.makeText(

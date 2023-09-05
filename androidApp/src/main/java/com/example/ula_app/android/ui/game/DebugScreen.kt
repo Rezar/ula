@@ -23,17 +23,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.ula_app.android.Singleton
 import com.example.ula_app.android.ui.viewmodel.AndroidDebugViewModel
 import com.example.ula_app.android.ui.viewmodel.AndroidHomeViewModel
 import com.example.ula_app.data.DataSource
-import com.example.ula_app.game.DebugViewModel
-import com.example.ula_app.game.HomeViewModel
 
 private const val TAG = "DebugScreen"
 
@@ -41,10 +40,11 @@ private const val leftWeight = 0.3f
 private const val rightWeight = 1 - leftWeight
 
 @Composable
-fun DebugScreen(
-    homeViewModel: AndroidHomeViewModel = viewModel(),
-    debugViewModel: AndroidDebugViewModel = viewModel()
-) {
+fun DebugScreen() {
+    val context = LocalContext.current
+    val homeViewModel= Singleton.getInstance<AndroidHomeViewModel>(context)
+    val debugViewModel= Singleton.getInstance<AndroidDebugViewModel>(context)
+
     val ageOptions = listOf(
         "",
         DataSource.MonsterAgeOptions.Egg.name,

@@ -1,9 +1,17 @@
 package com.example.ula_app.android.ui.viewmodel
 
+import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
+import com.example.ula_app.android.Singleton
 import com.example.ula_app.android.repo.UserPreferencesRepository
+import com.example.ula_app.android.workers.SaveStepsWorker
 import com.example.ula_app.data.DataSource
+import com.example.ula_app.util.DateTimeUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,11 +21,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.Instant
 import kotlinx.serialization.json.Json
-//import kotlinx.serialization.Serializable
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
+import java.util.concurrent.TimeUnit
 
+private const val TAG = "StepViewModel"
 
-//@Serializable
+@Serializable
 data class StepsWithDates(
     val date: Instant,
     val steps: Int
@@ -28,8 +38,10 @@ data class UserState(
 )
 
 class StepViewModel(
-    private val userPreferencesRepository: UserPreferencesRepository
+    context: Context
 ): ViewModel() {
+
+    private val userPreferencesRepository = Singleton.getInstance<UserPreferencesRepository>(context)
 
     private val _userState = MutableStateFlow(UserState())
     val userState: StateFlow<UserState> = _userState.asStateFlow()
@@ -105,7 +117,7 @@ class StepViewModel(
 
 
     init {
-        initSteps()
+        init()
     }
 
     /*
@@ -114,25 +126,25 @@ class StepViewModel(
     *   - deserialize the string to list
     * This will update whenever you reopen the app.
     * */
-    private fun initSteps() = viewModelScope.launch {
+    private fun init() = viewModelScope.launch {
         withContext(Dispatchers.IO) {
-            // Read the stepHistory string
-            val datastoreObj = userPreferencesRepository.fetchInitialPreferences()
-
-            // deserialize to list
-            var stepsList = stepHistory   //TODO: When the app is working, change it to emptyList()
-
             try{
-                stepsList = Json.decodeFromString<List<StepsWithDates>>(datastoreObj.stepsHistory)
+                // Read the stepHistory string
+                val datastoreObj = userPreferencesRepository.fetchInitialPreferences()
+
+                var stepsList = stepHistory   //TODO: When the app is working, change it to emptyList()
+
+//                // deserialize to list
+//                stepsList = Json.decodeFromString<List<StepsWithDates>>(datastoreObj.stepsHistory)
+
+                // update to the state
+                _userState.update{
+                    it.copy(
+                        data = stepsList
+                    )
+                }
             } catch(e: Exception) {
-
-            }
-
-            // update to the state
-            _userState.update{
-                it.copy(
-                    data = stepsList
-                )
+                Log.e("$TAG", "Error deserialize step histories.")
             }
         }
     }
@@ -162,6 +174,19 @@ class StepViewModel(
             // save it to datastore
             userPreferencesRepository.updateStepHistory(stepHistoryJson)
         }
+    }
+
+    fun saveSteps(context: Context, steps: Int) {
+        val workManager = WorkManager.getInstance(context)
+
+        val stringifiedData = Json.encodeToString(stepHistory)
+        Log.i("$TAG", "data: $stringifiedData")
+
+        val data = Data.Builder()
+        data.putString("stepdata", steps.toString())
+        val oneTimeWorkRequest = OneTimeWorkRequest.Builder(SaveStepsWorker::class.java).setInputData(data.build()).setInitialDelay(10, TimeUnit.SECONDS).build()
+
+        workManager.enqueue(oneTimeWorkRequest)
     }
 
 }
