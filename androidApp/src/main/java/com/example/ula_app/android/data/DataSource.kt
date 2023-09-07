@@ -28,7 +28,7 @@ object DataSource {
             icon = R.drawable.ic_help,
             name = "Help",
             route = "help",
-            scale = 0.6f
+            scale = 1f
         ),
         BottomNavigationBarItem(
             icon = R.drawable.ic_cog,
@@ -40,7 +40,7 @@ object DataSource {
             icon = R.drawable.ic_bug,
             name = "Debug",
             route = "debug",
-            scale = 1.7f
+            scale = 1f
         )
     )
 
