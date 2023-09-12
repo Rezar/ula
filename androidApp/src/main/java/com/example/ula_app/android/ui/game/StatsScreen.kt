@@ -4,8 +4,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
@@ -91,11 +94,12 @@ fun StatsScreen() {
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(15.dp)
+                        .padding(10.dp)
                         .clickable {
                             currentScreen = StatsScreenSegment.StatsDetail.name
                         },
-                    elevation = 10.dp
+                    elevation = 5.dp,
+                    shape = RoundedCornerShape(20.dp)
                 ) {
 
                     Column() {
@@ -145,9 +149,17 @@ fun StatsScreen() {
 
                 }
 
-                StepChart()
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
+                    elevation = 5.dp,
+                    shape = RoundedCornerShape(20.dp)
+                ) {
+                    StepChart()
+                }
 
-
+                Spacer(modifier = Modifier)
 
             }
 
