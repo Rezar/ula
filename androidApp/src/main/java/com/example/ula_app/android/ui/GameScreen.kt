@@ -1,5 +1,6 @@
 package com.example.ula_app.android.ui
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
@@ -64,7 +65,7 @@ fun Game(
     navController: NavHostController = rememberNavController()
 ) {
 
-    val userPreferencesViewModel: UserPreferencesViewModel = Singleton.getInstance<UserPreferencesViewModel>(LocalContext.current)
+    val userPreferencesViewModel: UserPreferencesViewModel = Singleton.getInstance<UserPreferencesViewModel>()
     // ui state
     val userPreferencesUiState by userPreferencesViewModel.userPreferencesState.collectAsState()
 
@@ -132,11 +133,15 @@ fun Game(
                         onPreviousButtonClicked = {
                             navController.navigate(WelcomeScreen.Page2.name)
                         },
-                        onNextButtonClicked = {
+                        onNextButtonClicked = { dailyGoal, weeklyGoal ->
     //                        goalViewModel.setSteps(it)
-                            userPreferencesViewModel.setGoal(it)
+//                            userPreferencesViewModel.setGoal(it)
+                            userPreferencesViewModel.setDailyGoal(dailyGoal)
+                            userPreferencesViewModel.setWeeklyGoal(weeklyGoal)
                             userPreferencesViewModel.setFirstTime(false)
                             userPreferencesViewModel.setFirstDateTime(DateTimeUtil.getCurrentDateTime())
+
+                            Log.i("GameScreen", "dailyGoal: $dailyGoal, weeklyGoal: $weeklyGoal")
 
                             navController.navigate(GameScreen.Home.name)
                         }

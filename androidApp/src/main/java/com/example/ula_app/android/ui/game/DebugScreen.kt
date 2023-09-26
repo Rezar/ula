@@ -42,8 +42,8 @@ private const val rightWeight = 1 - leftWeight
 @Composable
 fun DebugScreen() {
     val context = LocalContext.current
-    val homeViewModel= Singleton.getInstance<AndroidHomeViewModel>(context)
-    val debugViewModel= Singleton.getInstance<AndroidDebugViewModel>(context)
+    val homeViewModel= Singleton.getInstance<AndroidHomeViewModel>()
+    val debugViewModel= Singleton.getInstance<AndroidDebugViewModel>()
 
     val ageOptions = listOf(
         "",

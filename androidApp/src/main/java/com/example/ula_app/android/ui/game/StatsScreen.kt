@@ -39,7 +39,7 @@ fun StatsScreen() {
 
     val context = LocalContext.current
 
-    val stepViewModel: StepViewModel = Singleton.getInstance<StepViewModel>(context)
+    val stepViewModel: StepViewModel = Singleton.getInstance<StepViewModel>()
 
     // stepHistory list from datastore or state
 //    val stepHistoryUiState by stepViewModel.userState.collectAsState()

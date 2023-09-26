@@ -48,8 +48,8 @@ private const val TAG = "HomeScreen"
 @Composable
 fun HomeScreen() {
     val context = LocalContext.current
-    val homeViewModel = Singleton.getInstance<AndroidHomeViewModel>(context)
-    val userPreferencesViewModel = Singleton.getInstance<UserPreferencesViewModel>(context)
+    val homeViewModel = Singleton.getInstance<AndroidHomeViewModel>()
+    val userPreferencesViewModel = Singleton.getInstance<UserPreferencesViewModel>()
 
 
     val homeUiState by homeViewModel.uiState.collectAsState()
@@ -98,10 +98,11 @@ fun HomeScreen() {
         * make the currentStep as a state so that if the currentStep changes the home tab
         * will re-render and the bodyStatus will be checked through LaunchEffect.
         * */
+        // TODO: Hard code to use daily goal, need more flexible method.
         homeViewModel.setAge(
             userPreUiState.firstDateTime.epochSeconds,
             stepSensor.stepCount.toInt(),
-            userPreUiState.goal,
+            userPreUiState.dailyGoal,
             userPreUiState.maxThreshold,
             userPreUiState.minThreshold
         )

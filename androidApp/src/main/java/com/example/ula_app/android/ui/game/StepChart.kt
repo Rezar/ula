@@ -65,8 +65,8 @@ fun StepChart(
 //    onBackClicked: () -> Unit = {},
 ){
     val context = LocalContext.current
-    val userPreferencesViewModel= Singleton.getInstance<UserPreferencesViewModel>(context)
-    val stepViewModel= Singleton.getInstance<StepViewModel>(context)
+    val userPreferencesViewModel= Singleton.getInstance<UserPreferencesViewModel>()
+    val stepViewModel= Singleton.getInstance<StepViewModel>()
 
     // stepHistory list from datastore or state
     val stepHistoryUiState by stepViewModel.userState.collectAsState()
@@ -90,7 +90,7 @@ fun StepChart(
         endPaddingDp = DefaultDimens.COLUMN_OUTSIDE_SPACING.half,
     )
 
-    val thresholdLine = rememberThresholdLine(userPreUiState.goal)
+    val thresholdLine = rememberThresholdLine(userPreUiState.dailyGoal)
     val defaultColumns = currentChartStyle.columnChart.columns
 
 

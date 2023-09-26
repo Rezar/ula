@@ -1,5 +1,6 @@
 package com.example.ula_app.android
 
+import android.app.Application
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -18,15 +19,24 @@ val Context.dataStore by preferencesDataStore(
     name = USER_PREFERENCES_NAME
 )
 
-class Singleton {
+class Singleton: Application() {
+
+    init {
+        instance = this
+    }
+
     companion object {
+        var instance: Singleton ?= null
+
         var homeViewModel: AndroidHomeViewModel ?= null
         var debugViewModel: AndroidDebugViewModel ?= null
         var stepViewModel: StepViewModel ?= null
         var userPreferencesViewModel: UserPreferencesViewModel ?= null
         var userPreferencesRepository: UserPreferencesRepository ?= null
 
-        inline fun <reified T>getInstance(context: Context): T {
+        inline fun <reified T>getInstance(): T {
+
+            val context = instance!!.applicationContext
             when (T::class) {
                 // get the only instance of DataStore in the scope of application context.
                 DataStore::class -> {
@@ -35,7 +45,7 @@ class Singleton {
                 // get the only instance of UserPreferencesRepository in the scope of application context.
                 UserPreferencesRepository::class -> {
                     if (userPreferencesRepository == null) {
-                        userPreferencesRepository = UserPreferencesRepository(context)
+                        userPreferencesRepository = UserPreferencesRepository()
                     }
 
                     return userPreferencesRepository as T
@@ -59,7 +69,7 @@ class Singleton {
                 // get the only instance of StepViewModel in the scope of application context.
                 StepViewModel::class -> {
                     if (stepViewModel == null) {
-                        stepViewModel = StepViewModel(context)
+                        stepViewModel = StepViewModel()
                     }
 
                     return stepViewModel as T
@@ -67,7 +77,7 @@ class Singleton {
                 // get the only instance of UserPreferencesViewModel in the scope of application context.
                 UserPreferencesViewModel::class -> {
                     if (userPreferencesViewModel == null) {
-                        userPreferencesViewModel = UserPreferencesViewModel(context)
+                        userPreferencesViewModel = UserPreferencesViewModel()
                     }
 
                     return userPreferencesViewModel as T
@@ -86,7 +96,7 @@ class Singleton {
         // get the only instance of UserPreferencesRepository in the scope of application context.
         fun getRepository(context: Context): UserPreferencesRepository {
             if (userPreferencesRepository == null) {
-                userPreferencesRepository = UserPreferencesRepository(context)
+                userPreferencesRepository = UserPreferencesRepository()
             }
 
             return userPreferencesRepository as UserPreferencesRepository
@@ -113,7 +123,7 @@ class Singleton {
         // get the only instance of StepViewModel in the scope of application context.
         fun getStepVM(context: Context): StepViewModel {
             if (stepViewModel == null) {
-                stepViewModel = StepViewModel(context)
+                stepViewModel = StepViewModel()
             }
 
             return stepViewModel as StepViewModel
@@ -122,7 +132,7 @@ class Singleton {
         // get the only instance of UserPreferencesViewModel in the scope of application context.
         fun getUserPreferencesVM(context: Context): UserPreferencesViewModel {
             if (userPreferencesViewModel == null) {
-                userPreferencesViewModel = UserPreferencesViewModel(context)
+                userPreferencesViewModel = UserPreferencesViewModel()
             }
 
             return userPreferencesViewModel as UserPreferencesViewModel

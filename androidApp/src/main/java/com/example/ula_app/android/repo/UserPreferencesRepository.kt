@@ -1,6 +1,5 @@
 package com.example.ula_app.android.repo
 
-import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -14,10 +13,8 @@ import com.example.ula_app.android.data.UserPreferences
 import kotlinx.coroutines.flow.first
 import kotlinx.datetime.Instant
 
-class UserPreferencesRepository(
-    val context: Context
-) {
-    val dataStore = Singleton.getInstance<DataStore<Preferences>>(context)
+class UserPreferencesRepository() {
+    val dataStore = Singleton.getInstance<DataStore<Preferences>>()
 
     // set preference keys in Datastore
     private object PreferencesKeys {
@@ -30,7 +27,8 @@ class UserPreferencesRepository(
         val MIN_THRESHOLD = doublePreferencesKey("min_threshold")
         val EFFECTIVE_DAYS = intPreferencesKey("effective_days")
         val EFFECTIVE_DATE = longPreferencesKey("effective_date")
-        val GOAL = intPreferencesKey("goal")
+        val DAILYGOAL = intPreferencesKey("daily_goal")
+        val WEEKLYGOAL = intPreferencesKey("weekly_goal")
 
         val STEPS_WITH_DATE = stringPreferencesKey("steps_with_date")
     }
@@ -101,7 +99,7 @@ class UserPreferencesRepository(
     }
 
     /*
-    * set first time
+    * set effective days
     * */
     suspend fun updateEffectiveDays(effectiveDays: Int) {
         dataStore.edit {preferences ->
@@ -110,7 +108,7 @@ class UserPreferencesRepository(
     }
 
     /*
-    * set first time
+    * set effective date
     * */
     suspend fun updateEffectiveDate(effectiveDate: Instant) {
         dataStore.edit {preferences ->
@@ -119,11 +117,20 @@ class UserPreferencesRepository(
     }
 
     /*
-    * set first time
+    * set daily goal
     * */
-    suspend fun updateGoal(goal: Int) {
+    suspend fun updateDailyGoal(dailyGoal: Int) {
         dataStore.edit {preferences ->
-            preferences[PreferencesKeys.GOAL] = goal
+            preferences[PreferencesKeys.DAILYGOAL] = dailyGoal
+        }
+    }
+
+    /*
+    * set weekly goal
+    * */
+    suspend fun updateWeeklyGoal(weeklyGoal: Int) {
+        dataStore.edit {preferences ->
+            preferences[PreferencesKeys.WEEKLYGOAL] = weeklyGoal
         }
     }
 
@@ -146,11 +153,13 @@ class UserPreferencesRepository(
         val minThreshold = preferences[PreferencesKeys.MIN_THRESHOLD] ?: .2
         val effectiveDays = preferences[PreferencesKeys.EFFECTIVE_DAYS] ?: 3
         val effectiveDate = Instant.fromEpochSeconds(preferences[PreferencesKeys.EFFECTIVE_DATE] ?: 0L)
-        val goal = preferences[PreferencesKeys.GOAL] ?: 5000
+        val dailyGoal = preferences[PreferencesKeys.DAILYGOAL] ?: 5000
+        val weeklyGoal = preferences[PreferencesKeys.WEEKLYGOAL] ?: 20000
 
         val stepsWithDates = preferences[PreferencesKeys.STEPS_WITH_DATE] ?: ""
 
-        return UserPreferences(firstTime,
+        return UserPreferences(
+            firstTime,
             firstDateTime,
             displaySteps,
             displayMonster,
@@ -158,8 +167,10 @@ class UserPreferencesRepository(
             minThreshold,
             effectiveDays,
             effectiveDate,
-            goal,
-            stepsWithDates)
+            dailyGoal,
+            weeklyGoal,
+            stepsWithDates
+        )
     }
 
 }

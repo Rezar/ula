@@ -37,11 +37,9 @@ data class UserState(
     val data: List<StepsWithDates> = emptyList()
 )
 
-class StepViewModel(
-    context: Context
-): ViewModel() {
+class StepViewModel(): ViewModel() {
 
-    private val userPreferencesRepository = Singleton.getInstance<UserPreferencesRepository>(context)
+    private val userPreferencesRepository = Singleton.getInstance<UserPreferencesRepository>()
 
     private val _userState = MutableStateFlow(UserState())
     val userState: StateFlow<UserState> = _userState.asStateFlow()

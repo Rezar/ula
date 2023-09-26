@@ -44,14 +44,12 @@ fun StatsDetailScreen(
     onBackClicked: () -> Unit = {}
 ) {
     val context = LocalContext.current
-    val userPreferencesViewModel= Singleton.getInstance<UserPreferencesViewModel>(context)
-    val stepViewModel= Singleton.getInstance<StepViewModel>(context)
+    val userPreferencesViewModel= Singleton.getInstance<UserPreferencesViewModel>()
+    val stepViewModel= Singleton.getInstance<StepViewModel>()
 
     // stepHistory list from datastore or state
     val stepHistoryUiState by stepViewModel.userState.collectAsState()
     val userPreUiState by userPreferencesViewModel.userPreferencesState.collectAsState()
-
-    Log.i("StatsDetailScreen", "goalSteps: ${userPreUiState.goal}")
 
     val stepHistoryList = stepHistoryUiState.data
 
@@ -85,7 +83,7 @@ fun StatsDetailScreen(
                 StatsDetailItem(
                     weekday = DateTimeUtil.getDayOfWeek(item.date),
                     currentSteps = item.steps,
-                    progressIndex = stepViewModel.getMonsterProgress(userPreUiState.goal, item.steps),
+                    progressIndex = stepViewModel.getMonsterProgress(userPreUiState.dailyGoal, item.steps),
                     userPreUiState = userPreUiState
                 )
 
@@ -97,8 +95,8 @@ fun StatsDetailScreen(
                     backgroundColor = Color.LightGray,
                     color = Color.Red,
                     progress =
-                        if(item.steps <= userPreUiState.goal)
-                                (item.steps/userPreUiState.goal.toFloat())
+                        if(item.steps <= userPreUiState.dailyGoal)
+                                (item.steps/userPreUiState.dailyGoal.toFloat())
                         else 1.0f,
 
                 )

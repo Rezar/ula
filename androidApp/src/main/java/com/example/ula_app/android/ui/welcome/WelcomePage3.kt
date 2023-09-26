@@ -32,17 +32,10 @@ import com.example.ula_app.android.ui.component.IconButton
 @Composable
 fun WelcomePage3(
     onPreviousButtonClicked: () -> Unit,
-    onNextButtonClicked: (Int) -> Unit
+    onNextButtonClicked: (Int, Int) -> Unit
 ) {
     val nextButtonIcon = painterResource(id = R.mipmap.next)
     val previousButtonIcon = painterResource(id = R.mipmap.back)
-    var selectedGoal = remember {
-        mutableStateOf(0)
-    }
-
-    var selectedGoalWeekly = remember {
-        mutableStateOf(0)
-    }
 
     var tabIndex by remember { mutableStateOf(0)}
     val tabTitles = listOf("Daily Goal", "Weekly Goal")
@@ -130,11 +123,11 @@ fun WelcomePage3(
                                 onValueChange = { sliderValue_ ->
                                     sliderValueDaily = sliderValue_
                                 },
-                                onValueChangeFinished = {
+                                /*onValueChangeFinished = {
                                     // this is called when the user completed selecting the value
                                     selectedGoal.value = sliderValueDaily.toInt()
                                     Log.d("MainActivity", "sliderValue = $sliderValueDaily")
-                                },
+                                },*/
                                 valueRange = 5000f..30000f,
                                 steps = 4,
                                 colors = SliderDefaults.colors(
@@ -156,11 +149,11 @@ fun WelcomePage3(
                                 onValueChange = { sliderValue_ ->
                                     sliderValueWeekly = sliderValue_
                                 },
-                                onValueChangeFinished = {
+                                /*onValueChangeFinished = {
                                     // this is called when the user completed selecting the value
                                     selectedGoalWeekly.value = sliderValueWeekly.toInt()
                                     Log.d("MainActivity", "sliderValue = $sliderValueWeekly")
-                                },
+                                },*/
                                 valueRange = 20000f..100000f,
                                 steps = 7,
                                 colors = SliderDefaults.colors(
@@ -220,7 +213,6 @@ fun WelcomePage3(
                 }
             )
             IconButton(
-                enabled = selectedGoal.value !== 0,
                 Icon = {
                     Icon(
                         painter = nextButtonIcon,
@@ -228,7 +220,10 @@ fun WelcomePage3(
                     )
                 },
                 onClick = {
-                    onNextButtonClicked(selectedGoal.value)
+                    onNextButtonClicked(
+                        sliderValueDaily.toInt(),
+                        sliderValueWeekly.toInt()
+                    )
                 }
             )
         }

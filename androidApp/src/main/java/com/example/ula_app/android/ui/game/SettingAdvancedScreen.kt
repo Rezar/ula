@@ -33,18 +33,18 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.ula_app.android.Singleton
 import com.example.ula_app.android.ui.component.SettingFieldsRow
 import com.example.ula_app.android.ui.viewmodel.UserPreferencesViewModel
 import java.io.IOException
 
 @Composable
 fun SettingAdvancedScreen(
-    onBackClicked: () -> Unit = {},
-    userPreferencesViewModel: UserPreferencesViewModel = viewModel()
+    onBackClicked: () -> Unit = {}
 ) {
 
     val context = LocalContext.current
-
+    val userPreferencesViewModel: UserPreferencesViewModel = Singleton.getInstance<UserPreferencesViewModel>()
     val userPreUiState by userPreferencesViewModel.userPreferencesState.collectAsState()
 
     var maxThreshold by remember {

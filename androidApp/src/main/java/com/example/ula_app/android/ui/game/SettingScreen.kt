@@ -23,7 +23,6 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material.Switch
 import androidx.compose.material.SwitchDefaults
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
@@ -35,13 +34,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ula_app.android.Singleton
-import com.example.ula_app.android.SnackBarManager
 import com.example.ula_app.android.ui.component.SettingFieldsRow
 import com.example.ula_app.android.ui.viewmodel.UserPreferencesViewModel
 import com.example.ula_app.util.DateTimeUtil
-import kotlinx.coroutines.launch
 import java.io.IOException
 
 private const val TAG = "SettingScreen"
@@ -54,7 +50,7 @@ enum class SettingAdvancedSegment(){
 fun SettingScreen() {
     val context = LocalContext.current
 
-    val userPreferencesViewModel: UserPreferencesViewModel = Singleton.getInstance<UserPreferencesViewModel>(context)
+    val userPreferencesViewModel: UserPreferencesViewModel = Singleton.getInstance<UserPreferencesViewModel>()
     val userPreUiState by userPreferencesViewModel.userPreferencesState.collectAsState()
 
     var currentScreen by remember {
@@ -79,29 +75,28 @@ fun SettingScreen() {
         mutableStateOf(userPreUiState.effectiveDate)
     }
 
-    var selectedGoal by remember {
-//        mutableStateOf(DataSource.stepOptions[0])
+    /*var selectedGoalDaily by remember {
         mutableStateOf(userPreUiState.goal)
-    }
+    }*/
 
 /*    var goalOptionExpanded by remember {
         mutableStateOf(false)
     }*/
 
     // TODO: wait to add features--------------------------------------------------------------------------------------------
-    var selectedGoalWeekly by remember {
+    /*var selectedGoalWeekly by remember {
         mutableStateOf(0)
-    }
+    }*/
 
     var tabIndex by remember { mutableStateOf(0)}
     val tabTitles = listOf("Daily Goal", "Weekly Goal")
 
     var sliderValueDaily by remember {
-        mutableStateOf(15000f)
+        mutableStateOf(userPreUiState.dailyGoal.toFloat())
     }
 
     var sliderValueWeekly by remember {
-        mutableStateOf(50000f)
+        mutableStateOf(userPreUiState.weeklyGoal.toFloat())
     }
 
 
@@ -110,8 +105,7 @@ fun SettingScreen() {
             SettingAdvancedScreen(
                 onBackClicked = {
                     currentScreen = ""
-                },
-                userPreferencesViewModel = userPreferencesViewModel
+                }
             )
         }
 
@@ -236,15 +230,16 @@ fun SettingScreen() {
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
                                     Slider(
-                                        value = selectedGoal.toFloat(),
+                                        // TODO: Daily are using two state variables, use only one in the future
+                                        value = sliderValueDaily,
                                         onValueChange = { sliderValue_ ->
                                             sliderValueDaily = sliderValue_
                                         },
-                                        onValueChangeFinished = {
-                                            // this is called when the user completed selecting the value
-                                            selectedGoal = sliderValueDaily.toInt()
-                                            Log.d("MainActivity", "sliderValue = $sliderValueDaily")
-                                        },
+//                                        onValueChangeFinished = {
+//                                            // this is called when the user completed selecting the value
+//                                            selectedGoalDaily = sliderValueDaily.toInt()
+//                                            Log.d("MainActivity", "sliderValue = $sliderValueDaily")
+//                                        },
                                         valueRange = 5000f..30000f,
                                         steps = 4,
                                         colors = SliderDefaults.colors(
@@ -254,7 +249,7 @@ fun SettingScreen() {
                                         enabled = DateTimeUtil.getDayDifference(DateTimeUtil.getCurrentDateTime(), effectiveDate) >= effectiveDays.text.toLong()
                                     )
 
-                                    Text(text = selectedGoal.toInt().toString())
+                                    Text(text = sliderValueDaily.toInt().toString())
 
                                 }
                             }
@@ -263,15 +258,16 @@ fun SettingScreen() {
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
                                     Slider(
-                                        value = selectedGoalWeekly.toFloat(),
+                                        // TODO: No matter the value of selectedGoalWeekly, it always at the start of the slider, fix it.
+                                        value = sliderValueWeekly,
                                         onValueChange = { sliderValue_ ->
                                             sliderValueWeekly = sliderValue_
                                         },
-                                        onValueChangeFinished = {
-                                            // this is called when the user completed selecting the value
-                                            selectedGoalWeekly = sliderValueWeekly.toInt()
-                                            Log.d("MainActivity", "sliderValue = $sliderValueWeekly")
-                                        },
+//                                        onValueChangeFinished = {
+//                                            // this is called when the user completed selecting the value
+//                                            selectedGoalWeekly = sliderValueWeekly.toInt()
+//                                            Log.d("MainActivity", "sliderValue = $sliderValueWeekly")
+//                                        },
                                         valueRange = 20000f..100000f,
                                         steps = 7,
                                         colors = SliderDefaults.colors(
@@ -332,7 +328,9 @@ fun SettingScreen() {
                                 userPreferencesViewModel.setDisplayMonster(progressMonsterSwitchON)
                                 userPreferencesViewModel.setEffectiveDays(effectiveDays.text.toInt())
                                 userPreferencesViewModel.setEffectiveDate(effectiveDate)
-                                userPreferencesViewModel.setGoal(selectedGoal)
+//                                userPreferencesViewModel.setGoal(selectedGoalDaily)
+                                userPreferencesViewModel.setDailyGoal(sliderValueDaily.toInt())
+                                userPreferencesViewModel.setWeeklyGoal(sliderValueWeekly.toInt())
                                 Log.i("SettingsScreen", "Effective?: ${
                                     DateTimeUtil.getDayDifference(
                                         DateTimeUtil.getCurrentDateTime(), effectiveDate) > effectiveDays.text.toLong()}")

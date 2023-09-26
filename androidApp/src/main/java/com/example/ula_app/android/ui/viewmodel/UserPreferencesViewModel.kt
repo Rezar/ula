@@ -15,11 +15,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.update
 import kotlinx.datetime.Instant
 
-class UserPreferencesViewModel(
-    context: Context
-): ViewModel() {
+class UserPreferencesViewModel(): ViewModel() {
 
-    val userPreferencesRepository = Singleton.getInstance<UserPreferencesRepository>(context)
+    val userPreferencesRepository = Singleton.getInstance<UserPreferencesRepository>()
 
     private val _userPreferencesState = MutableStateFlow(UserPreferences())
     val userPreferencesState: StateFlow<UserPreferences> = _userPreferencesState.asStateFlow()
@@ -43,7 +41,8 @@ class UserPreferencesViewModel(
                 minThreshold = datastoreObj.minThreshold,
                 effectiveDays = datastoreObj.effectiveDays,
                 effectiveDate = datastoreObj.effectiveDate,
-                goal = datastoreObj.goal
+                dailyGoal = datastoreObj.dailyGoal,
+                weeklyGoal = datastoreObj.weeklyGoal
             )
         }
     }
@@ -161,17 +160,32 @@ class UserPreferencesViewModel(
     }
 
     /*
-    * set goal and save it in the state flow
+    * set daily goal and save it in the state flow
     * */
-    fun setGoal(goal: Int) = viewModelScope.launch {
+    fun setDailyGoal(dailyGoal: Int) = viewModelScope.launch {
         withContext(Dispatchers.IO) {
-            userPreferencesRepository.updateGoal(goal)
+            userPreferencesRepository.updateDailyGoal(dailyGoal)
         }
         _userPreferencesState.update { currentState ->
             currentState.copy(
-                goal = goal
+                dailyGoal = dailyGoal
             )
         }
     }
+
+    /*
+    * set weekly goal and save it in the state flow
+    * */
+    fun setWeeklyGoal(weeklyGoal: Int) = viewModelScope.launch {
+        withContext(Dispatchers.IO) {
+            userPreferencesRepository.updateWeeklyGoal(weeklyGoal)
+        }
+        _userPreferencesState.update { currentState ->
+            currentState.copy(
+                weeklyGoal = weeklyGoal
+            )
+        }
+    }
+
 
 }

@@ -16,7 +16,8 @@ data class UserPreferences (
     val minThreshold: Double =.2,
     val effectiveDays: Int = 3,
     val effectiveDate: Instant = Clock.System.now(),
-    val goal: Int = 5000,
+    val dailyGoal: Int = 5000,
+    val weeklyGoal: Int = 20000,
 
     // use the data store to record the fitness history
 //    val stepsHistory: PersistentList<StepsWithDates> = persistentListOf()
