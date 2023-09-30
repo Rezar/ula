@@ -79,18 +79,6 @@ fun StatsScreen() {
                     style = MaterialTheme.typography.h1
                 )
 
-                Button(
-                        onClick = {
-                            stepViewModel.saveSteps(context, stepSensor.stepCount.toInt())
-                        },
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color.Gray, contentColor = Color.White)
-                ) {
-                Text(
-                    text = "Start Worker",
-                    color = Color.Black
-                )
-            }
-
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
