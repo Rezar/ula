@@ -9,7 +9,6 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import com.example.ula_app.android.Singleton
 import com.example.ula_app.android.repo.UserPreferencesRepository
-import com.example.ula_app.android.workers.SaveStepsWorker
 import com.example.ula_app.data.DataSource
 import com.example.ula_app.util.DateTimeUtil
 import kotlinx.coroutines.Dispatchers
@@ -173,18 +172,4 @@ class StepViewModel(): ViewModel() {
             userPreferencesRepository.updateStepHistory(stepHistoryJson)
         }
     }
-
-    fun saveSteps(context: Context, steps: Int) {
-        val workManager = WorkManager.getInstance(context)
-
-        val stringifiedData = Json.encodeToString(stepHistory)
-        Log.i("$TAG", "data: $stringifiedData")
-
-        val data = Data.Builder()
-        data.putString("stepdata", steps.toString())
-        val oneTimeWorkRequest = OneTimeWorkRequest.Builder(SaveStepsWorker::class.java).setInputData(data.build()).setInitialDelay(10, TimeUnit.SECONDS).build()
-
-        workManager.enqueue(oneTimeWorkRequest)
-    }
-
 }
