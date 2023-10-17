@@ -24,8 +24,7 @@ struct HelpListScreen: View {
 
             ForEach(faqs) { f in
 
-                HelpScreen(faq: f, isExpanded: self.selection.contains(f)
-                )
+                HelpScreen(faq: f, isExpanded: self.selection.contains(f))
                     .modifier(ListRowModifier())
                     .onTapGesture { self.selectDeselect(f) }
                     .animation(.linear(duration: 0.3))

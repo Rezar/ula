@@ -12,11 +12,13 @@ import shared
 import AVKit
 
 struct HomeScreen: View {
+    var setOpenLockGame: (Int) -> Void
     
     @ObservedObject var homeViewModel: IOSHomeViewModel
     @State var openDialog: Bool = false
     
-    init() {
+    init(setOpenLockGame: @escaping (Int) -> Void) {
+        self.setOpenLockGame = setOpenLockGame
         self.homeViewModel = IOSHomeViewModel()
         
         if homeViewModel.avPlayer == nil {
@@ -79,10 +81,26 @@ struct HomeScreen: View {
 
             
             // TODO: add the actions to link to the games
-            Button("Tic Tac Toe", action: {})
-            Button("Dino Game", action: {})
-            Button("Snake Game", action: {})
-            Button("Flappy Bird", action: {})
+            Button(
+                "Tic Tac Toe",
+                action: {
+                    setOpenLockGame(1)
+                })
+            Button(
+                "Asteroid Teil",
+                action: {
+                    setOpenLockGame(2)
+                })
+            Button(
+                "Tappy Bird",
+                action: {
+                    setOpenLockGame(3)
+                })
+            Button(
+                "Break out",
+                action: {
+                    setOpenLockGame(4)
+                })
 
             Button("Nah, I am good...", role: .cancel, action: {
                 homeViewModel.setOpenDialog(openDialog: false)
