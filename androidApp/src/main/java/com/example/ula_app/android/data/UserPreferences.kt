@@ -19,6 +19,7 @@ data class UserPreferences (
     val dailyGoal: Int = 5000,
     val weeklyGoal: Int = 20000,
 
+    val curStepCount: Long = 0,
     // use the data store to record the fitness history
 //    val stepsHistory: PersistentList<StepsWithDates> = persistentListOf()
     val stepsHistory: String = ""

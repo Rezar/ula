@@ -9,6 +9,13 @@
         android:allowBackup="false"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <service
+            android:name=".SensorListener"
+            android:enabled="true"
+            android:exported="false">
+
+        </service>
+
         <activity
             android:name="MainActivity"
             android:exported="true">

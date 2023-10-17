@@ -30,6 +30,7 @@ class UserPreferencesRepository() {
         val DAILYGOAL = intPreferencesKey("daily_goal")
         val WEEKLYGOAL = intPreferencesKey("weekly_goal")
 
+        val CUR_STEP_COUNT = longPreferencesKey("cur_step_count")
         val STEPS_WITH_DATE = stringPreferencesKey("steps_with_date")
     }
 
@@ -135,6 +136,15 @@ class UserPreferencesRepository() {
     }
 
     /*
+    * set current step count
+    * */
+    suspend fun updateCurrentStepCount(currentStepCount: Long) {
+        dataStore.edit { preferences ->
+            preferences[PreferencesKeys.CUR_STEP_COUNT] = currentStepCount
+        }
+    }
+
+    /*
     * Load initial value to a state flow of viewModel
     * */
     suspend fun fetchInitialPreferences() = mapUserPreferences(dataStore.data.first().toPreferences())
@@ -156,6 +166,7 @@ class UserPreferencesRepository() {
         val dailyGoal = preferences[PreferencesKeys.DAILYGOAL] ?: 5000
         val weeklyGoal = preferences[PreferencesKeys.WEEKLYGOAL] ?: 20000
 
+        val curStepCount = preferences[PreferencesKeys.CUR_STEP_COUNT] ?: 0
         val stepsWithDates = preferences[PreferencesKeys.STEPS_WITH_DATE] ?: ""
 
         return UserPreferences(
@@ -169,6 +180,7 @@ class UserPreferencesRepository() {
             effectiveDate,
             dailyGoal,
             weeklyGoal,
+            curStepCount,
             stepsWithDates
         )
     }
