@@ -4,7 +4,6 @@ import android.graphics.Typeface
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -18,10 +17,9 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ula_app.android.Singleton
 import com.example.ula_app.android.ui.viewmodel.StepViewModel
-import com.example.ula_app.android.ui.viewmodel.StepsWithDates
+import com.example.ula_app.android.ui.viewmodel.StepWithDate
 import com.example.ula_app.android.ui.viewmodel.UserPreferencesViewModel
 import com.example.ula_app.util.DateTimeUtil
 import com.patrykandpatrick.vico.compose.axis.horizontal.bottomAxis
@@ -137,7 +135,7 @@ fun StepChart(
 
 
 
-fun getSteps(stepHistory: List<StepsWithDates>): ArrayList<FloatEntry>{
+fun getSteps(stepHistory: List<StepWithDate>): ArrayList<FloatEntry>{
     val steps = ArrayList<FloatEntry>()
 
     stepHistory.forEachIndexed { index, item ->
@@ -146,7 +144,7 @@ fun getSteps(stepHistory: List<StepsWithDates>): ArrayList<FloatEntry>{
     return steps
 }
 
-fun getDays(stepHistory: List<StepsWithDates>): AxisValueFormatter<AxisPosition.Horizontal.Bottom> {
+fun getDays(stepHistory: List<StepWithDate>): AxisValueFormatter<AxisPosition.Horizontal.Bottom> {
     var datesString = emptyList<String>()
     stepHistory.forEach {
         datesString += DateTimeUtil.getDayOfWeek(it.date)

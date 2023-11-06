@@ -4,17 +4,13 @@ import com.example.ula_app.data.DataSource
 import com.example.ula_app.data.dataclass.ListNode
 import com.example.ula_app.data.dataclass.MonsterCurrentStatus
 import com.example.ula_app.presentation.UiMonsterMovie
-import com.example.ula_app.util.CommonStateFlow
 import com.example.ula_app.util.DateTimeUtil
 import com.example.ula_app.util.toCommonStateFlow
-import io.ktor.events.Events
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -162,7 +158,7 @@ class HomeViewModel(
         minThreshold: Double
     ) {
         // If the user playing for less than 1 days, set the start movie as 0_0
-        if (DateTimeUtil.getDayDifference(DateTimeUtil.getCurrentDateTime(), Instant.fromEpochSeconds(firstDateTime))
+        if (DateTimeUtil.getDayDifference(DateTimeUtil.getCurrentInstant(), Instant.fromEpochSeconds(firstDateTime))
             <= DataSource.daysToAges[0]) {
             if(uiState.value.id == eggHead){
                 setId(eggHead)
@@ -170,15 +166,15 @@ class HomeViewModel(
         }
         // If the user playing within 1 to 5 days, then the age is child
         // start setting child body status
-        else if(DateTimeUtil.getDayDifference(DateTimeUtil.getCurrentDateTime(), Instant.fromEpochSeconds(firstDateTime))
+        else if(DateTimeUtil.getDayDifference(DateTimeUtil.getCurrentInstant(), Instant.fromEpochSeconds(firstDateTime))
             <= DataSource.daysToAges[1] &&
-            DateTimeUtil.getDayDifference(DateTimeUtil.getCurrentDateTime(), Instant.fromEpochSeconds(firstDateTime))
+            DateTimeUtil.getDayDifference(DateTimeUtil.getCurrentInstant(), Instant.fromEpochSeconds(firstDateTime))
             > DataSource.daysToAges[0]) {
             setChildBodyStatus(currentStep, goal, maxThreshold, minThreshold)
         }
         // If the user playing for more than 5 days, then the age is adult
         // start setting adult body status
-        else if(DateTimeUtil.getDayDifference(DateTimeUtil.getCurrentDateTime(), Instant.fromEpochSeconds(firstDateTime))
+        else if(DateTimeUtil.getDayDifference(DateTimeUtil.getCurrentInstant(), Instant.fromEpochSeconds(firstDateTime))
             > DataSource.daysToAges[1]) {
             setAdultBodyStatus(currentStep, goal, maxThreshold, minThreshold)
         }
@@ -277,8 +273,8 @@ class HomeViewModel(
     * */
     fun checkDayTime(): Boolean {
 
-        return (DateTimeUtil.getLocalDateTime() >= DataSource.timeThreshold[0]
-                && DateTimeUtil.getLocalDateTime() <= DataSource.timeThreshold[1])
+        return (DateTimeUtil.getLocalDateTime().time >= DataSource.timeThreshold[0]
+                && DateTimeUtil.getLocalDateTime().time <= DataSource.timeThreshold[1])
     }
 
 

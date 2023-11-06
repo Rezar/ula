@@ -16,7 +16,6 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.navigation.NavController
@@ -139,7 +138,7 @@ fun Game(
                             userPreferencesViewModel.setDailyGoal(dailyGoal)
                             userPreferencesViewModel.setWeeklyGoal(weeklyGoal)
                             userPreferencesViewModel.setFirstTime(false)
-                            userPreferencesViewModel.setFirstDateTime(DateTimeUtil.getCurrentDateTime())
+                            userPreferencesViewModel.setFirstDateTime(DateTimeUtil.getCurrentInstant())
 
                             Log.i("GameScreen", "dailyGoal: $dailyGoal, weeklyGoal: $weeklyGoal")
 

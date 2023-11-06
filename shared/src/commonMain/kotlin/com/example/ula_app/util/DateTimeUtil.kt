@@ -2,8 +2,7 @@ package com.example.ula_app.util
 
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
-import kotlinx.datetime.LocalDate
-import kotlinx.datetime.LocalTime
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
@@ -21,7 +20,7 @@ class DateTimeUtil {
         * Get the current date and time
         * default as UTC
         * */
-        fun getCurrentDateTime(): Instant {
+        fun getCurrentInstant(): Instant {
             return Clock.System.now()
         }
 
@@ -32,22 +31,36 @@ class DateTimeUtil {
             return (next - previous).inWholeDays
         }
 
+        fun getDayDifference(next: Long, previous: Long): Long {
+            val nextInstant = Instant.fromEpochSeconds(next)
+            val previousInstant = Instant.fromEpochSeconds(previous)
+
+            return (nextInstant - previousInstant).inWholeDays
+        }
+
+        fun getDayDifference(previous: Long): Long {
+            val currentInstant = getCurrentInstant()
+            val previousInstant = Instant.fromEpochSeconds(previous)
+
+            return (currentInstant - previousInstant).inWholeDays
+        }
+
         /*
         * Get the local time
         * */
-        fun getLocalDateTime(): LocalTime {
-            val currentDateTime: Instant = getCurrentDateTime()
-            return currentDateTime.toLocalDateTime(getSystemTimeZone()).time
+        fun getLocalDateTime(): LocalDateTime {
+            val currentDateTime: Instant = getCurrentInstant()
+            return currentDateTime.toLocalDateTime(getSystemTimeZone())
         }
 
-        /*
-        * Get the local date
-        * */
-        fun getLocalDate(kotlinInstant: Instant): LocalDate {
-            val date = kotlinInstant.toLocalDateTime(TimeZone.currentSystemDefault()).date  // Type of LocalDate
-
-            return date
-        }
+//        /*
+//        * Get the local date
+//        * */
+//        fun getLocalDate(kotlinInstant: Instant): LocalDate {
+//            val date = kotlinInstant.toLocalDateTime(TimeZone.currentSystemDefault()).date  // Type of LocalDate
+//
+//            return date
+//        }
         /*
         * Get the date of the week
         * */

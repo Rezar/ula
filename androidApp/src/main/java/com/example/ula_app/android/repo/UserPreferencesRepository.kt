@@ -1,5 +1,6 @@
 package com.example.ula_app.android.repo
 
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -10,8 +11,14 @@ import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.example.ula_app.android.Singleton
 import com.example.ula_app.android.data.UserPreferences
+import com.example.ula_app.data.dataclass.StepsWithDate
+import com.example.ula_app.util.DateTimeUtil
 import kotlinx.coroutines.flow.first
 import kotlinx.datetime.Instant
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.encodeToString
+
+private const val TAG = "UserPreferencesRepository"
 
 class UserPreferencesRepository() {
     val dataStore = Singleton.getInstance<DataStore<Preferences>>()
@@ -27,11 +34,11 @@ class UserPreferencesRepository() {
         val MIN_THRESHOLD = doublePreferencesKey("min_threshold")
         val EFFECTIVE_DAYS = intPreferencesKey("effective_days")
         val EFFECTIVE_DATE = longPreferencesKey("effective_date")
-        val DAILYGOAL = intPreferencesKey("daily_goal")
-        val WEEKLYGOAL = intPreferencesKey("weekly_goal")
+        val DAILY_GOAL = intPreferencesKey("daily_goal")
+        val WEEKLY_GOAL = intPreferencesKey("weekly_goal")
 
-        val CUR_STEP_COUNT = longPreferencesKey("cur_step_count")
-        val STEPS_WITH_DATE = stringPreferencesKey("steps_with_date")
+        val STEPS_PER_DAY = stringPreferencesKey("steps_per_day")
+        val STEPS_HISTORY = stringPreferencesKey("steps_history")
     }
 
 
@@ -39,7 +46,7 @@ class UserPreferencesRepository() {
     * set first time
     * */
     suspend fun updateFirstTime(firstTime: Boolean) {
-        dataStore.edit {preferences ->
+        dataStore.edit { preferences ->
             preferences[PreferencesKeys.FIRST_TIME] = firstTime
         }
     }
@@ -48,7 +55,7 @@ class UserPreferencesRepository() {
     * set first date time
     * */
     suspend fun updateFirstDateTime(firstDateTime: Instant) {
-        dataStore.edit {preferences ->
+        dataStore.edit { preferences ->
             preferences[PreferencesKeys.FIRST_DATE_TIME] = firstDateTime.epochSeconds
 
         }
@@ -59,7 +66,7 @@ class UserPreferencesRepository() {
     * */
     suspend fun updateStepHistory(stepsHistory: String) {
         dataStore.edit { preferences ->
-            preferences[PreferencesKeys.STEPS_WITH_DATE] = stepsHistory
+            preferences[PreferencesKeys.STEPS_HISTORY] = stepsHistory
         }
     }
 
@@ -67,7 +74,7 @@ class UserPreferencesRepository() {
     * set display steps
     * */
     suspend fun updateDisplaySteps(displaySteps: Boolean) {
-        dataStore.edit {preferences ->
+        dataStore.edit { preferences ->
             preferences[PreferencesKeys.DISPLAY_STEPS] = displaySteps
         }
     }
@@ -76,7 +83,7 @@ class UserPreferencesRepository() {
     * set first time
     * */
     suspend fun updateDisplayMonster(displayMonster: Boolean) {
-        dataStore.edit {preferences ->
+        dataStore.edit { preferences ->
             preferences[PreferencesKeys.DISPLAY_MONSTER] = displayMonster
         }
     }
@@ -85,7 +92,7 @@ class UserPreferencesRepository() {
     * set max threshold
     * */
     suspend fun updateMaxThreshold(maxThreshold: Double) {
-        dataStore.edit {preferences ->
+        dataStore.edit { preferences ->
             preferences[PreferencesKeys.MAX_THRESHOLD] = maxThreshold
         }
     }
@@ -94,7 +101,7 @@ class UserPreferencesRepository() {
     * set min threshold
     * */
     suspend fun updateMinThreshold(minThreshold: Double) {
-        dataStore.edit {preferences ->
+        dataStore.edit { preferences ->
             preferences[PreferencesKeys.MIN_THRESHOLD] = minThreshold
         }
     }
@@ -103,7 +110,7 @@ class UserPreferencesRepository() {
     * set effective days
     * */
     suspend fun updateEffectiveDays(effectiveDays: Int) {
-        dataStore.edit {preferences ->
+        dataStore.edit { preferences ->
             preferences[PreferencesKeys.EFFECTIVE_DAYS] = effectiveDays
         }
     }
@@ -112,7 +119,7 @@ class UserPreferencesRepository() {
     * set effective date
     * */
     suspend fun updateEffectiveDate(effectiveDate: Instant) {
-        dataStore.edit {preferences ->
+        dataStore.edit { preferences ->
             preferences[PreferencesKeys.EFFECTIVE_DATE] = effectiveDate.epochSeconds
         }
     }
@@ -121,8 +128,8 @@ class UserPreferencesRepository() {
     * set daily goal
     * */
     suspend fun updateDailyGoal(dailyGoal: Int) {
-        dataStore.edit {preferences ->
-            preferences[PreferencesKeys.DAILYGOAL] = dailyGoal
+        dataStore.edit { preferences ->
+            preferences[PreferencesKeys.DAILY_GOAL] = dailyGoal
         }
     }
 
@@ -130,30 +137,38 @@ class UserPreferencesRepository() {
     * set weekly goal
     * */
     suspend fun updateWeeklyGoal(weeklyGoal: Int) {
-        dataStore.edit {preferences ->
-            preferences[PreferencesKeys.WEEKLYGOAL] = weeklyGoal
+        dataStore.edit { preferences ->
+            preferences[PreferencesKeys.WEEKLY_GOAL] = weeklyGoal
         }
     }
 
     /*
-    * set current step count
+    * set steps per day
     * */
-    suspend fun updateCurrentStepCount(currentStepCount: Long) {
+    suspend fun updateStepsPerDay(stepsPerDay: StepsWithDate) {
+        val data = Json.encodeToString(stepsPerDay)
+
         dataStore.edit { preferences ->
-            preferences[PreferencesKeys.CUR_STEP_COUNT] = currentStepCount
+            preferences[PreferencesKeys.STEPS_PER_DAY] = data
+        }
+    }
+
+    suspend fun updateStepsHistory(stepsHistory: List<StepsWithDate>) {
+        val data = Json.encodeToString(stepsHistory)
+
+        dataStore.edit { preferences ->
+            preferences[PreferencesKeys.STEPS_HISTORY] = data
         }
     }
 
     /*
     * Load initial value to a state flow of viewModel
-    * */
-    suspend fun fetchInitialPreferences() = mapUserPreferences(dataStore.data.first().toPreferences())
-
-    /*
     * Read data from dataStore and convert them into a UserPreferences instance
     * This is similar to the deserializer in the UserPreferencesSerializer file
     * */
-    private fun mapUserPreferences(preferences: Preferences): UserPreferences {
+    suspend fun fetchInitialPreferences(): UserPreferences {
+        val preferences: Preferences = dataStore.data.first().toPreferences()
+
         val firstTime = preferences[PreferencesKeys.FIRST_TIME] ?: true  // a ? a: b
         val firstDateTime = Instant.fromEpochSeconds(preferences[PreferencesKeys.FIRST_DATE_TIME] ?: 0)
 
@@ -163,11 +178,8 @@ class UserPreferencesRepository() {
         val minThreshold = preferences[PreferencesKeys.MIN_THRESHOLD] ?: .2
         val effectiveDays = preferences[PreferencesKeys.EFFECTIVE_DAYS] ?: 3
         val effectiveDate = Instant.fromEpochSeconds(preferences[PreferencesKeys.EFFECTIVE_DATE] ?: 0L)
-        val dailyGoal = preferences[PreferencesKeys.DAILYGOAL] ?: 5000
-        val weeklyGoal = preferences[PreferencesKeys.WEEKLYGOAL] ?: 20000
-
-        val curStepCount = preferences[PreferencesKeys.CUR_STEP_COUNT] ?: 0
-        val stepsWithDates = preferences[PreferencesKeys.STEPS_WITH_DATE] ?: ""
+        val dailyGoal = preferences[PreferencesKeys.DAILY_GOAL] ?: 5000
+        val weeklyGoal = preferences[PreferencesKeys.WEEKLY_GOAL] ?: 20000
 
         return UserPreferences(
             firstTime,
@@ -180,9 +192,31 @@ class UserPreferencesRepository() {
             effectiveDate,
             dailyGoal,
             weeklyGoal,
-            curStepCount,
-            stepsWithDates
         )
+    }
+
+    suspend fun fetchStepsPerDay(): StepsWithDate {
+        val preferences: Preferences = dataStore.data.first().toPreferences()
+        val data: String = preferences[PreferencesKeys.STEPS_PER_DAY] ?: ""
+
+        try {
+            return Json.decodeFromString<StepsWithDate>(data)
+        } catch (e: Exception) {
+            Log.e(TAG, "decode steps per day from string failed.")
+            return StepsWithDate(DateTimeUtil.getCurrentInstant().epochSeconds, -1)
+        }
+    }
+
+    suspend fun fetchStepsHistory(): List<StepsWithDate> {
+        val preferences: Preferences = dataStore.data.first().toPreferences()
+        val data: String = preferences[PreferencesKeys.STEPS_HISTORY] ?: ""
+
+        try {
+            return Json.decodeFromString<List<StepsWithDate>>(data)
+        } catch (e: Exception) {
+            Log.i(TAG, "decode step history from string failed.")
+            return emptyList()
+        }
     }
 
 }
