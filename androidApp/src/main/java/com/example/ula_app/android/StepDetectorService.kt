@@ -12,7 +12,6 @@ import android.util.Log
 import com.example.ula_app.android.repo.UserPreferencesRepository
 import com.example.ula_app.data.dataclass.StepsWithDate
 import com.example.ula_app.util.DateTimeUtil
-import com.patrykandpatrick.vico.core.extension.mutableListOf
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -25,8 +24,7 @@ class StepDetectorService: Service(), SensorEventListener {
 
     private var userPreferencesRepository = Singleton.getInstance<UserPreferencesRepository>()
     private lateinit var sensorManager: SensorManager
-    private var stepsPerDay: StepsWithDate = StepsWithDate(DateTimeUtil.getCurrentInstant().epochSeconds, -1)
-    private var stepsHistory = mutableListOf<StepsWithDate>()
+    private var stepsPerDay: StepsWithDate = StepsWithDate(DateTimeUtil.nowInInstant().epochSeconds, -1)
     private var preStepCount = 0
 
 
@@ -44,12 +42,13 @@ class StepDetectorService: Service(), SensorEventListener {
         serviceScope.launch {
             withContext(Dispatchers.IO) {
                 stepsPerDay = userPreferencesRepository.fetchStepsPerDay()
-                stepsHistory.addAll(userPreferencesRepository.fetchStepsHistory())
             }
         }
 
         when (sensor?.type) {
             Sensor.TYPE_STEP_COUNTER -> {
+                Log.i(TAG, "Step sensor changed")
+
                 val sensorStepCount = event.values[0].toInt()
                 if (stepsPerDay.steps == -1) {
                     stepsPerDay.steps = 1
@@ -66,14 +65,20 @@ class StepDetectorService: Service(), SensorEventListener {
                         }
                     }
                 } else {
-                    val newDay = StepsWithDate(DateTimeUtil.getCurrentInstant().epochSeconds, -1)
+                    val newDay = StepsWithDate(DateTimeUtil.nowInInstant().epochSeconds, -1)
+                    val updatedStepsHistory = mutableListOf<StepsWithDate>()
 
-                    stepsHistory.add(stepsPerDay)
+                    serviceScope.launch {
+                        withContext(Dispatchers.IO) {
+                            updatedStepsHistory.addAll(userPreferencesRepository.fetchStepsHistory())
+                        }
+                    }
+                    updatedStepsHistory.add(stepsPerDay)
 
                     serviceScope.launch {
                         withContext(Dispatchers.IO) {
                             userPreferencesRepository.updateStepsPerDay(newDay)
-                            userPreferencesRepository.updateStepsHistory(stepsHistory)
+                            userPreferencesRepository.updateStepsHistory(updatedStepsHistory)
                         }
                     }
                 }
@@ -110,6 +115,7 @@ class StepDetectorService: Service(), SensorEventListener {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        Log.i(TAG, "Step Detector Service is Started")
         return START_STICKY
     }
 }

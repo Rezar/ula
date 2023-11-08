@@ -18,9 +18,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.ula_app.android.Singleton
+import com.example.ula_app.android.extension.abbr
 import com.example.ula_app.android.ui.viewmodel.StepViewModel
-import com.example.ula_app.android.ui.viewmodel.StepWithDate
 import com.example.ula_app.android.ui.viewmodel.UserPreferencesViewModel
+import com.example.ula_app.data.dataclass.StepsWithDate
 import com.example.ula_app.util.DateTimeUtil
 import com.patrykandpatrick.vico.compose.axis.horizontal.bottomAxis
 import com.patrykandpatrick.vico.compose.axis.vertical.startAxis
@@ -54,6 +55,11 @@ import com.patrykandpatrick.vico.core.extension.half
 import com.patrykandpatrick.vico.core.marker.Marker
 import com.patrykandpatrick.vico.core.chart.dimensions.HorizontalDimensions
 import com.patrykandpatrick.vico.core.chart.layout.HorizontalLayout
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.Instant
+import kotlinx.datetime.minus
+import kotlinx.datetime.plus
+import kotlin.time.Duration
 
 private const val TAG = "StepChart"
 
@@ -69,9 +75,8 @@ fun StepChart(
     // stepHistory list from datastore or state
     val stepHistoryUiState by stepViewModel.userState.collectAsState()
     val userPreUiState by userPreferencesViewModel.userPreferencesState.collectAsState()
-    val stepHistoryList = stepHistoryUiState.data
+    val stepHistoryList = stepViewModel.mockStepsHistoryIfNeeded(stepHistoryUiState.stepsHistory)
 
-    Log.e("$TAG", "$stepHistoryList")
     val chartEntryModelProducer = ChartEntryModelProducer(getSteps(stepHistoryList))
 
     // line components
@@ -98,20 +103,6 @@ fun StepChart(
             .background(color = Color.White)
             .padding(15.dp)
     ) {
-/*        BackHandler(true) {
-            onBackClicked()
-        }
-        IconButton(
-            onClick = {
-                onBackClicked()
-            }
-        ) {
-            Icon(
-                imageVector = Icons.Filled.ArrowBack,
-                contentDescription = null
-            )
-
-        }*/
 
         Chart(
             chart = columnChart(
@@ -135,7 +126,7 @@ fun StepChart(
 
 
 
-fun getSteps(stepHistory: List<StepWithDate>): ArrayList<FloatEntry>{
+fun getSteps(stepHistory: List<StepsWithDate>): ArrayList<FloatEntry>{
     val steps = ArrayList<FloatEntry>()
 
     stepHistory.forEachIndexed { index, item ->
@@ -144,10 +135,10 @@ fun getSteps(stepHistory: List<StepWithDate>): ArrayList<FloatEntry>{
     return steps
 }
 
-fun getDays(stepHistory: List<StepWithDate>): AxisValueFormatter<AxisPosition.Horizontal.Bottom> {
-    var datesString = emptyList<String>()
+fun getDays(stepHistory: List<StepsWithDate>): AxisValueFormatter<AxisPosition.Horizontal.Bottom> {
+    val datesString = mutableListOf<String>()
     stepHistory.forEach {
-        datesString += DateTimeUtil.getDayOfWeek(it.date)
+        datesString += DateTimeUtil.getDayOfWeek(it.date).abbr()
     }
 
     val dates = AxisValueFormatter<AxisPosition.Horizontal.Bottom> { x, _ -> datesString[x.toInt() % datesString.size] }

@@ -203,7 +203,7 @@ class UserPreferencesRepository() {
             return Json.decodeFromString<StepsWithDate>(data)
         } catch (e: Exception) {
             Log.e(TAG, "decode steps per day from string failed.")
-            return StepsWithDate(DateTimeUtil.getCurrentInstant().epochSeconds, -1)
+            return StepsWithDate(DateTimeUtil.nowInInstant().epochSeconds, -1)
         }
     }
 
@@ -215,7 +215,7 @@ class UserPreferencesRepository() {
             return Json.decodeFromString<List<StepsWithDate>>(data)
         } catch (e: Exception) {
             Log.i(TAG, "decode step history from string failed.")
-            return emptyList()
+            return emptyList<StepsWithDate>()
         }
     }
 

@@ -179,7 +179,7 @@ fun SettingScreen() {
                             onValueChange = { newText ->
                                 effectiveDays = newText
                             },
-                            enabled = DateTimeUtil.getDayDifference(DateTimeUtil.getCurrentInstant(), effectiveDate) >= effectiveDays.text.toLong()
+                            enabled = DateTimeUtil.getDayDifference(DateTimeUtil.nowInInstant(), effectiveDate) >= effectiveDays.text.toLong()
                         )
                     }
                 )
@@ -246,7 +246,7 @@ fun SettingScreen() {
                                             thumbColor = MaterialTheme.colors.onPrimary,
                                             activeTrackColor = MaterialTheme.colors.onSecondary
                                         ),
-                                        enabled = DateTimeUtil.getDayDifference(DateTimeUtil.getCurrentInstant(), effectiveDate) >= effectiveDays.text.toLong()
+                                        enabled = DateTimeUtil.getDayDifference(DateTimeUtil.nowInInstant(), effectiveDate) >= effectiveDays.text.toLong()
                                     )
 
                                     Text(text = sliderValueDaily.toInt().toString())
@@ -274,7 +274,7 @@ fun SettingScreen() {
                                             thumbColor = MaterialTheme.colors.onPrimary,
                                             activeTrackColor = MaterialTheme.colors.onSecondary
                                         ),
-                                        enabled = DateTimeUtil.getDayDifference(DateTimeUtil.getCurrentInstant(), effectiveDate) >= effectiveDays.text.toLong()
+                                        enabled = DateTimeUtil.getDayDifference(DateTimeUtil.nowInInstant(), effectiveDate) >= effectiveDays.text.toLong()
                                     )
 
                                     Text(text = sliderValueWeekly.toInt().toString())
@@ -333,7 +333,7 @@ fun SettingScreen() {
                                 userPreferencesViewModel.setWeeklyGoal(sliderValueWeekly.toInt())
                                 Log.i("SettingsScreen", "Effective?: ${
                                     DateTimeUtil.getDayDifference(
-                                        DateTimeUtil.getCurrentInstant(), effectiveDate) > effectiveDays.text.toLong()}")
+                                        DateTimeUtil.nowInInstant(), effectiveDate) > effectiveDays.text.toLong()}")
                                 Log.i("SettingsScreen", "EffectiveDate: ${effectiveDate}")
                                 Toast.makeText(
                                     context,

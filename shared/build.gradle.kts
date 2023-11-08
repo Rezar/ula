@@ -80,7 +80,7 @@ android {
     namespace = "com.example.ula_app"
     compileSdk = 33
     defaultConfig {
-        minSdk = 24
+        minSdk = 30
         targetSdk = 33
     }
 }

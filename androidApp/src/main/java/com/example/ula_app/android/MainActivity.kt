@@ -8,6 +8,7 @@ import androidx.activity.compose.setContent
 import androidx.core.content.ContextCompat
 import com.example.ula_app.android.ui.Game
 import android.Manifest
+import android.content.Intent
 import androidx.core.app.ActivityCompat
 
 /*// Name of Datastore file name
@@ -39,8 +40,8 @@ class MainActivity : ComponentActivity() {
             // End for Game
         }
 
-
-
+        val intent = Intent(applicationContext, StepDetectorService::class.java)
+        startService(intent)
     }
 
 }

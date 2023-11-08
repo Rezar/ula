@@ -51,7 +51,7 @@ fun StatsDetailScreen(
     val stepHistoryUiState by stepViewModel.userState.collectAsState()
     val userPreUiState by userPreferencesViewModel.userPreferencesState.collectAsState()
 
-    val stepHistoryList = stepHistoryUiState.data
+    val stepHistoryList = stepHistoryUiState.stepsHistory
 
     Column(
         modifier = Modifier
@@ -81,7 +81,7 @@ fun StatsDetailScreen(
         ) {
             itemsIndexed(stepHistoryList) { index, item ->
                 StatsDetailItem(
-                    weekday = DateTimeUtil.getDayOfWeek(item.date),
+                    weekday = DateTimeUtil.getDayOfWeek(item.date).toString(),
                     currentSteps = item.steps,
                     progressIndex = stepViewModel.getMonsterProgress(userPreUiState.dailyGoal, item.steps),
                     userPreUiState = userPreUiState

@@ -12,12 +12,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.Instant
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.encodeToString
 
 private const val TAG = "StepViewModel"
 
@@ -46,9 +44,43 @@ class StepViewModel(): ViewModel() {
 
             _userState.value = _userState.value.copy(
                 stepsPerDay = dataStoreObj.stepsPerDay,
-                stepsHistory = dataStoreObj.stepsHistory
+                stepsHistory = mockStepsHistoryIfNeeded(dataStoreObj.stepsHistory)
+//                stepsHistory = dataStoreObj.stepsHistory
             )
         }
+    }
+
+    fun mockStepsHistoryIfNeeded(stepsHistory: List<StepsWithDate>): List<StepsWithDate> {
+        val updatedStepsHistory = mutableListOf<StepsWithDate>()
+
+        // TODO: prepare stepHistoryList if 0 <= stepHistory.length < 7
+        if (_userState.value.stepsHistory.size in 0..6) {
+            val nowInstant = if (_userState.value.stepsHistory.isEmpty()) {
+                DateTimeUtil.nowInInstant()
+            } else {
+                Instant.fromEpochSeconds(_userState.value.stepsHistory[0].date)
+            }
+
+            var mockDays = 7 - _userState.value.stepsHistory.size
+            while (mockDays-- > 0) {
+                updatedStepsHistory.add(
+                    StepsWithDate(
+                        DateTimeUtil.nowInstantShift(
+                            nowInstant,
+                            mockDays - 8,
+                            DateTimeUnit.DAY
+                        ).epochSeconds,
+                        0
+                    )
+                )
+            }
+        } else {
+            updatedStepsHistory.addAll(_userState.value.stepsHistory)
+        }
+
+        Log.i(TAG, "length is ${updatedStepsHistory.size}")
+
+        return updatedStepsHistory
     }
 
     // Stats sample data

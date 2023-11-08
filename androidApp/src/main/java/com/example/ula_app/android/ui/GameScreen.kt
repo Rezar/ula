@@ -138,7 +138,7 @@ fun Game(
                             userPreferencesViewModel.setDailyGoal(dailyGoal)
                             userPreferencesViewModel.setWeeklyGoal(weeklyGoal)
                             userPreferencesViewModel.setFirstTime(false)
-                            userPreferencesViewModel.setFirstDateTime(DateTimeUtil.getCurrentInstant())
+                            userPreferencesViewModel.setFirstDateTime(DateTimeUtil.nowInInstant())
 
                             Log.i("GameScreen", "dailyGoal: $dailyGoal, weeklyGoal: $weeklyGoal")
 
