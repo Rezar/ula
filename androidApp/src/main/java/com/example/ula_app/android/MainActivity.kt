@@ -5,11 +5,10 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.core.content.ContextCompat
 import com.example.ula_app.android.ui.Game
 import android.Manifest
 import android.content.Intent
-import androidx.core.app.ActivityCompat
+import com.example.ula_app.android.service.StepCounterService
 
 /*// Name of Datastore file name
 private const val USER_PREFERENCES_NAME = "user_preferences"
@@ -40,7 +39,7 @@ class MainActivity : ComponentActivity() {
             // End for Game
         }
 
-        val intent = Intent(applicationContext, StepDetectorService::class.java)
+        val intent = Intent(applicationContext, StepCounterService::class.java)
         startService(intent)
     }
 

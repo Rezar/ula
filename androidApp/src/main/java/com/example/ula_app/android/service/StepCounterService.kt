@@ -1,4 +1,4 @@
-package com.example.ula_app.android
+package com.example.ula_app.android.service
 
 import android.app.Service
 import android.content.Context
@@ -9,6 +9,7 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.IBinder
 import android.util.Log
+import com.example.ula_app.android.Singleton
 import com.example.ula_app.android.repo.UserPreferencesRepository
 import com.example.ula_app.data.dataclass.StepsWithDate
 import com.example.ula_app.util.DateTimeUtil
@@ -20,7 +21,7 @@ import kotlinx.coroutines.withContext
 
 private const val TAG = "SensorListener"
 
-class StepDetectorService: Service(), SensorEventListener {
+class StepCounterService: Service(), SensorEventListener {
 
     private var userPreferencesRepository = Singleton.getInstance<UserPreferencesRepository>()
     private lateinit var sensorManager: SensorManager

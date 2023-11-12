@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <service
-            android:name="com.example.ula_app.android.StepDetectorService"
+            android:name="com.example.ula_app.android.service.StepCounterService"
             android:enabled="true"
             android:exported="false">
 

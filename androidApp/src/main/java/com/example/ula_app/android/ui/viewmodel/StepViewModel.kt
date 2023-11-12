@@ -44,8 +44,8 @@ class StepViewModel(): ViewModel() {
 
             _userState.value = _userState.value.copy(
                 stepsPerDay = dataStoreObj.stepsPerDay,
-                stepsHistory = mockStepsHistoryIfNeeded(dataStoreObj.stepsHistory)
-//                stepsHistory = dataStoreObj.stepsHistory
+//                stepsHistory = mockStepsHistoryIfNeeded(dataStoreObj.stepsHistory)
+                stepsHistory = dataStoreObj.stepsHistory
             )
         }
     }
