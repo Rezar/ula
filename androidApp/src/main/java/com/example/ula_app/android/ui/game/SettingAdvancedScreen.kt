@@ -2,11 +2,8 @@ package com.example.ula_app.android.ui.game
 
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
@@ -25,15 +22,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.ula_app.android.Singleton
+import com.example.ula_app.android.ULAApplication
 import com.example.ula_app.android.ui.component.SettingFieldsRow
 import com.example.ula_app.android.ui.viewmodel.UserPreferencesViewModel
 import java.io.IOException
@@ -44,7 +39,7 @@ fun SettingAdvancedScreen(
 ) {
 
     val context = LocalContext.current
-    val userPreferencesViewModel: UserPreferencesViewModel = Singleton.getInstance<UserPreferencesViewModel>()
+    val userPreferencesViewModel: UserPreferencesViewModel = ULAApplication.getInstance<UserPreferencesViewModel>()
     val userPreUiState by userPreferencesViewModel.userPreferencesState.collectAsState()
 
     var maxThreshold by remember {

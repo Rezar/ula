@@ -3,7 +3,7 @@ package com.example.ula_app.android.ui.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.ula_app.android.Singleton
+import com.example.ula_app.android.ULAApplication
 import com.example.ula_app.android.repo.UserPreferencesRepository
 import com.example.ula_app.data.DataSource
 import com.example.ula_app.data.dataclass.StepsWithDate
@@ -26,7 +26,7 @@ data class UserState(
 
 class StepViewModel(): ViewModel() {
 
-    private val userPreferencesRepository = Singleton.getInstance<UserPreferencesRepository>()
+    private val userPreferencesRepository = ULAApplication.getInstance<UserPreferencesRepository>()
 
     private val _userState = MutableStateFlow(UserState())
     val userState: StateFlow<UserState> = _userState.asStateFlow()

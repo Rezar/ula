@@ -34,7 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import com.example.ula_app.android.Singleton
+import com.example.ula_app.android.ULAApplication
 import com.example.ula_app.android.ui.component.SettingFieldsRow
 import com.example.ula_app.android.ui.viewmodel.UserPreferencesViewModel
 import com.example.ula_app.util.DateTimeUtil
@@ -50,7 +50,7 @@ enum class SettingAdvancedSegment(){
 fun SettingScreen() {
     val context = LocalContext.current
 
-    val userPreferencesViewModel: UserPreferencesViewModel = Singleton.getInstance<UserPreferencesViewModel>()
+    val userPreferencesViewModel: UserPreferencesViewModel = ULAApplication.getInstance<UserPreferencesViewModel>()
     val userPreUiState by userPreferencesViewModel.userPreferencesState.collectAsState()
 
     var currentScreen by remember {

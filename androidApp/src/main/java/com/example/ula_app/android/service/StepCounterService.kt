@@ -9,7 +9,7 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.IBinder
 import android.util.Log
-import com.example.ula_app.android.Singleton
+import com.example.ula_app.android.ULAApplication
 import com.example.ula_app.android.repo.UserPreferencesRepository
 import com.example.ula_app.data.dataclass.StepsWithDate
 import com.example.ula_app.util.DateTimeUtil
@@ -19,11 +19,11 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-private const val TAG = "SensorListener"
+private const val TAG = "StepCounterService"
 
 class StepCounterService: Service(), SensorEventListener {
 
-    private var userPreferencesRepository = Singleton.getInstance<UserPreferencesRepository>()
+    private var userPreferencesRepository = ULAApplication.getInstance<UserPreferencesRepository>()
     private lateinit var sensorManager: SensorManager
     private var stepsPerDay: StepsWithDate = StepsWithDate(DateTimeUtil.nowInInstant().epochSeconds, -1)
     private var preStepCount = 0
@@ -59,7 +59,7 @@ class StepCounterService: Service(), SensorEventListener {
                     preStepCount = sensorStepCount
                 }
 
-                if (DateTimeUtil.getDayDifference(stepsPerDay.date) == 0L) {
+                /*if (DateTimeUtil.getDayDifference(stepsPerDay.date) == 0L) {
                     serviceScope.launch {
                         withContext(Dispatchers.IO) {
                             userPreferencesRepository.updateStepsPerDay(stepsPerDay)
@@ -82,7 +82,7 @@ class StepCounterService: Service(), SensorEventListener {
                             userPreferencesRepository.updateStepsHistory(updatedStepsHistory)
                         }
                     }
-                }
+                }*/
 
 
             }

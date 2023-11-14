@@ -9,7 +9,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.example.ula_app.android.Singleton
+import com.example.ula_app.android.ULAApplication
 import com.example.ula_app.android.data.UserPreferences
 import com.example.ula_app.data.dataclass.StepsWithDate
 import com.example.ula_app.util.DateTimeUtil
@@ -21,7 +21,7 @@ import kotlinx.serialization.encodeToString
 private const val TAG = "UserPreferencesRepository"
 
 class UserPreferencesRepository() {
-    val dataStore = Singleton.getInstance<DataStore<Preferences>>()
+    val dataStore = ULAApplication.getInstance<DataStore<Preferences>>()
 
     // set preference keys in Datastore
     private object PreferencesKeys {
@@ -159,6 +159,23 @@ class UserPreferencesRepository() {
         dataStore.edit { preferences ->
             preferences[PreferencesKeys.STEPS_HISTORY] = data
         }
+    }
+
+    suspend fun saveStepPerDayToStepHistoryAndReset() {
+        val preferences: Preferences = dataStore.data.first().toPreferences()
+        val stepsPerDay = fetchStepsPerDay()
+
+        var updatedStepsHistory = mutableListOf<StepsWithDate>()
+
+        updatedStepsHistory.addAll(fetchStepsHistory())
+
+        if (updatedStepsHistory.size > 7) {
+            updatedStepsHistory.removeFirst()
+        }
+
+        updatedStepsHistory.add(stepsPerDay)
+        updateStepsHistory(updatedStepsHistory)
+        // TODO: not sure reset stepsPerDay is needed.
     }
 
     /*

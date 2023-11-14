@@ -39,8 +39,8 @@ class MainActivity : ComponentActivity() {
             // End for Game
         }
 
-        val intent = Intent(applicationContext, StepCounterService::class.java)
-        startService(intent)
+//        val intent = Intent(applicationContext, StepCounterService::class.java)
+//        startService(intent)
     }
 
 }

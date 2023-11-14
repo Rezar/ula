@@ -5,15 +5,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
@@ -23,7 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.ula_app.android.Singleton
+import com.example.ula_app.android.ULAApplication
 import com.example.ula_app.android.ui.viewmodel.StepViewModel
 import com.mutualmobile.composesensors.rememberStepCounterSensorState
 
@@ -39,7 +36,7 @@ fun StatsScreen() {
 
     val context = LocalContext.current
 
-    val stepViewModel: StepViewModel = Singleton.getInstance<StepViewModel>()
+    val stepViewModel: StepViewModel = ULAApplication.getInstance<StepViewModel>()
 
     // stepHistory list from datastore or state
 //    val stepHistoryUiState by stepViewModel.userState.collectAsState()

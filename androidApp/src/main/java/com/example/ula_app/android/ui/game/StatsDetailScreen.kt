@@ -1,6 +1,5 @@
 package com.example.ula_app.android.ui.game
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -29,12 +28,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ula_app.android.R
 import com.example.ula_app.android.ui.viewmodel.StepViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
-import com.example.ula_app.android.Singleton
+import com.example.ula_app.android.ULAApplication
 import com.example.ula_app.android.data.UserPreferences
 import com.example.ula_app.android.ui.viewmodel.UserPreferencesViewModel
 import com.example.ula_app.util.DateTimeUtil
@@ -44,8 +42,8 @@ fun StatsDetailScreen(
     onBackClicked: () -> Unit = {}
 ) {
     val context = LocalContext.current
-    val userPreferencesViewModel= Singleton.getInstance<UserPreferencesViewModel>()
-    val stepViewModel= Singleton.getInstance<StepViewModel>()
+    val userPreferencesViewModel= ULAApplication.getInstance<UserPreferencesViewModel>()
+    val stepViewModel= ULAApplication.getInstance<StepViewModel>()
 
     // stepHistory list from datastore or state
     val stepHistoryUiState by stepViewModel.userState.collectAsState()

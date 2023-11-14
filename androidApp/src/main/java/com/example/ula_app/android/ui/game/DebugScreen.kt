@@ -29,7 +29,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.ula_app.android.Singleton
+import com.example.ula_app.android.ULAApplication
 import com.example.ula_app.android.ui.viewmodel.AndroidDebugViewModel
 import com.example.ula_app.android.ui.viewmodel.AndroidHomeViewModel
 import com.example.ula_app.data.DataSource
@@ -42,8 +42,8 @@ private const val rightWeight = 1 - leftWeight
 @Composable
 fun DebugScreen() {
     val context = LocalContext.current
-    val homeViewModel= Singleton.getInstance<AndroidHomeViewModel>()
-    val debugViewModel= Singleton.getInstance<AndroidDebugViewModel>()
+    val homeViewModel= ULAApplication.getInstance<AndroidHomeViewModel>()
+    val debugViewModel= ULAApplication.getInstance<AndroidDebugViewModel>()
 
     val ageOptions = listOf(
         "",

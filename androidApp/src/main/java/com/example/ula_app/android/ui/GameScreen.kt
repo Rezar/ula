@@ -24,7 +24,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.ula_app.android.Singleton
+import com.example.ula_app.android.ULAApplication
 import com.example.ula_app.android.data.BottomNavigationBarItem
 import com.example.ula_app.android.data.DataSource
 import com.example.ula_app.android.ui.game.DebugScreen
@@ -64,7 +64,7 @@ fun Game(
     navController: NavHostController = rememberNavController()
 ) {
 
-    val userPreferencesViewModel: UserPreferencesViewModel = Singleton.getInstance<UserPreferencesViewModel>()
+    val userPreferencesViewModel: UserPreferencesViewModel = ULAApplication.getInstance<UserPreferencesViewModel>()
     // ui state
     val userPreferencesUiState by userPreferencesViewModel.userPreferencesState.collectAsState()
 

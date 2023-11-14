@@ -1,7 +1,6 @@
 package com.example.ula_app.android.ui.game
 
 import android.graphics.Typeface
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,7 +16,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.ula_app.android.Singleton
+import com.example.ula_app.android.ULAApplication
 import com.example.ula_app.android.extension.abbr
 import com.example.ula_app.android.ui.viewmodel.StepViewModel
 import com.example.ula_app.android.ui.viewmodel.UserPreferencesViewModel
@@ -55,11 +54,6 @@ import com.patrykandpatrick.vico.core.extension.half
 import com.patrykandpatrick.vico.core.marker.Marker
 import com.patrykandpatrick.vico.core.chart.dimensions.HorizontalDimensions
 import com.patrykandpatrick.vico.core.chart.layout.HorizontalLayout
-import kotlinx.datetime.DateTimeUnit
-import kotlinx.datetime.Instant
-import kotlinx.datetime.minus
-import kotlinx.datetime.plus
-import kotlin.time.Duration
 
 private const val TAG = "StepChart"
 
@@ -69,8 +63,8 @@ fun StepChart(
 //    onBackClicked: () -> Unit = {},
 ){
     val context = LocalContext.current
-    val userPreferencesViewModel= Singleton.getInstance<UserPreferencesViewModel>()
-    val stepViewModel= Singleton.getInstance<StepViewModel>()
+    val userPreferencesViewModel= ULAApplication.getInstance<UserPreferencesViewModel>()
+    val stepViewModel= ULAApplication.getInstance<StepViewModel>()
 
     // stepHistory list from datastore or state
     val stepHistoryUiState by stepViewModel.userState.collectAsState()

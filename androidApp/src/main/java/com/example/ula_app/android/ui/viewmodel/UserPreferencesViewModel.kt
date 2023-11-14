@@ -1,9 +1,8 @@
 package com.example.ula_app.android.ui.viewmodel
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.ula_app.android.Singleton
+import com.example.ula_app.android.ULAApplication
 import com.example.ula_app.android.data.UserPreferences
 import com.example.ula_app.android.repo.UserPreferencesRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +16,7 @@ import kotlinx.datetime.Instant
 
 class UserPreferencesViewModel(): ViewModel() {
 
-    val userPreferencesRepository = Singleton.getInstance<UserPreferencesRepository>()
+    val userPreferencesRepository = ULAApplication.getInstance<UserPreferencesRepository>()
 
     private val _userPreferencesState = MutableStateFlow(UserPreferences())
     val userPreferencesState: StateFlow<UserPreferences> = _userPreferencesState.asStateFlow()

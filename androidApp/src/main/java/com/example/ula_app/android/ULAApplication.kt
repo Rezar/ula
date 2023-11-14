@@ -1,7 +1,10 @@
 package com.example.ula_app.android
 
 import android.app.Application
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
@@ -10,6 +13,13 @@ import com.example.ula_app.android.ui.viewmodel.AndroidDebugViewModel
 import com.example.ula_app.android.ui.viewmodel.AndroidHomeViewModel
 import com.example.ula_app.android.ui.viewmodel.StepViewModel
 import com.example.ula_app.android.ui.viewmodel.UserPreferencesViewModel
+import com.example.ula_app.util.DateTimeUtil
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlinx.datetime.LocalDateTime
 
 // Name of Datastore file name
 private const val USER_PREFERENCES_NAME = "user_preferences"
@@ -19,14 +29,16 @@ val Context.dataStore by preferencesDataStore(
     name = USER_PREFERENCES_NAME
 )
 
-class Singleton: Application() {
+class ULAApplication: Application() {
 
     init {
         instance = this
     }
 
+    val currentDate = MutableStateFlow<LocalDateTime>(DateTimeUtil.nowInLocalDateTime())
+
     companion object {
-        var instance: Singleton ?= null
+        var instance: ULAApplication ?= null
 
         var homeViewModel: AndroidHomeViewModel ?= null
         var debugViewModel: AndroidDebugViewModel ?= null
@@ -137,5 +149,43 @@ class Singleton: Application() {
 
             return userPreferencesViewModel as UserPreferencesViewModel
         }
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        registerMidnightTimer()
+    }
+
+    private fun registerMidnightTimer() {
+        val intentFilter = IntentFilter().apply {
+            addAction(Intent.ACTION_TIME_TICK)
+            addAction(Intent.ACTION_TIME_CHANGED)
+            addAction(Intent.ACTION_TIMEZONE_CHANGED)
+        }
+        registerReceiver(midnightBroadcastReceiver, intentFilter)
+    }
+
+    private val midnightBroadcastReceiver = object : BroadcastReceiver() {
+
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val today = DateTimeUtil.nowInLocalDateTime()
+            if (today.date != currentDate.value.date) {
+                currentDate.value = today
+            } else if (isSavingTime(today)) {
+                CoroutineScope(Dispatchers.IO).launch {
+                    withContext(Dispatchers.IO) {
+                        userPreferencesRepository?.saveStepPerDayToStepHistoryAndReset()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun isSavingTime(today: LocalDateTime): Boolean {
+        if (today.time.hour == 11 && today.time.minute == 55 && today.time.second == 0) {
+            return true
+        }
+
+        return false
     }
 }

@@ -1,6 +1,5 @@
 package com.example.ula_app.android.ui.game
 
-import android.content.ContentResolver
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
@@ -26,15 +25,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
-import com.example.ula_app.android.Singleton
+import com.example.ula_app.android.ULAApplication
 import com.example.ula_app.android.ui.lockgame.tictactoe.TicTacToeActivity
 import com.example.ula_app.android.data.DataSource
-import com.example.ula_app.game.HomeViewModel
 import com.example.ula_app.android.ui.viewmodel.UserPreferencesViewModel
 import com.mutualmobile.composesensors.rememberStepCounterSensorState
 import com.example.ula_app.android.ui.lockgame.dinogame.DinoGameActivity
@@ -48,8 +45,8 @@ private const val TAG = "HomeScreen"
 @Composable
 fun HomeScreen() {
     val context = LocalContext.current
-    val homeViewModel = Singleton.getInstance<AndroidHomeViewModel>()
-    val userPreferencesViewModel = Singleton.getInstance<UserPreferencesViewModel>()
+    val homeViewModel = ULAApplication.getInstance<AndroidHomeViewModel>()
+    val userPreferencesViewModel = ULAApplication.getInstance<UserPreferencesViewModel>()
 
 
     val homeUiState by homeViewModel.uiState.collectAsState()
