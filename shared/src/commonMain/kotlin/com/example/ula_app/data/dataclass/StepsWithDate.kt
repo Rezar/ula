@@ -5,6 +5,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class StepsWithDate(
-    val date: Long,
-    var steps: Int
+    val date: Long = 0L,
+    var steps: Int = 0
 )

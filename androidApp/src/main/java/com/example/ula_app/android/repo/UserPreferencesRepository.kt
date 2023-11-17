@@ -11,6 +11,7 @@ import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.example.ula_app.android.ULAApplication
 import com.example.ula_app.android.data.UserPreferences
+import com.example.ula_app.data.dataclass.StepsPerDay
 import com.example.ula_app.data.dataclass.StepsWithDate
 import com.example.ula_app.util.DateTimeUtil
 import kotlinx.coroutines.flow.first
@@ -145,7 +146,7 @@ class UserPreferencesRepository() {
     /*
     * set steps per day
     * */
-    suspend fun updateStepsPerDay(stepsPerDay: StepsWithDate) {
+    suspend fun updateStepsPerDay(stepsPerDay: StepsPerDay) {
         val data = Json.encodeToString(stepsPerDay)
 
         dataStore.edit { preferences ->
@@ -173,7 +174,7 @@ class UserPreferencesRepository() {
             updatedStepsHistory.removeFirst()
         }
 
-        updatedStepsHistory.add(stepsPerDay)
+        updatedStepsHistory.add(StepsWithDate(DateTimeUtil.nowInInstant().epochSeconds, stepsPerDay.stepCount))
         updateStepsHistory(updatedStepsHistory)
         // TODO: not sure reset stepsPerDay is needed.
     }
@@ -212,15 +213,15 @@ class UserPreferencesRepository() {
         )
     }
 
-    suspend fun fetchStepsPerDay(): StepsWithDate {
+    suspend fun fetchStepsPerDay(): StepsPerDay {
         val preferences: Preferences = dataStore.data.first().toPreferences()
         val data: String = preferences[PreferencesKeys.STEPS_PER_DAY] ?: ""
 
         try {
-            return Json.decodeFromString<StepsWithDate>(data)
+            return Json.decodeFromString<StepsPerDay>(data)
         } catch (e: Exception) {
             Log.e(TAG, "decode steps per day from string failed.")
-            return StepsWithDate(DateTimeUtil.nowInInstant().epochSeconds, -1)
+            return StepsPerDay(0, 0)
         }
     }
 

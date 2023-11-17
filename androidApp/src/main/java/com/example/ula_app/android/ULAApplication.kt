@@ -35,7 +35,7 @@ class ULAApplication: Application() {
         instance = this
     }
 
-    val currentDate = MutableStateFlow<LocalDateTime>(DateTimeUtil.nowInLocalDateTime())
+    val applicationScope = CoroutineScope(Dispatchers.IO)
 
     companion object {
         var instance: ULAApplication ?= null
@@ -45,6 +45,8 @@ class ULAApplication: Application() {
         var stepViewModel: StepViewModel ?= null
         var userPreferencesViewModel: UserPreferencesViewModel ?= null
         var userPreferencesRepository: UserPreferencesRepository ?= null
+
+        val localDateTimeState = MutableStateFlow<LocalDateTime>(DateTimeUtil.nowInLocalDateTime())
 
         inline fun <reified T>getInstance(): T {
 
@@ -169,10 +171,10 @@ class ULAApplication: Application() {
 
         override fun onReceive(context: Context?, intent: Intent?) {
             val today = DateTimeUtil.nowInLocalDateTime()
-            if (today.date != currentDate.value.date) {
-                currentDate.value = today
+            if (today.date != localDateTimeState.value.date) {
+                localDateTimeState.value = today
             } else if (isSavingTime(today)) {
-                CoroutineScope(Dispatchers.IO).launch {
+                applicationScope.launch {
                     withContext(Dispatchers.IO) {
                         userPreferencesRepository?.saveStepPerDayToStepHistoryAndReset()
                     }
@@ -181,8 +183,8 @@ class ULAApplication: Application() {
         }
     }
 
-    private fun isSavingTime(today: LocalDateTime): Boolean {
-        if (today.time.hour == 11 && today.time.minute == 55 && today.time.second == 0) {
+    private fun isSavingTime(now: LocalDateTime): Boolean {
+        if (now.time.hour == 11 && now.time.minute == 55 && now.time.second == 0) {
             return true
         }
 

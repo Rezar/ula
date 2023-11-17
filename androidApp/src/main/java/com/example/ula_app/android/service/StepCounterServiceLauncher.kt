@@ -4,8 +4,6 @@ import android.Manifest
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import com.example.ula_app.android.PermissionManager
 
 class StepCounterServiceLauncher: BroadcastReceiver() {
@@ -16,7 +14,7 @@ class StepCounterServiceLauncher: BroadcastReceiver() {
                 PermissionManager.hasPermission(context, Manifest.permission.ACTIVITY_RECOGNITION)
             ) {
                 val launchIntent = Intent(applicationContext, StepCounterService::class.java)
-                ContextCompat.startForegroundService(applicationContext, launchIntent)
+                context.startForegroundService(launchIntent)
             }
         }
     }

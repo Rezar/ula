@@ -11,11 +11,9 @@ import android.os.IBinder
 import android.util.Log
 import com.example.ula_app.android.ULAApplication
 import com.example.ula_app.android.repo.UserPreferencesRepository
-import com.example.ula_app.data.dataclass.StepsWithDate
-import com.example.ula_app.util.DateTimeUtil
+import com.example.ula_app.data.dataclass.StepsPerDay
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -25,12 +23,10 @@ class StepCounterService: Service(), SensorEventListener {
 
     private var userPreferencesRepository = ULAApplication.getInstance<UserPreferencesRepository>()
     private lateinit var sensorManager: SensorManager
-    private var stepsPerDay: StepsWithDate = StepsWithDate(DateTimeUtil.nowInInstant().epochSeconds, -1)
-    private var preStepCount = 0
+    private var stepsPerDay: StepsPerDay = StepsPerDay()
 
 
-    private val serviceJob = Job() // Create a Job for the service
-    private val serviceScope = CoroutineScope(Dispatchers.IO + serviceJob) // Create a CoroutineScope with IO dispatcher
+    private val serviceScope = CoroutineScope(Dispatchers.IO) // Create a CoroutineScope with IO dispatcher
 
 
     override fun onBind(intent: Intent?): IBinder? {
@@ -40,23 +36,24 @@ class StepCounterService: Service(), SensorEventListener {
     override fun onSensorChanged(event: SensorEvent?) {
         val sensor = event?.sensor
 
-        serviceScope.launch {
-            withContext(Dispatchers.IO) {
-                stepsPerDay = userPreferencesRepository.fetchStepsPerDay()
-            }
-        }
-
         when (sensor?.type) {
             Sensor.TYPE_STEP_COUNTER -> {
                 Log.i(TAG, "Step sensor changed")
 
+                serviceScope.launch {
+                    withContext(Dispatchers.IO) {
+                        stepsPerDay = userPreferencesRepository.fetchStepsPerDay()
+                    }
+                }
+
                 val sensorStepCount = event.values[0].toInt()
-                if (stepsPerDay.steps == -1) {
-                    stepsPerDay.steps = 1
-                    preStepCount = sensorStepCount
-                } else {
-                    stepsPerDay.steps += sensorStepCount - preStepCount
-                    preStepCount = sensorStepCount
+                stepsPerDay.stepCount += sensorStepCount - stepsPerDay.preStepCount
+                stepsPerDay.preStepCount = sensorStepCount
+
+                serviceScope.launch {
+                    withContext(Dispatchers.IO) {
+                        userPreferencesRepository.updateStepsPerDay(stepsPerDay)
+                    }
                 }
 
                 /*if (DateTimeUtil.getDayDifference(stepsPerDay.date) == 0L) {
@@ -93,7 +90,7 @@ class StepCounterService: Service(), SensorEventListener {
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
-        Log.i("SensorListener", sensor?.name + " accuracy changed: " + accuracy)
+        Log.i(TAG, sensor?.name + " accuracy changed: " + accuracy)
     }
 
     override fun onCreate() {
@@ -108,7 +105,6 @@ class StepCounterService: Service(), SensorEventListener {
     override fun onDestroy() {
         super.onDestroy()
         sensorManager.unregisterListener(this)
-        serviceJob.cancel()
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {

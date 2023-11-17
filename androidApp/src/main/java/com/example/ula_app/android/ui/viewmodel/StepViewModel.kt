@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.ula_app.android.ULAApplication
 import com.example.ula_app.android.repo.UserPreferencesRepository
 import com.example.ula_app.data.DataSource
+import com.example.ula_app.data.dataclass.StepsPerDay
 import com.example.ula_app.data.dataclass.StepsWithDate
 import com.example.ula_app.util.DateTimeUtil
 import kotlinx.coroutines.Dispatchers
@@ -20,8 +21,8 @@ import kotlinx.datetime.Instant
 private const val TAG = "StepViewModel"
 
 data class UserState(
-    val stepsPerDay: StepsWithDate = StepsWithDate(0L, 0),
-    val stepsHistory: List<StepsWithDate> = emptyList(),
+    val stepsPerDay: StepsPerDay = StepsPerDay(),
+    val stepsHistory: List<StepsWithDate> = emptyList<StepsWithDate>(),
 )
 
 class StepViewModel(): ViewModel() {
