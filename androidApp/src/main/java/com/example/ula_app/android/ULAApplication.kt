@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import com.example.ula_app.android.repo.UserPreferencesRepository
 import com.example.ula_app.android.ui.viewmodel.AndroidDebugViewModel
@@ -100,56 +99,6 @@ class ULAApplication: Application() {
                     throw Exception("Unknown type")
                 }
             }
-        }
-
-        // get the only instance of DataStore in the scope of application context.
-        fun getDataStore(context: Context): DataStore<Preferences> {
-            return context.dataStore
-        }
-
-        // get the only instance of UserPreferencesRepository in the scope of application context.
-        fun getRepository(context: Context): UserPreferencesRepository {
-            if (userPreferencesRepository == null) {
-                userPreferencesRepository = UserPreferencesRepository()
-            }
-
-            return userPreferencesRepository as UserPreferencesRepository
-        }
-
-        // get the only instance of AndroidHomeViewModel in the scope of application context.
-        fun getHomeVM(): AndroidHomeViewModel {
-            if (homeViewModel == null) {
-                homeViewModel = AndroidHomeViewModel()
-            }
-
-            return homeViewModel as AndroidHomeViewModel
-        }
-
-        // get the only instance of AndroidDebugViewModel in the scope of application context.
-        fun getDebugVM(): AndroidDebugViewModel {
-            if (debugViewModel == null) {
-                debugViewModel = AndroidDebugViewModel()
-            }
-
-            return debugViewModel as AndroidDebugViewModel
-        }
-
-        // get the only instance of StepViewModel in the scope of application context.
-        fun getStepVM(context: Context): StepViewModel {
-            if (stepViewModel == null) {
-                stepViewModel = StepViewModel()
-            }
-
-            return stepViewModel as StepViewModel
-        }
-
-        // get the only instance of UserPreferencesViewModel in the scope of application context.
-        fun getUserPreferencesVM(context: Context): UserPreferencesViewModel {
-            if (userPreferencesViewModel == null) {
-                userPreferencesViewModel = UserPreferencesViewModel()
-            }
-
-            return userPreferencesViewModel as UserPreferencesViewModel
         }
     }
 

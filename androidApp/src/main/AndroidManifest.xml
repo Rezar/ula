@@ -12,13 +12,13 @@
 
     <application
         android:name=".ULAApplication"
-        android:allowBackup="false"
+        android:icon="@drawable/mic"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
         <receiver
-            android:name=".service.StepCounterServiceLauncher"
-            android:exported="false">
+            android:name=".service.OnBootReceiver"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
