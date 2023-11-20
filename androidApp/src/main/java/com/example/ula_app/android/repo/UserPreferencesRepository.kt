@@ -11,8 +11,8 @@ import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.example.ula_app.android.ULAApplication
 import com.example.ula_app.android.data.UserPreferences
-import com.example.ula_app.data.dataclass.StepsPerDay
-import com.example.ula_app.data.dataclass.StepsWithDate
+import com.example.ula_app.android.data.StepsPerDay
+import com.example.ula_app.android.data.StepsWithDate
 import com.example.ula_app.util.DateTimeUtil
 import kotlinx.coroutines.flow.first
 import kotlinx.datetime.Instant
@@ -41,6 +41,18 @@ class UserPreferencesRepository() {
         val STEPS_PER_DAY = stringPreferencesKey("steps_per_day")
         val STEPS_HISTORY = stringPreferencesKey("steps_history")
     }
+
+    private val DEFAULT_SETTINGS = UserPreferences(
+        firstTime = true,
+        firstDateTime = DateTimeUtil.nowInInstant(),
+        displaySteps = false,
+        displayMonster = false,
+        maxThreshold = .2,
+        minThreshold = .2,
+        effectiveDate = DateTimeUtil.nowInInstant(),
+        dailyGoal = 5000,
+        weeklyGoal = 20000,
+    )
 
 
     /*

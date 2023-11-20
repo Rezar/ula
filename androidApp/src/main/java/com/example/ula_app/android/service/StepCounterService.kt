@@ -11,7 +11,7 @@ import android.os.IBinder
 import android.util.Log
 import com.example.ula_app.android.ULAApplication
 import com.example.ula_app.android.repo.UserPreferencesRepository
-import com.example.ula_app.data.dataclass.StepsPerDay
+import com.example.ula_app.android.data.StepsPerDay
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

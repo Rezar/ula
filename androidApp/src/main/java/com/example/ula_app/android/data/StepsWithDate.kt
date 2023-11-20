@@ -1,4 +1,4 @@
-package com.example.ula_app.data.dataclass
+package com.example.ula_app.android.data
 
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable

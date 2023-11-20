@@ -20,7 +20,7 @@ import com.example.ula_app.android.ULAApplication
 import com.example.ula_app.android.extension.abbr
 import com.example.ula_app.android.ui.viewmodel.StepViewModel
 import com.example.ula_app.android.ui.viewmodel.UserPreferencesViewModel
-import com.example.ula_app.data.dataclass.StepsWithDate
+import com.example.ula_app.android.data.StepsWithDate
 import com.example.ula_app.util.DateTimeUtil
 import com.patrykandpatrick.vico.compose.axis.horizontal.bottomAxis
 import com.patrykandpatrick.vico.compose.axis.vertical.startAxis
