@@ -31,9 +31,9 @@ struct Cell
         switch(tile)
         {
             case Tile.Nought:
-                return Color.red
+                return Color.gray
             case Tile.Cross:
-                return Color.black
+                return Color.pink
             default:
                 return Color.black
         }

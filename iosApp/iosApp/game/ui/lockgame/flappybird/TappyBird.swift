@@ -47,8 +47,9 @@ struct TappyBird: View {
                     Spacer()
                 }
             }
-            .frame(width: 950, height: 440, alignment: .center)
-            .background(LinearGradient(gradient: Gradient(colors: farben), startPoint: .bottom, endPoint: .top))
+//            .frame(width: 950, height: 440, alignment: .center)
+            .frame(alignment: .center)
+            .background(.white)
             .navigationBarHidden(true)
             .navigationBarBackButtonHidden(true)
         }
