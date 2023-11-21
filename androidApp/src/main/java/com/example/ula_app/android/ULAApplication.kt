@@ -101,42 +101,4 @@ class ULAApplication: Application() {
             }
         }
     }
-
-    override fun onCreate() {
-        super.onCreate()
-        registerMidnightTimer()
-    }
-
-    private fun registerMidnightTimer() {
-        val intentFilter = IntentFilter().apply {
-            addAction(Intent.ACTION_TIME_TICK)
-            addAction(Intent.ACTION_TIME_CHANGED)
-            addAction(Intent.ACTION_TIMEZONE_CHANGED)
-        }
-        registerReceiver(midnightBroadcastReceiver, intentFilter)
-    }
-
-    private val midnightBroadcastReceiver = object : BroadcastReceiver() {
-
-        override fun onReceive(context: Context?, intent: Intent?) {
-            val today = DateTimeUtil.nowInLocalDateTime()
-            if (today.date != localDateTimeState.value.date) {
-                localDateTimeState.value = today
-            } else if (isSavingTime(today)) {
-                applicationScope.launch {
-                    withContext(Dispatchers.IO) {
-                        userPreferencesRepository?.saveStepPerDayToStepHistoryAndReset()
-                    }
-                }
-            }
-        }
-    }
-
-    private fun isSavingTime(now: LocalDateTime): Boolean {
-        if (now.time.hour == 11 && now.time.minute == 55 && now.time.second == 0) {
-            return true
-        }
-
-        return false
-    }
 }

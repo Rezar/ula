@@ -1,8 +1,10 @@
 package com.example.ula_app.android.service
 
 import android.app.Service
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -12,10 +14,12 @@ import android.util.Log
 import com.example.ula_app.android.ULAApplication
 import com.example.ula_app.android.repo.UserPreferencesRepository
 import com.example.ula_app.android.data.StepsPerDay
+import com.example.ula_app.util.DateTimeUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.datetime.LocalDateTime
 
 private const val TAG = "StepCounterService"
 
@@ -97,6 +101,8 @@ class StepCounterService: Service(), SensorEventListener {
         super.onCreate()
         Log.i(TAG, "Sensor Service is created.")
 
+        registerMidnightTimer()
+
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         val sensor: Sensor? = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
         sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL)
@@ -114,5 +120,38 @@ class StepCounterService: Service(), SensorEventListener {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.i(TAG, "Step Detector Service is Started")
         return START_STICKY
+    }
+
+    private fun registerMidnightTimer() {
+        val intentFilter = IntentFilter().apply {
+            addAction(Intent.ACTION_TIME_TICK)
+            addAction(Intent.ACTION_TIME_CHANGED)
+            addAction(Intent.ACTION_TIMEZONE_CHANGED)
+        }
+        registerReceiver(midnightBroadcastReceiver, intentFilter)
+    }
+
+    private val midnightBroadcastReceiver = object : BroadcastReceiver() {
+
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val today = DateTimeUtil.nowInLocalDateTime()
+            if (today.date != ULAApplication.localDateTimeState.value.date) {
+                ULAApplication.localDateTimeState.value = today
+            } else if (isSavingTime(today)) {
+                serviceScope.launch {
+                    withContext(Dispatchers.IO) {
+                        ULAApplication.userPreferencesRepository?.saveStepPerDayToStepHistoryAndReset()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun isSavingTime(now: LocalDateTime): Boolean {
+        if (now.time.hour == 11 && now.time.minute == 55 && now.time.second == 0) {
+            return true
+        }
+
+        return false
     }
 }

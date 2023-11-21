@@ -22,7 +22,7 @@ import kotlinx.serialization.encodeToString
 private const val TAG = "UserPreferencesRepository"
 
 class UserPreferencesRepository() {
-    val dataStore = ULAApplication.getInstance<DataStore<Preferences>>()
+    private val dataStore = ULAApplication.getInstance<DataStore<Preferences>>()
 
     // set preference keys in Datastore
     private object PreferencesKeys {
@@ -41,18 +41,6 @@ class UserPreferencesRepository() {
         val STEPS_PER_DAY = stringPreferencesKey("steps_per_day")
         val STEPS_HISTORY = stringPreferencesKey("steps_history")
     }
-
-    private val DEFAULT_SETTINGS = UserPreferences(
-        firstTime = true,
-        firstDateTime = DateTimeUtil.nowInInstant(),
-        displaySteps = false,
-        displayMonster = false,
-        maxThreshold = .2,
-        minThreshold = .2,
-        effectiveDate = DateTimeUtil.nowInInstant(),
-        dailyGoal = 5000,
-        weeklyGoal = 20000,
-    )
 
 
     /*
@@ -200,7 +188,7 @@ class UserPreferencesRepository() {
         val preferences: Preferences = dataStore.data.first().toPreferences()
 
         val firstTime = preferences[PreferencesKeys.FIRST_TIME] ?: true  // a ? a: b
-        val firstDateTime = Instant.fromEpochSeconds(preferences[PreferencesKeys.FIRST_DATE_TIME] ?: 0)
+        val firstDateTime = Instant.fromEpochSeconds(preferences[PreferencesKeys.FIRST_DATE_TIME] ?: 0L)
 
         val displaySteps = preferences[PreferencesKeys.DISPLAY_STEPS] ?: false
         val displayMonster = preferences[PreferencesKeys.DISPLAY_MONSTER] ?: false

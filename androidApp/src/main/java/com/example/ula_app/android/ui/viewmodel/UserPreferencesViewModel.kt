@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.ula_app.android.ULAApplication
 import com.example.ula_app.android.data.UserPreferences
 import com.example.ula_app.android.repo.UserPreferencesRepository
+import com.example.ula_app.util.DateTimeUtil
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,7 +17,7 @@ import kotlinx.datetime.Instant
 
 class UserPreferencesViewModel(): ViewModel() {
 
-    val userPreferencesRepository = ULAApplication.getInstance<UserPreferencesRepository>()
+    private val userPreferencesRepository = ULAApplication.getInstance<UserPreferencesRepository>()
 
     private val _userPreferencesState = MutableStateFlow(UserPreferences())
     val userPreferencesState: StateFlow<UserPreferences> = _userPreferencesState.asStateFlow()
@@ -44,6 +45,13 @@ class UserPreferencesViewModel(): ViewModel() {
                 weeklyGoal = datastoreObj.weeklyGoal
             )
         }
+    }
+
+    fun isEffective(effectiveDays: Int): Boolean {
+        return DateTimeUtil.getDayDifference(
+            DateTimeUtil.nowInInstant(),
+            userPreferencesState.value.effectiveDate
+        ) >= userPreferencesState.value.effectiveDays
     }
 
     /*

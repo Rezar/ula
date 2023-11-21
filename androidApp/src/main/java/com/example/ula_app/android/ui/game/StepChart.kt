@@ -1,6 +1,7 @@
 package com.example.ula_app.android.ui.game
 
 import android.graphics.Typeface
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -57,7 +58,7 @@ import com.patrykandpatrick.vico.core.chart.layout.HorizontalLayout
 
 private const val TAG = "StepChart"
 
-
+// TODO: Column label error (Showing -NaN%)
 @Composable
 fun StepChart(
 //    onBackClicked: () -> Unit = {},

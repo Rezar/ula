@@ -68,7 +68,7 @@ fun SettingScreen() {
 
 
     var effectiveDays by remember {
-        mutableStateOf(TextFieldValue(userPreUiState.effectiveDays.toString()))
+        mutableStateOf(userPreUiState.effectiveDays)
     }
 
     var effectiveDate by remember {
@@ -172,14 +172,14 @@ fun SettingScreen() {
                         TextField(
                             modifier = Modifier
                                 .width(80.dp),
-                            value = effectiveDays,
+                            value = TextFieldValue(effectiveDays.toString()),
                             keyboardOptions = KeyboardOptions(
                                 keyboardType = KeyboardType.Number
                             ),
                             onValueChange = { newText ->
-                                effectiveDays = newText
+                                effectiveDays = newText.text.toInt()
                             },
-                            enabled = DateTimeUtil.getDayDifference(DateTimeUtil.nowInInstant(), effectiveDate) >= effectiveDays.text.toLong()
+                            enabled = DateTimeUtil.getDayDifference(DateTimeUtil.nowInInstant(), effectiveDate) >= effectiveDays
                         )
                     }
                 )
@@ -246,7 +246,7 @@ fun SettingScreen() {
                                             thumbColor = MaterialTheme.colors.onPrimary,
                                             activeTrackColor = MaterialTheme.colors.onSecondary
                                         ),
-                                        enabled = DateTimeUtil.getDayDifference(DateTimeUtil.nowInInstant(), effectiveDate) >= effectiveDays.text.toLong()
+                                        enabled = DateTimeUtil.getDayDifference(DateTimeUtil.nowInInstant(), effectiveDate) >= effectiveDays
                                     )
 
                                     Text(text = sliderValueDaily.toInt().toString())
@@ -274,7 +274,7 @@ fun SettingScreen() {
                                             thumbColor = MaterialTheme.colors.onPrimary,
                                             activeTrackColor = MaterialTheme.colors.onSecondary
                                         ),
-                                        enabled = DateTimeUtil.getDayDifference(DateTimeUtil.nowInInstant(), effectiveDate) >= effectiveDays.text.toLong()
+                                        enabled = DateTimeUtil.getDayDifference(DateTimeUtil.nowInInstant(), effectiveDate) >= effectiveDays
                                     )
 
                                     Text(text = sliderValueWeekly.toInt().toString())
@@ -326,14 +326,14 @@ fun SettingScreen() {
                             try {
                                 userPreferencesViewModel.setDisplaySteps(stepCountSwitchON)
                                 userPreferencesViewModel.setDisplayMonster(progressMonsterSwitchON)
-                                userPreferencesViewModel.setEffectiveDays(effectiveDays.text.toInt())
+                                userPreferencesViewModel.setEffectiveDays(effectiveDays)
                                 userPreferencesViewModel.setEffectiveDate(effectiveDate)
 //                                userPreferencesViewModel.setGoal(selectedGoalDaily)
                                 userPreferencesViewModel.setDailyGoal(sliderValueDaily.toInt())
                                 userPreferencesViewModel.setWeeklyGoal(sliderValueWeekly.toInt())
                                 Log.i("SettingsScreen", "Effective?: ${
                                     DateTimeUtil.getDayDifference(
-                                        DateTimeUtil.nowInInstant(), effectiveDate) > effectiveDays.text.toLong()}")
+                                        DateTimeUtil.nowInInstant(), effectiveDate) > effectiveDays}")
                                 Log.i("SettingsScreen", "EffectiveDate: ${effectiveDate}")
                                 Toast.makeText(
                                     context,

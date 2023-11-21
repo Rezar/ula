@@ -8,6 +8,7 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
+import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 
 class DateTimeUtil {
@@ -46,22 +47,22 @@ class DateTimeUtil {
         /*
         * Get the time difference
         * */
-        fun getDayDifference(next: Instant, previous: Instant): Long {
-            return (next - previous).inWholeDays
+        fun getDayDifference(next: Instant, prev: Instant): Long {
+            return (next - prev).inWholeDays
         }
 
-        fun getDayDifference(next: Long, previous: Long): Long {
+        fun getDayDifference(next: LocalDateTime, prev: LocalDateTime): Long {
+            val nextInstant = next.toInstant(getSystemTimeZone())
+            val prevInstant = prev.toInstant(getSystemTimeZone())
+
+            return (nextInstant - prevInstant).inWholeDays
+        }
+
+        fun getDayDifference(next: Long, prev: Long): Long {
             val nextInstant = Instant.fromEpochSeconds(next)
-            val previousInstant = Instant.fromEpochSeconds(previous)
+            val prevInstant = Instant.fromEpochSeconds(prev)
 
-            return (nextInstant - previousInstant).inWholeDays
-        }
-
-        fun getDayDifference(previous: Long): Long {
-            val currentInstant = nowInInstant()
-            val previousInstant = Instant.fromEpochSeconds(previous)
-
-            return (currentInstant - previousInstant).inWholeDays
+            return (nextInstant - prevInstant).inWholeDays
         }
 
         /*
