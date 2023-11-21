@@ -36,6 +36,46 @@ class ULAApplication: Application() {
 
     val applicationScope = CoroutineScope(Dispatchers.IO)
 
+    var localDateTimeState = MutableStateFlow<LocalDateTime>(DateTimeUtil.nowInLocalDateTime())
+
+    override fun onCreate() {
+        super.onCreate()
+        registerMidnightTimer()
+    }
+
+    private fun registerMidnightTimer() {
+        val intentFilter = IntentFilter().apply {
+            addAction(Intent.ACTION_TIME_TICK)
+            addAction(Intent.ACTION_TIME_CHANGED)
+            addAction(Intent.ACTION_TIMEZONE_CHANGED)
+        }
+        registerReceiver(midnightBroadcastReceiver, intentFilter)
+    }
+
+    private val midnightBroadcastReceiver = object : BroadcastReceiver() {
+
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val today = DateTimeUtil.nowInLocalDateTime()
+            if (today.date != localDateTimeState.value.date) {
+                localDateTimeState.value = today
+            } else if (isSavingTime(today)) {
+                applicationScope.launch {
+                    withContext(Dispatchers.IO) {
+                        ULAApplication.userPreferencesRepository?.saveStepPerDayToStepHistoryAndReset()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun isSavingTime(now: LocalDateTime): Boolean {
+        if (now.time.hour == 10 && now.time.minute == 40 && now.time.second == 0) {
+            return true
+        }
+
+        return false
+    }
+
     companion object {
         var instance: ULAApplication ?= null
 
@@ -44,8 +84,6 @@ class ULAApplication: Application() {
         var stepViewModel: StepViewModel ?= null
         var userPreferencesViewModel: UserPreferencesViewModel ?= null
         var userPreferencesRepository: UserPreferencesRepository ?= null
-
-        val localDateTimeState = MutableStateFlow<LocalDateTime>(DateTimeUtil.nowInLocalDateTime())
 
         inline fun <reified T>getInstance(): T {
 

@@ -17,6 +17,7 @@ import com.example.ula_app.android.data.StepsPerDay
 import com.example.ula_app.util.DateTimeUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.LocalDateTime
@@ -101,8 +102,6 @@ class StepCounterService: Service(), SensorEventListener {
         super.onCreate()
         Log.i(TAG, "Sensor Service is created.")
 
-        registerMidnightTimer()
-
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         val sensor: Sensor? = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
         sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL)
@@ -122,36 +121,5 @@ class StepCounterService: Service(), SensorEventListener {
         return START_STICKY
     }
 
-    private fun registerMidnightTimer() {
-        val intentFilter = IntentFilter().apply {
-            addAction(Intent.ACTION_TIME_TICK)
-            addAction(Intent.ACTION_TIME_CHANGED)
-            addAction(Intent.ACTION_TIMEZONE_CHANGED)
-        }
-        registerReceiver(midnightBroadcastReceiver, intentFilter)
-    }
 
-    private val midnightBroadcastReceiver = object : BroadcastReceiver() {
-
-        override fun onReceive(context: Context?, intent: Intent?) {
-            val today = DateTimeUtil.nowInLocalDateTime()
-            if (today.date != ULAApplication.localDateTimeState.value.date) {
-                ULAApplication.localDateTimeState.value = today
-            } else if (isSavingTime(today)) {
-                serviceScope.launch {
-                    withContext(Dispatchers.IO) {
-                        ULAApplication.userPreferencesRepository?.saveStepPerDayToStepHistoryAndReset()
-                    }
-                }
-            }
-        }
-    }
-
-    private fun isSavingTime(now: LocalDateTime): Boolean {
-        if (now.time.hour == 11 && now.time.minute == 55 && now.time.second == 0) {
-            return true
-        }
-
-        return false
-    }
 }
