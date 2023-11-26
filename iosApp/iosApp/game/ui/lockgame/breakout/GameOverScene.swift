@@ -17,7 +17,7 @@ class GameOverScene: SKScene {
         
         gameOver.text = "Game Over"
         gameOver.fontSize = 60
-        gameOver.fontColor = .red
+        gameOver.fontColor = .black
         gameOver.position = CGPoint(x: size.width / 2, y: size.height / 2)
         gameOver.setScale(0.6)
         gameOver.zPosition = 5

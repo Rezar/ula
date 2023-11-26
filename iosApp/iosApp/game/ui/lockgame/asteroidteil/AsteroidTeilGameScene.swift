@@ -15,7 +15,7 @@ class AsteroidTeilGameScene: SKScene, SKPhysicsContactDelegate {
     
     var player = SKSpriteNode(imageNamed: "plane")
     
-    let backGround = SKSpriteNode(imageNamed: "blue")
+    let backGround = SKSpriteNode(imageNamed: "black")
     
     let sterne = SKEmitterNode(fileNamed: "sterne")
     

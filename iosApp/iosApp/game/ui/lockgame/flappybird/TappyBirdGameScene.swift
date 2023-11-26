@@ -164,7 +164,7 @@ class TappyBirdGameScene: SKScene, ObservableObject, SKPhysicsContactDelegate  {
         let gameOverLabel = SKLabelNode(fontNamed: "DJBFirstGradeTeacher")
         gameOverLabel.text = "Game Over"
         gameOverLabel.fontSize = 32
-        gameOverLabel.fontColor = .red
+        gameOverLabel.fontColor = .black
         gameOverLabel.zPosition = 10
         gameOverLabel.position = CGPoint(x: size.width / 2, y: size.height / 2)
         

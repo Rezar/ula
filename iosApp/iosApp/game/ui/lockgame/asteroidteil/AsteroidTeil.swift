@@ -46,7 +46,7 @@ struct AsteroidTeil: View {
                 )
             }
             .frame(width: 750, height: 1200, alignment: .center)
-            .background(LinearGradient(gradient: Gradient(colors: farben), startPoint: .bottom, endPoint: .top))
+            .background(.white)
         }
     }
 }

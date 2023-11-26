@@ -10,9 +10,32 @@ import Foundation
 import Charts
 import SwiftUI
 import shared
+import CoreMotion
 
 
 struct StatsScreen: View {
+    
+    @State private var steps: Int = 0
+    
+    private let pedometer: CMPedometer = CMPedometer()
+    
+    private var isPedometerAvailable: Bool {
+        return CMPedometer.isPedometerEventTrackingAvailable() && CMPedometer.isDistanceAvailable() && CMPedometer.isStepCountingAvailable()
+    }
+
+    private func initializePedometer() {
+        if isPedometerAvailable {
+            guard let startDate = Calendar.current.date(byAdding: .day, value: -1, to: Date()) else {
+                return
+            }
+            
+            pedometer.queryPedometerData(from: startDate, to: Date()) { (data, error) in
+                guard let data = data, error == nil else { return }
+                
+                steps = data.numberOfSteps.intValue
+            }
+        }
+    }
     
     @ObservedObject var statViewModel: IOSStatViewModel
 //    @State private var showDetail = false
@@ -48,7 +71,12 @@ struct StatsScreen: View {
                         
                         
                         HStack(alignment: .bottom) {
-                            Text("Sensor").font(.system(size: 30)).foregroundStyle(.black)   // TODO: Read steps from sensor
+                            Text("\(steps)")
+                                .font(.system(size: 30))
+                                .foregroundStyle(.black)   // TODO: Read steps from sensor
+                                .onAppear {
+                                    initializePedometer()
+                                }
                             Text("steps").foregroundStyle(.black)
                         }
                         

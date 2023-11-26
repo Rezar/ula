@@ -73,7 +73,7 @@ struct TicTacToe: View {
         .alert(isPresented: $gameState.showAlert) {
             Alert(
                 title: Text(gameState.alertMessage),
-                dismissButton: .default(Text("Play Again?")) {
+                dismissButton: .default(Text("Play Again?").font(.title)) {
                     gameState.resetBoard()
                 }
             )
