@@ -163,14 +163,15 @@ class UserPreferencesRepository() {
     }
 
     suspend fun saveStepPerDayToStepHistoryAndReset() {
+        Log.i(TAG, "Saving started")
         val preferences: Preferences = dataStore.data.first().toPreferences()
         val stepsPerDay = fetchStepsPerDay()
 
-        var updatedStepsHistory = mutableListOf<StepsWithDate>()
+        val updatedStepsHistory = mutableListOf<StepsWithDate>()
 
         updatedStepsHistory.addAll(fetchStepsHistory())
 
-        if (updatedStepsHistory.size > 7) {
+        if (updatedStepsHistory.size >= 7) {
             updatedStepsHistory.removeFirst()
         }
 
@@ -215,7 +216,7 @@ class UserPreferencesRepository() {
 
     suspend fun fetchStepsPerDay(): StepsPerDay {
         val preferences: Preferences = dataStore.data.first().toPreferences()
-        val data: String = preferences[PreferencesKeys.STEPS_PER_DAY] ?: ""
+        val data: String = preferences[PreferencesKeys.STEPS_PER_DAY] ?: return StepsPerDay(0, 0)
 
         try {
             return Json.decodeFromString<StepsPerDay>(data)
@@ -227,7 +228,7 @@ class UserPreferencesRepository() {
 
     suspend fun fetchStepsHistory(): List<StepsWithDate> {
         val preferences: Preferences = dataStore.data.first().toPreferences()
-        val data: String = preferences[PreferencesKeys.STEPS_HISTORY] ?: ""
+        val data: String = preferences[PreferencesKeys.STEPS_HISTORY] ?: return emptyList<StepsWithDate>()
 
         try {
             return Json.decodeFromString<List<StepsWithDate>>(data)
