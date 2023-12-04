@@ -61,7 +61,7 @@ class ULAApplication: Application() {
             } else if (isSavingTime(today)) {
                 applicationScope.launch {
                     withContext(Dispatchers.IO) {
-                        ULAApplication.userPreferencesRepository?.saveStepPerDayToStepHistoryAndReset()
+                        userPreferencesRepository?.saveStepPerDayToStepHistoryAndReset()
                     }
                 }
             }
@@ -69,7 +69,11 @@ class ULAApplication: Application() {
     }
 
     private fun isSavingTime(now: LocalDateTime): Boolean {
-        if (now.time.hour == 10 && now.time.minute == 40 && now.time.second == 0) {
+        if (
+            now.time.hour == 23 &&
+            now.time.minute == 55 &&
+            now.time.second == 0
+        ) {
             return true
         }
 
