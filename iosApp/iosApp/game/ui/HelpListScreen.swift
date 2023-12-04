@@ -20,7 +20,9 @@ struct HelpListScreen: View {
         
         ScrollView {
             
-            Text("FAQs").font(.headline).padding()
+            Text("FAQs")
+                .font(.AppTitle)
+                .padding()
 
             ForEach(faqs) { f in
 

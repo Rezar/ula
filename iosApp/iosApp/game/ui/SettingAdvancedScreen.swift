@@ -26,29 +26,44 @@ struct SettingAdvancedScreen: View {
             // Max Threshold (Percentage)
             HStack{
                 Text("Max Threshold (Percentage)")
+                    .font(.AppBody)
                 Spacer()
-                TextField("Enter your name", value: $settingState.maxThreshold, formatter: NumberFormatter())
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .frame(width: 50)
+                TextField(
+                    "Enter your name",
+                    value: $settingState.maxThreshold,
+                    formatter: NumberFormatter()
+                )
+                .font(.AppBody)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .frame(width: 50)
             }
             
             // Min Threshold (Percentage)
             HStack{
                 Text("Min Threshold (Percentage)")
+                    .font(.AppBody)
                 Spacer()
-                TextField("Enter your name", value: $settingState.minThreshold, formatter: NumberFormatter())
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .frame(width: 50)
+                TextField(
+                    "Enter your name",
+                    value: $settingState.minThreshold,
+                    formatter: NumberFormatter()
+                )
+                .font(.AppBody)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .frame(width: 50)
             }
             
             Spacer()
             
             // Button to save all advanced setting changes
-            Button("Save!") {
+            Button {
                 settingState.writeMaxThreshold(maxThreshold: settingState.maxThreshold)
                 settingState.writeMinThreshold(minThreshold: settingState.minThreshold)
+            } label: {
+                Text("Save!")
+                    .font(.AppBody)
             }
-            .padding(12)
+            .padding(8)
             .foregroundStyle(.white)
             .background(
                 RoundedRectangle(cornerRadius: 10)

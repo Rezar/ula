@@ -22,25 +22,25 @@ struct TicTacToe: View {
         let borderSize = CGFloat(5)
         
         HStack() {
-            Button(
-                "Back",
-                action: {
+            Button{
                     setOpenLockGame(0)
-                }
-            )
+            } label: {
+                Text("back").font(.TicTacToeBody)
+            }
+            
             
             Spacer()
         }
         .padding(.leading, 20)
         
         Text(gameState.turnText())
-            .font(.title)
+            .font(.TicTacToeTitle)
             .bold()
             .padding()
         Spacer()
         
         Text(String(format: "Crosses: %d", gameState.crossesScore))
-            .font(.title)
+            .font(.TicTacToeTitle)
             .bold()
             .padding()
         
@@ -54,7 +54,7 @@ struct TicTacToe: View {
                         let cell = gameState.board[row][column]
                         
                         Text(cell.displayTile())
-                            .font(.system(size: 60))
+                            .font(.TicTacToeBody)
                             .foregroundColor(cell.tileColor())
                             .bold()
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -72,15 +72,15 @@ struct TicTacToe: View {
         .padding()
         .alert(isPresented: $gameState.showAlert) {
             Alert(
-                title: Text(gameState.alertMessage),
-                dismissButton: .default(Text("Play Again?").font(.title)) {
+                title: Text(gameState.alertMessage).font(.TicTacToeBody),
+                dismissButton: .default(Text("Play Again?").font(.TicTacToeBody)) {
                     gameState.resetBoard()
                 }
             )
         }
         
         Text(String(format: "Noughts: %d", gameState.noughtsScore))
-            .font(.title)
+            .font(.TicTacToeBody)
             .bold()
             .padding()
         Spacer()

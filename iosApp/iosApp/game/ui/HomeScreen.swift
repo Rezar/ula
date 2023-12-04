@@ -49,6 +49,7 @@ struct HomeScreen: View {
                 }
             
             Text(homeViewModel.homeUiState.id)
+                .font(.AppBody)
         }
         .contentShape(Rectangle()) // clickable for the whole row
         .onTapGesture {  // add clickable action here
@@ -75,32 +76,34 @@ struct HomeScreen: View {
             print(openDialog)
             
         }
-        
-        
         .confirmationDialog("Want to play a little game? ", isPresented: $openDialog) {
 
             
             // TODO: add the actions to link to the games
-            Button(
-                "Tic Tac Toe",
-                action: {
-                    setOpenLockGame(1)
-                })
-            Button(
-                "Asteroid Teil",
-                action: {
-                    setOpenLockGame(2)
-                })
-            Button(
-                "Tappy Bird",
-                action: {
-                    setOpenLockGame(3)
-                })
-            Button(
-                "Break out",
-                action: {
-                    setOpenLockGame(4)
-                })
+            Button {
+                setOpenLockGame(1)
+            } label: {
+                Text("Tic Tac Toe")
+                    .font(.AppBody)
+            }
+            Button {
+                setOpenLockGame(2)
+            } label: {
+                Text("Asteroid Teil")
+                    .font(.AppBody)
+            }
+            Button {
+                setOpenLockGame(3)
+            } label: {
+                Text("Tappy Bird")
+                    .font(.AppBody)
+            }
+            Button {
+                setOpenLockGame(4)
+            } label: {
+                Text("Break out")
+                    .font(.AppBody)
+            }
 
             Button("Nah, I am good...", role: .cancel, action: {
                 homeViewModel.setOpenDialog(openDialog: false)

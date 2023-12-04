@@ -22,6 +22,8 @@ struct WelcomePage2: View {
             VStack {
                 HStack {
                     Text("Ok?")
+                        .font(.WelcomeTitle)
+                        .foregroundColor(.red)
                 }
                 
                 Spacer().frame(height: 60)

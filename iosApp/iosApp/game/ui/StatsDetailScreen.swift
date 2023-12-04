@@ -10,7 +10,7 @@ import Foundation
 import SwiftUI
 import shared
 
-struct StatDetailScreen: View {
+struct StatsDetailScreen: View {
     
     var stepHistory: [StepHistory]
     
@@ -22,7 +22,7 @@ struct StatDetailScreen: View {
         VStack(alignment: .leading, spacing: 20.0) {
             
             Text("Stats Detail")
-                .font(.title)
+                .font(.AppTitle)
                 .foregroundStyle(.black)
             
             ScrollView {
@@ -105,9 +105,12 @@ struct StatsDetailItem: View {
         VStack(alignment: .leading, spacing: 5) {
             HStack(spacing: 25) {
                 
-                Text(weekday).frame(width: 100, alignment: .leading)
+                Text(weekday)
+                    .font(.AppBody)
+                    .frame(width: 100, alignment: .leading)
                 // TODO: Add if statement to display or not display the number (详情请抄android代码)
                 Text("\(currentSteps)")
+                    .font(.AppBody)
                 
             }
             

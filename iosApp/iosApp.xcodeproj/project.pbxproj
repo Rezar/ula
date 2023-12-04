@@ -21,7 +21,7 @@
 		751EC1982A917F4800D28D9F /* DebugScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 751EC1972A917F4800D28D9F /* DebugScreen.swift */; };
 		7555FF83242A565900829871 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7555FF82242A565900829871 /* ContentView.swift */; };
 		757E1A7B2AA9583900AB7E97 /* IOSStatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757E1A7A2AA9583900AB7E97 /* IOSStatViewModel.swift */; };
-		757E1A7D2AA9C69A00AB7E97 /* StatDetailScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757E1A7C2AA9C69A00AB7E97 /* StatDetailScreen.swift */; };
+		757E1A7D2AA9C69A00AB7E97 /* StatsDetailScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757E1A7C2AA9C69A00AB7E97 /* StatsDetailScreen.swift */; };
 		757E1A7F2AAA0ADD00AB7E97 /* SettingAdvancedScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757E1A7E2AAA0ADD00AB7E97 /* SettingAdvancedScreen.swift */; };
 		757E1A812AAA0D4A00AB7E97 /* IOSSettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757E1A802AAA0D4A00AB7E97 /* IOSSettingViewModel.swift */; };
 		757E1A832AAA4AFC00AB7E97 /* GoalTabs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757E1A822AAA4AFC00AB7E97 /* GoalTabs.swift */; };
@@ -191,7 +191,7 @@
 		7555FF82242A565900829871 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		7555FF8C242A565B00829871 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		757E1A7A2AA9583900AB7E97 /* IOSStatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOSStatViewModel.swift; sourceTree = "<group>"; };
-		757E1A7C2AA9C69A00AB7E97 /* StatDetailScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatDetailScreen.swift; sourceTree = "<group>"; };
+		757E1A7C2AA9C69A00AB7E97 /* StatsDetailScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsDetailScreen.swift; sourceTree = "<group>"; };
 		757E1A7E2AAA0ADD00AB7E97 /* SettingAdvancedScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingAdvancedScreen.swift; sourceTree = "<group>"; };
 		757E1A802AAA0D4A00AB7E97 /* IOSSettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOSSettingViewModel.swift; sourceTree = "<group>"; };
 		757E1A822AAA4AFC00AB7E97 /* GoalTabs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalTabs.swift; sourceTree = "<group>"; };
@@ -391,7 +391,7 @@
 				75AAFD392A97DE66000418E1 /* HelpListScreen.swift */,
 				75E2AE4B2AA8250B00BB842C /* StatsScreen.swift */,
 				75E2AE4D2AA8252000BB842C /* SettingScreen.swift */,
-				757E1A7C2AA9C69A00AB7E97 /* StatDetailScreen.swift */,
+				757E1A7C2AA9C69A00AB7E97 /* StatsDetailScreen.swift */,
 				757E1A7E2AAA0ADD00AB7E97 /* SettingAdvancedScreen.swift */,
 			);
 			path = ui;
@@ -946,7 +946,7 @@
 				757E1A7F2AAA0ADD00AB7E97 /* SettingAdvancedScreen.swift in Sources */,
 				75BD79E32AC8A33300FCEC5F /* Config.swift in Sources */,
 				75C3A9032ACB09A700940C10 /* SpaceInvaders.swift in Sources */,
-				757E1A7D2AA9C69A00AB7E97 /* StatDetailScreen.swift in Sources */,
+				757E1A7D2AA9C69A00AB7E97 /* StatsDetailScreen.swift in Sources */,
 				75AAFD382A97DBEF000418E1 /* IOSFAQ.swift in Sources */,
 				2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */,
 				751EC1962A917F3700D28D9F /* IOSDebugViewModel.swift in Sources */,
@@ -1094,6 +1094,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
+				DEVELOPMENT_TEAM = X64D642K62;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1116,7 +1117,7 @@
 					"-framework",
 					"\"shared\"",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = orgIdentifier.iosApp;
+				PRODUCT_BUNDLE_IDENTIFIER = ula.iosApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1130,6 +1131,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
+				DEVELOPMENT_TEAM = X64D642K62;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1152,7 +1154,7 @@
 					"-framework",
 					"\"shared\"",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = orgIdentifier.iosApp;
+				PRODUCT_BUNDLE_IDENTIFIER = ula.iosApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

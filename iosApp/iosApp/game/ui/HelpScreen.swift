@@ -30,7 +30,8 @@ struct HelpScreen: View {
         
         VStack(alignment: .leading) {
             
-            Text(faq.question).font(.headline)
+            Text(faq.question)
+                .font(.AppBody)
             
             if isExpanded {
                 VStack(alignment: .leading) {
@@ -46,6 +47,7 @@ struct HelpScreen: View {
 //                    else
 //                    ...
                     Text(faq.answer)
+                        .font(.AppBody)
                 }
                 
             }

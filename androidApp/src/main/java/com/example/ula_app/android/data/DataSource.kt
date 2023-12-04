@@ -37,7 +37,7 @@ object DataSource {
             scale = 1f
         ),
         BottomNavigationBarItem(
-            icon = R.drawable.ic_bug,
+            icon = R.drawable.ic_debug,
             name = "Debug",
             route = "debug",
             scale = 1f

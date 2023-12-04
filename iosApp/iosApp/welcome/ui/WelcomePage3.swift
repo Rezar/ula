@@ -41,13 +41,13 @@ struct WelcomePage3: View {
                         selection: $tabIndex,
                         underlineColor: .black) { title, isSelected in
                             Text(title.uppercased())
-        //                       .font(.system(size: 20))
+                                .font(.WelcomeTabTitle)
                                .fontWeight(.semibold)
                                .foregroundColor(isSelected ? .black : .gray)
                         }
 
                     Text(tabIndex == 0 ? "\(Int(dailyGoal))" : "\(Int(weeklyGoal))")
-                        .font(.WelcomeCaption)
+                        .font(.WelcomeGoal)
                         .padding(.top, 20)
                     Slider(
                         value: tabIndex == 0 ? $dailyGoal : $weeklyGoal,

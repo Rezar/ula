@@ -53,31 +53,37 @@ struct StatsScreen: View {
                 
                 // Title
                 Text("Summary")
-                    .font(.title)
+                    .font(.AppTitle)
                     .foregroundStyle(.black)
                 
                 // Card content
                 let stepHistory = statViewModel.readStepHistory()
-                NavigationLink(destination: StatDetailScreen(stepHistory: stepHistory)) {
+                NavigationLink(destination: StatsDetailScreen(stepHistory: stepHistory)) {
                     VStack(alignment: .leading, spacing: 20.0) {
                         
                         HStack {
-                            Text("Steps").foregroundStyle(.black)
+                            Text("Steps")
+                                .font(.AppBody)
+                                .foregroundStyle(.black)
                             
                             Spacer()
                             
-                            Text("Fitness Detail >").foregroundStyle(.black) // Direct to screen that shows fitness detail
+                            Text("Fitness Detail >")
+                                .font(.AppBody)
+                                .foregroundStyle(.black) // Direct to screen that shows fitness detail
                         }
                         
                         
                         HStack(alignment: .bottom) {
                             Text("\(steps)")
-                                .font(.system(size: 30))
+                                .font(.AppStatsSteps)
                                 .foregroundStyle(.black)   // TODO: Read steps from sensor
                                 .onAppear {
                                     initializePedometer()
                                 }
-                            Text("steps").foregroundStyle(.black)
+                            Text("steps")
+                                .font(.AppBody)
+                                .foregroundStyle(.black)
                         }
                         
                     }
@@ -98,7 +104,7 @@ struct StatsScreen: View {
                             .lineStyle(StrokeStyle(lineWidth: 1, dash: [5]))
                             .annotation(alignment: .leading) {
                                 Text("Goal")
-                                    .font(.caption).foregroundColor(.secondary)
+                                    .font(.AppGraphGoal).foregroundColor(.secondary)
                             }
                         ForEach(stepHistory) { steps in
                             BarMark(
@@ -108,7 +114,9 @@ struct StatsScreen: View {
                             .foregroundStyle(Color.pink.gradient)
                             .cornerRadius(10)
                         }
-                    }.frame(height: 180)
+                    }
+                    .font(.AppGraphGoal)
+                    .frame(height: 180)
                 }
                 .padding()
                 .background(Rectangle()

@@ -49,6 +49,7 @@ struct SettingScreen: View {
                 HStack {
                     Toggle("Display Step Counts", isOn: $settingState.stepCountSwitchON)
                         .toggleStyle(SwitchToggleStyle(tint: .pink))
+                        .font(.AppBody)
                 }
                 
                 // Display Character
@@ -57,8 +58,10 @@ struct SettingScreen: View {
                         
                         if settingState.progressMonsterSwitchON {
                             Text("Display Character(Monster)")
+                                .font(.AppBody)
                         } else {
                             Text("Display Character(Human)")
+                                .font(.AppBody)
                         }
                        
                     }
@@ -68,10 +71,13 @@ struct SettingScreen: View {
                 // Effective Days
                 HStack{
                     Text("Effective Days")
+                        .font(.AppBody)
                     Spacer()
-                    TextField("Enter your name", value: $settingState.effectiveDays, formatter: NumberFormatter())
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .frame(width: 50)
+                    TextField("Enter your name", value: $settingState.effectiveDays, formatter: NumberFormatter()
+                    )
+                    .font(.AppBody)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .frame(width: 50)
 //                        .disabled(DateTimeUtil.getDayDifference(next: DateTimeUtil.getCurrentDateTime(), previous: effectiveDate) >= effectiveDays)
                 }
                 
@@ -80,6 +86,7 @@ struct SettingScreen: View {
                     
                     HStack{
                         Text("Change Goal")
+                            .font(.AppBody)
                         Spacer()
                         
                         
@@ -95,9 +102,11 @@ struct SettingScreen: View {
                 //                       .font(.system(size: 20))
                                        .fontWeight(.semibold)
                                        .foregroundColor(isSelected ? .black : .gray)
+                                       .font(.AppTabTitle)
                                 }
 
                             Text(settingState.tabIndex == 0 ? "\(Int(settingState.dailyGoal))" : "\(Int(settingState.weeklyGoal))").padding(.top, 20)
+                                .font(.AppGoal)
                             Slider(
                                 value: settingState.tabIndex == 0 ? $settingState.dailyGoal : $settingState.weeklyGoal,
                                 in: settingState.tabIndex == 0 ? 5000.0...30000 : 20000.0...100000.0,
@@ -120,8 +129,9 @@ struct SettingScreen: View {
                 NavigationLink(destination: SettingAdvancedScreen()) {
 //                    Button("Advanced Settings") {}
                     Text("Advanced Settings")
+                        .font(.AppBody)
                         .foregroundStyle(.white)
-                        .padding(12)
+                        .padding(8)
                         .background(
                             RoundedRectangle(cornerRadius: 10)
                                 .fill(Color.gray)
@@ -131,15 +141,18 @@ struct SettingScreen: View {
                 }
                 
                 // Button to save all setting changes
-                Button("Save!") {
+                Button {
                     settingState.writeDisplaySteps(displaySteps: settingState.stepCountSwitchON)
                     settingState.writeDisplayMonster(displayMonster: settingState.progressMonsterSwitchON)
                     settingState.writeEffectiveDate(effectiveDate: settingState.effectiveDate)
                     settingState.writeEffectiveDays(effectiveDays: settingState.effectiveDays)
                     settingState.writeDailyGoal(dailyGoal: Int(settingState.dailyGoal))
                     settingState.writeWeeklyGoal(weeklyGoal: Int(settingState.weeklyGoal))
+                } label: {
+                    Text("Save!")
+                        .font(.AppBody)
                 }
-                .padding(12)
+                .padding(8)
                 .foregroundStyle(.white)
                 .background(
                     RoundedRectangle(cornerRadius: 10)
@@ -149,9 +162,17 @@ struct SettingScreen: View {
                 .clipShape(Rectangle())
                 
             }
-                .padding()
-                .navigationBarTitle("Settings")
-                .frame(alignment: .topLeading)
+            .padding()
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    VStack(alignment: .leading) {
+                        Text("Settings")
+                            .font(.AppTitle)
+                    }
+                }
+            }
+//            .frame(alignment: .topLeading)
             
         }
         
