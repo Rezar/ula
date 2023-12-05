@@ -15,27 +15,31 @@ import CoreMotion
 
 struct StatsScreen: View {
     
+    @EnvironmentObject var healthManager: HealthManager
+    
     @State private var steps: Int = 0
+    // TODO: HealthKit Test
+//    @State private var stepHistory: [StepHistory] = []
     
-    private let pedometer: CMPedometer = CMPedometer()
-    
-    private var isPedometerAvailable: Bool {
-        return CMPedometer.isPedometerEventTrackingAvailable() && CMPedometer.isDistanceAvailable() && CMPedometer.isStepCountingAvailable()
-    }
-
-    private func initializePedometer() {
-        if isPedometerAvailable {
-            guard let startDate = Calendar.current.date(byAdding: .day, value: -1, to: Date()) else {
-                return
-            }
-            
-            pedometer.queryPedometerData(from: startDate, to: Date()) { (data, error) in
-                guard let data = data, error == nil else { return }
-                
-                steps = data.numberOfSteps.intValue
-            }
-        }
-    }
+//    private let pedometer: CMPedometer = CMPedometer()
+//
+//    private var isPedometerAvailable: Bool {
+//        return CMPedometer.isPedometerEventTrackingAvailable() && CMPedometer.isDistanceAvailable() && CMPedometer.isStepCountingAvailable()
+//    }
+//
+//    private func initializePedometer() {
+//        if isPedometerAvailable {
+//            guard let startDate = Calendar.current.date(byAdding: .day, value: -1, to: Date()) else {
+//                return
+//            }
+//
+//            pedometer.queryPedometerData(from: startDate, to: Date()) { (data, error) in
+//                guard let data = data, error == nil else { return }
+//
+//                steps = data.numberOfSteps.intValue
+//            }
+//        }
+//    }
     
     @ObservedObject var statViewModel: IOSStatViewModel
 //    @State private var showDetail = false
@@ -58,7 +62,9 @@ struct StatsScreen: View {
                 
                 // Card content
                 let stepHistory = statViewModel.readStepHistory()
-                NavigationLink(destination: StatsDetailScreen(stepHistory: stepHistory)) {
+                NavigationLink(
+                    destination: StatsDetailScreen(stepHistory: stepHistory)
+                    .environmentObject(healthManager)) {
                     VStack(alignment: .leading, spacing: 20.0) {
                         
                         HStack {
@@ -75,12 +81,14 @@ struct StatsScreen: View {
                         
                         
                         HStack(alignment: .bottom) {
-                            Text("\(steps)")
+                            // TODO: HealthKit Test
+                            Text("\(!stepHistory.isEmpty ? stepHistory[stepHistory.count - 1].stepCount : 0)")
                                 .font(.AppStatsSteps)
-                                .foregroundStyle(.black)   // TODO: Read steps from sensor
-                                .onAppear {
-                                    initializePedometer()
-                                }
+                                .foregroundStyle(.black)
+                               // TODO: Read steps from sensor
+//                                 .onAppear {
+//                                     healthManager.fetchTodaySteps()
+//                                 }
                             Text("steps")
                                 .font(.AppBody)
                                 .foregroundStyle(.black)
@@ -131,6 +139,21 @@ struct StatsScreen: View {
             .padding()
             
         }
+        // TODO: HealthKit Test
+//        .onAppear {
+//            healthManager.requestAuthorization { success, error in
+//                if success {
+//                    healthManager.fetchTodaySteps { stepHistory, error in
+//                        DispatchQueue.main.async {
+//                            print("Get stepHistory")
+//                            print(stepHistory ?? [])
+//                            self.stepHistory = stepHistory ?? []
+//                        }
+//                    }
+//                }
+//            }
+//
+//        }
         
     }
 }

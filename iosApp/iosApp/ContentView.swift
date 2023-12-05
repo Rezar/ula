@@ -48,6 +48,7 @@ import AVKit
 
 //@available(iOS 15.0, *)
 struct AppScreen: View {
+    @EnvironmentObject var healthManager: HealthManager
     
     @State private var isFirstTime = UserDefaults.standard.object(forKey: "isFirstTime") as? Bool ?? true
     @State private var welcomePageNumber = 0
@@ -101,6 +102,7 @@ struct AppScreen: View {
             
         } else {
             GameScreen()
+                .environmentObject(healthManager)
         }
         
         
@@ -110,6 +112,7 @@ struct AppScreen: View {
 
 
 struct GameScreen: View {
+    @EnvironmentObject var healthManager: HealthManager
     // TODO: Need a better solution for this. openLockGame is not a good name.
     // The value of openLockGame: [0, 4]
     // = 0: Not open any lock game. Stays in Game Screens
@@ -144,6 +147,7 @@ struct GameScreen: View {
                         .resizable()
                         .frame(width: 32.0, height: 32.0).clipped()
                     }
+                    .environmentObject(healthManager)
                 
                     HelpListScreen()
                     .tabItem{

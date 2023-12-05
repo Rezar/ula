@@ -28,6 +28,7 @@
 		757E39962ACC6A1C004E1A3E /* GameOverScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757E39952ACC6A1C004E1A3E /* GameOverScene.swift */; };
 		757E39992ACC6B40004E1A3E /* GameOverFire.sks in Resources */ = {isa = PBXBuildFile; fileRef = 757E39972ACC6B40004E1A3E /* GameOverFire.sks */; };
 		757E399A2ACC6B40004E1A3E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 757E39982ACC6B40004E1A3E /* Assets.xcassets */; };
+		7588E9AE2B1D83BA00107A63 /* HealthStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7588E9AD2B1D83BA00107A63 /* HealthStore.swift */; };
 		75AAFD352A97C765000418E1 /* HelpScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75AAFD342A97C765000418E1 /* HelpScreen.swift */; };
 		75AAFD382A97DBEF000418E1 /* IOSFAQ.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75AAFD372A97DBEF000418E1 /* IOSFAQ.swift */; };
 		75AAFD3A2A97DE66000418E1 /* HelpListScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75AAFD392A97DE66000418E1 /* HelpListScreen.swift */; };
@@ -183,6 +184,7 @@
 		7506EB642AC8B8990051EEC2 /* TicTacToeState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicTacToeState.swift; sourceTree = "<group>"; };
 		7506EB662AC8B9450051EEC2 /* Cell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cell.swift; sourceTree = "<group>"; };
 		7506EB692AC8B98C0051EEC2 /* TicTacToe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicTacToe.swift; sourceTree = "<group>"; };
+		750A2F502B1F204D001A036D /* iosApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = iosApp.entitlements; sourceTree = "<group>"; };
 		750F4D942A8D972B0024120D /* IOSHomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOSHomeViewModel.swift; sourceTree = "<group>"; };
 		750F4D962A8D97FB0024120D /* HomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreen.swift; sourceTree = "<group>"; usesTabs = 0; };
 		751EC1952A917F3700D28D9F /* IOSDebugViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOSDebugViewModel.swift; sourceTree = "<group>"; };
@@ -198,6 +200,7 @@
 		757E39952ACC6A1C004E1A3E /* GameOverScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameOverScene.swift; sourceTree = "<group>"; };
 		757E39972ACC6B40004E1A3E /* GameOverFire.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameOverFire.sks; sourceTree = "<group>"; };
 		757E39982ACC6B40004E1A3E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		7588E9AD2B1D83BA00107A63 /* HealthStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthStore.swift; sourceTree = "<group>"; };
 		75AAFD342A97C765000418E1 /* HelpScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpScreen.swift; sourceTree = "<group>"; };
 		75AAFD372A97DBEF000418E1 /* IOSFAQ.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOSFAQ.swift; sourceTree = "<group>"; };
 		75AAFD392A97DE66000418E1 /* HelpListScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpListScreen.swift; sourceTree = "<group>"; };
@@ -527,6 +530,8 @@
 		7555FF7D242A565900829871 /* iosApp */ = {
 			isa = PBXGroup;
 			children = (
+				750A2F502B1F204D001A036D /* iosApp.entitlements */,
+				7588E9AC2B1D837C00107A63 /* health */,
 				7594CD342A8DF2F000CED7CF /* util */,
 				75EAB2A52AB9E68A00F61A51 /* fonts */,
 				75EAB29A2AB9316800F61A51 /* welcome */,
@@ -546,6 +551,14 @@
 				5F5384E0C71B1083728DB9A7 /* Pods_iosApp.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		7588E9AC2B1D837C00107A63 /* health */ = {
+			isa = PBXGroup;
+			children = (
+				7588E9AD2B1D83BA00107A63 /* HealthStore.swift */,
+			);
+			path = health;
 			sourceTree = "<group>";
 		};
 		7594CD342A8DF2F000CED7CF /* util */ = {
@@ -938,6 +951,7 @@
 				757E39962ACC6A1C004E1A3E /* GameOverScene.swift in Sources */,
 				75AAFD352A97C765000418E1 /* HelpScreen.swift in Sources */,
 				75C3A8F72ACA441900940C10 /* TappyBird.swift in Sources */,
+				7588E9AE2B1D83BA00107A63 /* HealthStore.swift in Sources */,
 				7506EB672AC8B9450051EEC2 /* Cell.swift in Sources */,
 				75EAB29E2AB9428E00F61A51 /* WelcomePage2.swift in Sources */,
 				75E2AE4C2AA8250B00BB842C /* StatsScreen.swift in Sources */,
@@ -1092,6 +1106,7 @@
 			baseConfigurationReference = 550699ECC332884D152F0DF7 /* Pods-iosApp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = iosApp/iosApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
 				DEVELOPMENT_TEAM = X64D642K62;
@@ -1129,6 +1144,7 @@
 			baseConfigurationReference = 813FDFE4C438AF31ED93CF92 /* Pods-iosApp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = iosApp/iosApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
 				DEVELOPMENT_TEAM = X64D642K62;

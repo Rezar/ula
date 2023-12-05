@@ -45,26 +45,27 @@ struct DebugScreen: View {
         
         VStack {
             Text("Debug and Stay ALIVE!")
+                .font(.AppBody)
             
             Spacer()
             
             Picker("Age: ", selection: $ageOptionSelected) {
                 ForEach(ageOptions, id: \.self) {
-                    Text($0)
+                    Text($0).font(.AppBody)
                 }
-            }.pickerStyle(.menu)
+            }.pickerStyle(.menu).font(.AppBody)
             
             Picker("Body Status: ", selection: $bodyStatusOptionSelected) {
                 ForEach(bodyStatusOptions, id: \.self) {
-                    Text($0)
+                    Text($0).font(.AppBody)
                 }
-            }.pickerStyle(.menu)
+            }.pickerStyle(.menu).font(.AppBody)
             
             Picker("Movie ID: ", selection: $movieIdOptionSelected) {
                 ForEach(debugViewModel.getMovieIdOptions(), id: \.self) {
-                    Text($0)
+                    Text($0).font(.AppBody)
                 }
-            }.pickerStyle(.menu)
+            }.pickerStyle(.menu).font(.AppBody)
             
             Spacer()
             
@@ -84,7 +85,9 @@ struct DebugScreen: View {
                     print("movie id: ", movieIdOptionSelected)
                     
                 }
-            }).disabled(!debugViewModel.isEnableButton(ageSelection: ageOptionSelected, bodyStatusSelection: bodyStatusOptionSelected, movieSelection: movieIdOptionSelected))
+            })
+            .disabled(!debugViewModel.isEnableButton(ageSelection: ageOptionSelected, bodyStatusSelection: bodyStatusOptionSelected, movieSelection: movieIdOptionSelected))
+            .font(.AppBody)
             
             Spacer()
             
