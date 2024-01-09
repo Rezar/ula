@@ -41,7 +41,7 @@ fun WelcomePage1(
     }
 
     // Read icon for next button from drawable folder.
-    val nextButtonIcon = painterResource(id = R.mipmap.next)
+    val nextButtonIcon = painterResource(id = R.drawable.next)
 
     Column(
         modifier = Modifier

@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -46,7 +47,7 @@ fun RealTimeBoard(modifier: Modifier, score: Int = 13) {
             modifier = Modifier
                 .align(Center)
                 .offset(y = RealTimeScoreHeightOffset),
-            color = GroundDividerPurple,
+            color = Color.White,
             fontSize = SimpleScoreTextSize,
             style = MaterialTheme.typography.body1
         )
@@ -184,7 +185,7 @@ fun LabelScoreField(modifier: Modifier, infoDrawable: Int = R.drawable.score_bg,
         Text(
             text = score.toString(),
             modifier = Modifier.align(CenterHorizontally),
-            color = GroundDividerPurple,
+            color = Color.White,
             fontSize = OverScoreTextSize,
             style = MaterialTheme.typography.body1
         )

@@ -44,7 +44,7 @@ fun GameScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(ForegroundEarthYellow)
+            .background(Color.LightGray)
             // .background(DefaultBlackBackground)
             .run {
                 pointerInteropFilter {

@@ -46,6 +46,16 @@ private val AppTypography = Typography(
         fontWeight = FontWeight.Normal,
         fontSize = 36.sp
     ),
+    h2 = TextStyle(
+        fontFamily = DJBFirstGradeTeacherFamily,
+        fontWeight = FontWeight.Normal,
+        fontSize = 28.sp
+    ),
+    h3 = TextStyle(
+        fontFamily = DJBFirstGradeTeacherFamily,
+        fontWeight = FontWeight.Normal,
+        fontSize = 24.sp
+    ),
     h4 = TextStyle(
         fontFamily = DJBFirstGradeTeacherFamily,
         fontWeight = FontWeight.Normal,

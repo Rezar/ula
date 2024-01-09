@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import com.example.ula_app.android.ui.theme.AppTheme
 
 private const val TAG = "TicTacToeActivity"
 
@@ -13,7 +14,9 @@ class TicTacToeActivity: ComponentActivity() {
         super.onCreate(savedInstanceState)
         Log.i("${TAG}", "TicTacToe Activity is created.")
         setContent {
-            TicTacToe()
+            AppTheme {
+                TicTacToe()
+            }
         }
     }
 

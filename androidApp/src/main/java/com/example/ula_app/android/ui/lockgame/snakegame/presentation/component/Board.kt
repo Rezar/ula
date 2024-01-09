@@ -7,6 +7,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import com.mukeshsolanki.snake.data.model.State
 import com.example.ula_app.android.ui.lockgame.snakegame.domain.game.GameEngine
 import com.example.ula_app.android.ui.lockgame.snakegame.presentation.theme.DarkGreen
@@ -21,14 +22,14 @@ fun Board(state: State) {
         Box(
             Modifier
                 .size(maxWidth)
-                .border(border2dp, DarkGreen)
+                .border(border2dp, Color.DarkGray)
         )
         Box(
             Modifier
                 .offset(x = tileSize * state.food.first, y = tileSize * state.food.second)
                 .size(tileSize)
                 .background(
-                    DarkGreen, CircleShape
+                    Color.DarkGray, CircleShape
                 )
         )
         state.snake.forEach {
@@ -37,7 +38,7 @@ fun Board(state: State) {
                     .offset(x = tileSize * it.first, y = tileSize * it.second)
                     .size(tileSize)
                     .background(
-                        DarkGreen, RoundedCornerShape(corner4dp)
+                        Color.DarkGray, RoundedCornerShape(corner4dp)
                     )
             )
         }

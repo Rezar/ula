@@ -34,8 +34,8 @@ fun WelcomePage3(
     onPreviousButtonClicked: () -> Unit,
     onNextButtonClicked: (Int, Int) -> Unit
 ) {
-    val nextButtonIcon = painterResource(id = R.mipmap.next)
-    val previousButtonIcon = painterResource(id = R.mipmap.back)
+    val nextButtonIcon = painterResource(id = R.drawable.next)
+    val previousButtonIcon = painterResource(id = R.drawable.back)
 
     var tabIndex by remember { mutableStateOf(0)}
     val tabTitles = listOf("Daily Goal", "Weekly Goal")

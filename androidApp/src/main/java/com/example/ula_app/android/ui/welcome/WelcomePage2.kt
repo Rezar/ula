@@ -30,13 +30,13 @@ fun WelcomePage2(
     onNextButtonClicked: () -> Unit
 ) {
     // Read icon and images from drawable folder.
-    val nextButtonIcon = painterResource(id = R.mipmap.next)
-    val previousButtonIcon = painterResource(id = R.mipmap.back)
-    val arrowIcon = painterResource(id = R.mipmap.arrows)
-    val adultNormalMonster = painterResource(id = R.mipmap.ic_stickman_4)
-    val adultFitMonster = painterResource(id = R.mipmap.stickman_draft_monster_5aug2014)
-    val adultSleepingMonster = painterResource(id = R.mipmap.bed)
-    val adultFatMonster = painterResource(id = R.mipmap.stickman_fat)
+    val nextButtonIcon = painterResource(id = R.drawable.next)
+    val previousButtonIcon = painterResource(id = R.drawable.back)
+    val arrowIcon = painterResource(id = R.drawable.arrows)
+    val adultNormalMonster = painterResource(id = R.drawable.ic_stickman_4)
+    val adultFitMonster = painterResource(id = R.drawable.stickman_draft_monster_5aug2014)
+    val adultSleepingMonster = painterResource(id = R.drawable.bed)
+    val adultFatMonster = painterResource(id = R.drawable.stickman_fat)
 
 
     val leftPartWeight = 4.5f

@@ -25,6 +25,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -79,9 +80,13 @@ fun TicTacToe(
         Button(
             onClick = {
                 activity?.finish()
-            }
+            },
+            colors = ButtonDefaults.outlinedButtonColors(backgroundColor = Color.White, contentColor = Color.Black),
         ) {
-            Text(text = "Back")
+            Text(
+                text = "Back",
+                style = MaterialTheme.typography.caption
+            )
         }
 
         Row(
@@ -99,10 +104,8 @@ fun TicTacToe(
         // Title of the game.
         Text(
             text = "Tic Tac Toe",
-            fontSize = 50.sp,
-            fontWeight = FontWeight.Bold,
-            fontFamily = FontFamily.Cursive,
-            color = Color.Blue
+            color = Color.DarkGray,
+            style = MaterialTheme.typography.h2
         )
         /*
         * TicTacToe Board.
@@ -202,8 +205,7 @@ fun TicTacToe(
             // Hint Text.
             Text(
                 text = ticTacToeUiState.hintText,
-                fontSize = 24.sp,
-                fontStyle = FontStyle.Italic
+                style = MaterialTheme.typography.h4
             )
             // Play again button.
             Button(
@@ -212,14 +214,11 @@ fun TicTacToe(
                 },
                 shape = RoundedCornerShape(5.dp),
                 elevation = ButtonDefaults.elevation(5.dp),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color.Blue,
-                    contentColor = Color.White
-                )
+                colors = ButtonDefaults.outlinedButtonColors(backgroundColor = Color.White, contentColor = Color.Black),
             ) {
                 Text(
                     text = "Play Again",
-                    fontSize = 16.sp
+                    style = MaterialTheme.typography.caption
                 )
             }
 
