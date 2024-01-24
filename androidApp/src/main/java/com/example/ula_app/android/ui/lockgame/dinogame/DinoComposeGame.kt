@@ -34,7 +34,7 @@ import com.example.ula_app.android.ui.lockgame.dinogame.model.DinoState
 import com.example.ula_app.android.ui.lockgame.dinogame.model.EarthState
 import com.example.ula_app.android.ui.lockgame.dinogame.model.GameState
 
-const val EARTH_Y_POSITION = 500f
+const val EARTH_Y_POSITION = 480f
 private const val EARTH_GROUND_STROKE_WIDTH = 10f
 private const val CLOUDS_SPEED = 1 // pixels per frame
 private const val MAX_CLOUDS = 3
@@ -49,7 +49,7 @@ var showBounds = mutableStateOf(false)
 @Preview
 @Composable
 fun DinoGameScenePreview() {
-    MaterialTheme {
+    DinoGameTheme {
         DinoGameScene(GameState())
     }
 }
@@ -119,10 +119,13 @@ fun DinoGameScene(gameState: GameState) {
                 },
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color.White, contentColor = Color.Black)
             ) {
-                Text(text = "Back")
+                Text(
+                    text = "Back",
+                    style = MaterialTheme.typography.caption
+                )
             }
         }
-        ShowBoundsSwitchView()
+//        ShowBoundsSwitchView()
         HighScoreTextViews(requireNotNull(currentScore), requireNotNull(highScore))
         Canvas(modifier = Modifier.weight(1f)) {
             EarthView(earthState, color = earthColor)
@@ -236,16 +239,22 @@ fun HighScoreTextViews(currentScore: Int, highScore: Int)
             .padding(end = 20.dp),
         horizontalArrangement = Arrangement.End
     ) {
-        Text(text = "HI", style = TextStyle(color = MaterialTheme.colors.highScoreColor))
+        Text(
+            text = "HI",
+            color = MaterialTheme.colors.highScoreColor,
+            style = MaterialTheme.typography.caption
+        )
         Spacer(modifier = Modifier.padding(start = 10.dp))
         Text(
             text = "$highScore".padStart(5, '0'),
-            style = TextStyle(color = MaterialTheme.colors.highScoreColor)
+            color = MaterialTheme.colors.highScoreColor,
+            style = MaterialTheme.typography.caption
         )
         Spacer(modifier = Modifier.padding(start = 10.dp))
         Text(
             text = "$currentScore".padStart(5, '0'),
-            style = TextStyle(color = MaterialTheme.colors.currentScoreColor)
+            color = MaterialTheme.colors.currentScoreColor,
+            style = MaterialTheme.typography.caption
         )
     }
 }
@@ -258,9 +267,10 @@ fun ShowBoundsSwitchView()
         modifier = Modifier
             .fillMaxWidth()
             .padding(end = 20.dp),
-        horizontalArrangement = Arrangement.End
+        horizontalArrangement = Arrangement.End,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(text = "Show Bounds")
+        Text(text = "Show Bounds", style = MaterialTheme.typography.caption)
         Spacer(modifier = Modifier.padding(start = 10.dp))
         Switch(checked = showBounds.value, onCheckedChange = {
             showBounds.value = it
@@ -277,11 +287,7 @@ fun GameOverTextView(isGameOver: Boolean = true, modifier: Modifier = Modifier)
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
             letterSpacing = 5.sp,
-            style = TextStyle(
-                color = MaterialTheme.colors.gameOverColor,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.SemiBold
-            )
+            style = MaterialTheme.typography.caption
         )
         if (isGameOver) {
             Icon(
@@ -317,9 +323,9 @@ fun DrawScope.drawBoundingBox(color: Color, rect: Rect, name: String? = null) {
 fun Rect.collided(other: Rect, doubtFactor: Float = 0f): Boolean {
     if (right >= (other.left + doubtFactor) && right <= (other.right - doubtFactor))
         return true
-//    if (right <= other.left || other.right <= left)
-//        return false
-//    if (bottom <= other.top || other.bottom <= top)
-//        return false
+    if (right <= other.left || other.right <= left)
+        return false
+    if (bottom <= other.top || other.bottom <= top)
+        return false
     return false
 }

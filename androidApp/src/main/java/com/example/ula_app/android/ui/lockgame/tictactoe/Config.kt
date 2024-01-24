@@ -1,5 +1,6 @@
 package com.example.ula_app.android.ui.lockgame.tictactoe
 
+import androidx.compose.material.MaterialTheme
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -83,7 +84,7 @@ val Default = Config(
         // Thickness.
         thickness = 10f,
         // Color of the Win line.
-        color = Color.Red
+        color = Color(0xFFEF5366)
     ),
     label = Label(
         // O
@@ -93,9 +94,9 @@ val Default = Config(
             // Padding of Circle.
             padding = 5.dp,
             // Color of the Circle.
-            color = Color.Green,
+            color = Color.Black,
             // Thickness.
-            thickness = 20f
+            thickness = 10f
         ),
         // X
         cross = Cross(
@@ -104,9 +105,9 @@ val Default = Config(
             // Padding of Cross.
             padding = 5.dp,
             // Color of Cross.
-            color = Color.Yellow,
+            color = Color.Black,
             // Thickness.
-            thickness = 20f
+            thickness = 10f
         )
     )
 )

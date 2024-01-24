@@ -95,16 +95,16 @@ fun TicTacToe(
             verticalAlignment = Alignment.CenterVertically
         ) {
             // How many times O has won.
-            Text(text = "Player 'O' : ${ticTacToeUiState.circleWinCount}", fontSize = 16.sp)
+            Text(text = "Player 'O' : ${ticTacToeUiState.circleWinCount}", fontSize = 16.sp, color = Color.Black)
             // How many times of draw.
-            Text(text = "Draw : ${ticTacToeUiState.drawCount}", fontSize = 16.sp)
+            Text(text = "Draw : ${ticTacToeUiState.drawCount}", fontSize = 16.sp, color = Color.Black)
             // How many times X has won.
-            Text(text = "Player 'X' : ${ticTacToeUiState.crossWinCount}", fontSize = 16.sp)
+            Text(text = "Player 'X' : ${ticTacToeUiState.crossWinCount}", fontSize = 16.sp, color = Color.Black)
         }
         // Title of the game.
         Text(
             text = "Tic Tac Toe",
-            color = Color.DarkGray,
+            color = Color.Black,
             style = MaterialTheme.typography.h2
         )
         /*
@@ -205,7 +205,8 @@ fun TicTacToe(
             // Hint Text.
             Text(
                 text = ticTacToeUiState.hintText,
-                style = MaterialTheme.typography.h4
+                style = MaterialTheme.typography.h4,
+                color = Color.Black
             )
             // Play again button.
             Button(

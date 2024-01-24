@@ -26,9 +26,7 @@ class DinoGameActivity : ComponentActivity() {
         distanceBetweenCactus = (deviceWidthInPixels * 0.4f).toInt()
 
         setContent {
-            MaterialTheme(
-                colors = if (isSystemInDarkTheme()) darkThemeColors else lightThemeColors
-            ) {
+            DinoGameTheme {
                 DinoGameScene(GameState())
             }
         }
@@ -44,7 +42,7 @@ fun Greeting(name: String) {
 @Preview
 @Composable
 fun DefaultPreview() {
-    MaterialTheme {
+    DinoGameTheme {
         Greeting("Android")
     }
 }
