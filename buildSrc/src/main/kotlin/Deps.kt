@@ -25,6 +25,11 @@ object Deps {
     private const val dateTimeVersion = "0.4.0"
     const val kotlinDateTime = "org.jetbrains.kotlinx:kotlinx-datetime:$dateTimeVersion"
 
+    // Datastore
+//    const val kotlinSerialization = "org.jetbrains.kotlin:kotlin-serialization:1.6.10"
+    const val protoCollections = "org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5"
+    const val kotlinSerialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1"
+
     // HILT
     private const val hiltVersion = "2.42"
     private const val hiltCompilerVersion = "1.0.0"

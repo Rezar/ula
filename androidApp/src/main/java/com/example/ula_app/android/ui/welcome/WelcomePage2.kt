@@ -5,17 +5,24 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import com.example.ula_app.android.R
-import com.example.ula_app.android.component.IconButton
+import com.example.ula_app.android.ui.component.IconButton
 
 @Composable
 fun WelcomePage2(
@@ -23,13 +30,18 @@ fun WelcomePage2(
     onNextButtonClicked: () -> Unit
 ) {
     // Read icon and images from drawable folder.
-    val nextButtonIcon = painterResource(id = R.mipmap.next)
-    val previousButtonIcon = painterResource(id = R.mipmap.back)
-    val arrowIcon = painterResource(id = R.mipmap.arrows)
-    val adultNormalMonster = painterResource(id = R.mipmap.ic_stickman_4)
-    val adultFitMonster = painterResource(id = R.mipmap.stickman_draft_monster_5aug2014)
-    val adultSleepingMonster = painterResource(id = R.mipmap.bed)
-    val adultFatMonster = painterResource(id = R.mipmap.stickman_fat)
+    val nextButtonIcon = painterResource(id = R.drawable.next)
+    val previousButtonIcon = painterResource(id = R.drawable.back)
+    val arrowIcon = painterResource(id = R.drawable.arrows)
+    val adultNormalMonster = painterResource(id = R.drawable.ic_stickman_4)
+    val adultFitMonster = painterResource(id = R.drawable.stickman_draft_monster_5aug2014)
+    val adultSleepingMonster = painterResource(id = R.drawable.bed)
+    val adultFatMonster = painterResource(id = R.drawable.stickman_fat)
+
+
+    val leftPartWeight = 4.5f
+    val middlePartWeight = 1f
+    val rightPartWeight = 4.5f
 
     Column(
         modifier = Modifier
@@ -38,27 +50,107 @@ fun WelcomePage2(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(
-            text = "Ok?"
-        )
-        Row (
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
+        Column(
+            modifier = Modifier.padding(
+                start = Default.padding.start,
+                end = Default.padding.end,
+                top = Default.padding.top,
+                bottom = Default.padding.bottom,
+            )
         ) {
-            Icon(painter = adultNormalMonster, contentDescription = "Normal")
-            Icon(painter = arrowIcon, contentDescription = "Arrow")
-            Icon(painter = adultFitMonster, contentDescription = "Normal")
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = "Ok?",
+                    style = MaterialTheme.typography.h1
+                )
+            }
+
+            Spacer(modifier = Modifier.height(60.dp))
+
+            Row (
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Column(
+                    modifier = Modifier.weight(leftPartWeight),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        painter = adultNormalMonster,
+                        contentDescription = null,
+                        modifier = Modifier.scale(1.4f)
+                    )
+                }
+
+                Column(
+                    modifier = Modifier.weight(middlePartWeight),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        painter = arrowIcon,
+                        contentDescription = null
+                    )
+                }
+
+                Column(
+                    modifier = Modifier.weight(rightPartWeight),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        painter = adultFitMonster,
+                        contentDescription = null
+                    )
+                }
+
+            }
+
+            Spacer(modifier = Modifier.height(60.dp))
+
+            Row (
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Column(
+                    modifier = Modifier.weight(leftPartWeight),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        painter = adultSleepingMonster,
+                        contentDescription = null,
+                        modifier = Modifier.scale(0.75f)
+                    )
+                }
+
+                Column(
+                    modifier = Modifier.weight(middlePartWeight),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        painter = arrowIcon,
+                        contentDescription = null
+                    )
+                }
+
+                Column(
+                    modifier = Modifier.weight(rightPartWeight),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        painter = adultFatMonster,
+                        contentDescription = null,
+                        modifier = Modifier.scale(0.5f)
+                    )
+                }
+
+            }
         }
-        Row (
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Icon(painter = adultSleepingMonster, contentDescription = "Sleeping")
-            Icon(painter = arrowIcon, contentDescription = "Arrow")
-            Icon(painter = adultFatMonster, contentDescription = "Fat")
-        }
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween

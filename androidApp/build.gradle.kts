@@ -4,6 +4,8 @@ plugins {
     id("kotlin-kapt")
     id("dagger.hilt.android.plugin")
     kotlin("plugin.serialization") version Deps.kotlinVersion
+//    id("org.jetbrains.kotlin.plugin.serialization")
+//    kotlin("jvm") version "1.9.0"
 }
 
 android {
@@ -11,7 +13,7 @@ android {
     compileSdk = 33
     defaultConfig {
         applicationId = "com.example.ula_app.android"
-        minSdk = 24
+        minSdk = 30
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
@@ -47,6 +49,7 @@ dependencies {
     implementation(Deps.composeLifecycle)
     implementation(Deps.coilCompose)
     implementation(Deps.kotlinDateTime)
+    implementation ("androidx.compose.runtime:runtime-livedata:1.0.3")
 
     implementation(Deps.hiltAndroid)
     kapt(Deps.hiltAndroidCompiler)
@@ -66,12 +69,41 @@ dependencies {
     implementation ("androidx.media3:media3-exoplayer:1.0.2")
     implementation ("androidx.media3:media3-exoplayer-dash:1.0.2")
     implementation ("androidx.media3:media3-ui:1.0.2")
-//    implementation ("androidx.lifecycle:lifecycle-runtime-compose:2.6.0-rc01")
+
+    // tab row
+    implementation("com.google.accompanist:accompanist-pager:0.28.0") // Pager
+    implementation("com.google.accompanist:accompanist-pager-indicators:0.28.0") // Pager Indicators
 
 
-//    implementation("androidx.datastore:datastore-preferences:1.0.0-alpha04")
-//    implementation("org.jetbrains.kotlin:kotlinx-coroutines-core:1.3.9")
-//    implementation("org.jetbrains.kotlin:kotlinx-coroutines-android:1.3.9")
-//    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0")
-//    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.2.0")
+    // Datastore
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation("androidx.datastore:datastore:1.0.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.2.0")
+    implementation(Deps.kotlinSerialization)
+
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))
+
+    // stats line plot
+    // Includes the core logic for charts and other elements.
+    implementation("com.patrykandpatrick.vico:core:1.7.1")
+
+    // For Jetpack Compose.
+    implementation("com.patrykandpatrick.vico:compose:1.7.1")
+
+    // For the view system.
+    implementation("com.patrykandpatrick.vico:views:1.7.1")
+
+    // For `compose`. Creates a `ChartStyle` based on an M2 Material Theme.
+    implementation("com.patrykandpatrick.vico:compose-m3:1.7.1")
+
+    implementation("androidx.compose.material3:material3:1.1.1")
+    implementation("com.mutualmobile:composesensors:1.1.0")
+
+    implementation ("androidx.core:core-ktx:1.7.0")
+    implementation ("androidx.appcompat:appcompat:1.2.0")
+    implementation ("androidx.browser:browser:1.4.0")
+
+    implementation ("androidx.work:work-runtime-ktx:2.7.1")
+
 }

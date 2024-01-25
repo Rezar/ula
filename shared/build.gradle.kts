@@ -3,6 +3,7 @@ plugins {
     kotlin("native.cocoapods")
     id("com.android.library")
     kotlin("plugin.serialization") version Deps.kotlinVersion
+//    id("org.jetbrains.kotlin.plugin.serialization")
     id("com.squareup.sqldelight")
 }
 
@@ -19,6 +20,7 @@ kotlin {
         ios.deploymentTarget = "14.1"
         podfile = project.file("../iosApp/Podfile")
         framework {
+            isStatic = false
             baseName = "shared"
         }
     }
@@ -78,6 +80,7 @@ android {
     namespace = "com.example.ula_app"
     compileSdk = 33
     defaultConfig {
-        minSdk = 24
+        minSdk = 30
+        targetSdk = 33
     }
 }

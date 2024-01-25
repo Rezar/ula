@@ -5,15 +5,16 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -23,6 +24,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.ula_app.android.ULAApplication
 import com.example.ula_app.android.data.BottomNavigationBarItem
 import com.example.ula_app.android.data.DataSource
 import com.example.ula_app.android.ui.game.DebugScreen
@@ -30,21 +32,23 @@ import com.example.ula_app.android.ui.game.HelpScreen
 import com.example.ula_app.android.ui.game.HomeScreen
 import com.example.ula_app.android.ui.game.SettingScreen
 import com.example.ula_app.android.ui.game.StatsScreen
-import com.example.ula_app.android.ui.viewmodel.GoalViewModel
-import com.example.ula_app.android.ui.viewmodel.HelpViewModel
-import com.example.ula_app.android.ui.viewmodel.HomeViewModel
+import com.example.ula_app.android.ui.theme.AppTheme
+import com.example.ula_app.android.ui.theme.WelcomeTheme
+import com.example.ula_app.android.ui.viewmodel.UserPreferencesViewModel
 import com.example.ula_app.android.ui.welcome.WelcomePage1
 import com.example.ula_app.android.ui.welcome.WelcomePage2
 import com.example.ula_app.android.ui.welcome.WelcomePage3
-import com.example.ula_app.android.util.DateTimeUtil
+import com.example.ula_app.util.DateTimeUtil
 
 // Screens in Game section.
 enum class GameScreen() {
     Home,
     Stats,
+    StatsStepDetail,
     Help,
     Setting,
     Debug
+
 }
 
 // Screens in Welcome section.
@@ -54,17 +58,16 @@ enum class WelcomeScreen() {
     Page3
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Game(
-    goalViewModel: GoalViewModel = viewModel(),
-    homeViewModel: HomeViewModel = viewModel(),
-    helpViewModel: HelpViewModel = viewModel(),
     navController: NavHostController = rememberNavController()
 ) {
-    // ui state
-    val goalUiState by goalViewModel.uiState.collectAsState()
 
-    Log.i("GameScreen", "${goalUiState.firstTime}")
+    val userPreferencesViewModel: UserPreferencesViewModel = ULAApplication.getInstance<UserPreferencesViewModel>()
+    // ui state
+    val userPreferencesUiState by userPreferencesViewModel.userPreferencesState.collectAsState()
+
 
     // Collection of game screens.
     val gameScreens = listOf(
@@ -96,60 +99,78 @@ fun Game(
         NavHost(
             navController = navController,
             // Show Welcome.Page1 as start destination if it's the first time, else show GameScreen.Home
-            startDestination = if (goalUiState.firstTime) WelcomeScreen.Page1.name else GameScreen.Home.name,
+            startDestination = if (userPreferencesUiState.firstTime) WelcomeScreen.Page1.name else GameScreen.Home.name,
             modifier = Modifier.padding(innerPadding)
         ) {
             // Welcome page1
             composable(route = WelcomeScreen.Page1.name) {
-                WelcomePage1(
-                    onNextButtonClicked = {
-                        navController.navigate(WelcomeScreen.Page2.name)
-                    }
-                )
+                WelcomeTheme {
+                    WelcomePage1(
+                        onNextButtonClicked = {
+                            navController.navigate(WelcomeScreen.Page2.name)
+                        }
+                    )
+                }
             }
             // Welcome page2
             composable(route = WelcomeScreen.Page2.name) {
-                WelcomePage2(
-                    onPreviousButtonClicked = {
-                        navController.navigate(WelcomeScreen.Page1.name)
-                    },
-                    onNextButtonClicked = {
-                        navController.navigate(WelcomeScreen.Page3.name)
-                    }
-                )
+                WelcomeTheme {
+                    WelcomePage2(
+                        onPreviousButtonClicked = {
+                            navController.navigate(WelcomeScreen.Page1.name)
+                        },
+                        onNextButtonClicked = {
+                            navController.navigate(WelcomeScreen.Page3.name)
+                        }
+                    )
+                }
             }
             // Welcome page3
             composable(route = WelcomeScreen.Page3.name) {
-                WelcomePage3(
-                    onPreviousButtonClicked = {
-                        navController.navigate(WelcomeScreen.Page2.name)
-                    },
-                    onNextButtonClicked = {
-                        goalViewModel.setSteps(it)
-                        goalViewModel.setFirstTime(false)  // still need to fix the set false function here
-                        goalViewModel.setFirstDateTime(DateTimeUtil.getCurrentDateTime())
-                        navController.navigate(GameScreen.Home.name)
-                    }
-                )
+                WelcomeTheme {
+                    WelcomePage3(
+                        onPreviousButtonClicked = {
+                            navController.navigate(WelcomeScreen.Page2.name)
+                        },
+                        onNextButtonClicked = { dailyGoal, weeklyGoal ->
+    //                        goalViewModel.setSteps(it)
+//                            userPreferencesViewModel.setGoal(it)
+                            userPreferencesViewModel.setDailyGoal(dailyGoal)
+                            userPreferencesViewModel.setWeeklyGoal(weeklyGoal)
+                            userPreferencesViewModel.setFirstTime(false)
+                            userPreferencesViewModel.setFirstDateTime(DateTimeUtil.nowInInstant())
+
+                            Log.i("GameScreen", "dailyGoal: $dailyGoal, weeklyGoal: $weeklyGoal")
+
+                            navController.navigate(GameScreen.Home.name)
+                        }
+                    )
+                }
             }
             // Home
             composable(route = GameScreen.Home.name) {
-                HomeScreen(
-                    homeViewModel = homeViewModel,
-                    goalViewModel = goalViewModel
-                )
+                AppTheme {
+                    HomeScreen()
+                }
             }
             // Stats
             composable(route = GameScreen.Stats.name) {
-                StatsScreen()
+                AppTheme {
+                    StatsScreen()
+                }
             }
             // Help
             composable(route = GameScreen.Help.name) {
-                HelpScreen(helpViewModel)
+                AppTheme {
+                    HelpScreen()
+                }
+
             }
             // Setting
             composable(route = GameScreen.Setting.name) {
-                SettingScreen()
+                AppTheme {
+                    SettingScreen()
+                }
             }
             // Debug
             composable(route = GameScreen.Debug.name) {
@@ -187,7 +208,8 @@ fun BottomNavigationBar(
                     ) {
                         Icon(
                             painter = painterResource(id = item.icon),
-                            contentDescription = item.name
+                            contentDescription = item.name,
+                            modifier = Modifier.scale(item.scale)
                         )
                         if (selected) {
                             Text(
