@@ -4,9 +4,13 @@ data class RoadState(
     var xOffset: Float = 0f,
     var threshold: Float = 0f
 ) {
+    val X_SPAN: Float = 5f
+
+    fun isPassTheThreshold(): Boolean {
+        return xOffset <= threshold
+    }
+
     fun move(): RoadState = copy(xOffset = xOffset - X_SPAN)
 
-    fun reset(): RoadState = copy(xOffset = threshold)
+    fun reset(targetOffset: Float): RoadState = copy(xOffset = targetOffset)
 }
-
-val X_SPAN: Float = 5f

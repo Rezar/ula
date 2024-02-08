@@ -9,6 +9,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import com.example.ula_app.android.R
 import com.example.ula_app.android.ui.lockgame.flappybird.model.BirdSizeHeight
 import com.example.ula_app.android.ui.lockgame.flappybird.model.BirdSizeWidth
@@ -26,7 +27,7 @@ fun Bird(
         modifier = Modifier.fillMaxSize()
     ) {
         if (uiState.safeZone.initiated()) {
-            if (viewModel.isHittingTheGround()) {
+            if (viewModel.isBirdHittingTheGround()) {
                 viewModel.gameOver(GameOverCauses.BirdHitGround)
             }
         }
@@ -55,9 +56,9 @@ fun Bird(
             contentScale = ContentScale.FillBounds,
             contentDescription = null,
             modifier = Modifier
-                .size(uiState.birdState.width.pxToDp(), uiState.birdState.height.pxToDp())
+                .size(Dp(uiState.birdState.width), Dp(uiState.birdState.height))
                 .align(Alignment.Center)
-                .offset(y = uiState.birdState.yOffset.pxToDp())
+                .offset(y = Dp(uiState.birdState.yOffset))
                 .rotate(degrees = uiState.birdState.degree)  // Rotate 90 degree when dying/ over.
         )
     }

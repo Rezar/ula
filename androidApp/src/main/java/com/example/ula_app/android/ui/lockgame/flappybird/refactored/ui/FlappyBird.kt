@@ -50,15 +50,25 @@ fun FlappyBird(
                 .align(Alignment.CenterHorizontally)
                 .weight(0.90f)
                 .onGloballyPositioned {
-                    val width = it.size.width.toFloat()
-                    val height = it.size.height.toFloat()
-                    viewModel.initiateGameConfig(width, height)
+                    val width = with(density) {
+                        it.size.width.toDp()
+                    }
+                    val height = with(density) {
+                        it.size.height.toDp()
+                    }
+                    viewModel.initiateGameConfig(width.value, height.value)
                     Log.i("FlappyBird", "safe zone size: w${width}, h${height}")
                 }
         ) {
             FarBackground()
+
+            PipeGroup(
+                viewModel = viewModel
+            )
             
-            Bird(viewModel = viewModel)
+            Bird(
+                viewModel = viewModel
+            )
         }
 
         Box(
