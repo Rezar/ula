@@ -79,7 +79,7 @@ fun UpPipe(
                 painter = painterResource(id = R.drawable.pipe_cover),
                 contentScale = ContentScale.FillBounds,
                 contentDescription = null,
-                modifier = Modifier.size(60.dp, 30.dp)
+                modifier = Modifier.size(Dp(PipeState.TOP_WIDTH), Dp(PipeState.TOP_HEIGHT))
             )
 
             // Pipe Pillar
@@ -113,7 +113,7 @@ fun DownPipe(
                 painter = painterResource(id = R.drawable.pipe_pillar),
                 contentScale = ContentScale.FillBounds,
                 contentDescription = null,
-                modifier = Modifier.size(50.dp, pillarHeight)
+                modifier = Modifier.size(Dp(PipeState.PILLAR_WIDTH), pillarHeight)
             )
 
             // Pipe Cover

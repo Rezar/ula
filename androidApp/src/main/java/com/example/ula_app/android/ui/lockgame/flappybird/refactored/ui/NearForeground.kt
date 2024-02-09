@@ -73,6 +73,6 @@ fun NearForeground() {
 
 @Preview(widthDp = 411, heightDp = 180)
 @Composable
-fun previewForeground() {
+fun PreviewForeground() {
     NearForeground()
 }

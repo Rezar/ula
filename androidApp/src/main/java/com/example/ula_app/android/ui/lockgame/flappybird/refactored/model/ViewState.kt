@@ -32,8 +32,8 @@ enum class GameStatus {
 }
 
 enum class GameOverCauses {
-    BirdHitGround,
     BirdHitSky,
+    BirdHitGround,
     BirdHitPipe
 }
 

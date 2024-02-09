@@ -4,7 +4,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.ula_app.android.ui.lockgame.flappybird.refactored.model.GameStatus
 import com.example.ula_app.android.ui.lockgame.flappybird.refactored.ui.FlappyBird
 import com.example.ula_app.android.ui.lockgame.flappybird.refactored.viewmodel.FlappyBirdViewModel
 import com.example.ula_app.android.ui.lockgame.flappybird.ui.theme.FlappyBirdTheme
@@ -21,9 +24,10 @@ class FlappyBirdActivity: ComponentActivity() {
         setContent {
             FlappyBirdTheme {
                 val viewModel: FlappyBirdViewModel = viewModel()
+                val uiState by viewModel.viewState.collectAsState()
 
                 LaunchedEffect(key1 = Unit) {
-                    while (isActive) {
+                    while (isActive && (uiState.gameStatus == GameStatus.Ide || uiState.gameStatus == GameStatus.Running)) {
                         delay(AUTO_TICK_INTERVAL) // interval: 50ms
                         viewModel.autoTick()
                     }

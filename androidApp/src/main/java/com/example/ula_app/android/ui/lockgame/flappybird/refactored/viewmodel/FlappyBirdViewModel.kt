@@ -136,6 +136,43 @@ class FlappyBirdViewModel: ViewModel() {
         }
     }
 
+    // Check if the bird is hitting the sky
+    fun isBirdHittingTheSky(): Boolean {
+        /*
+        * ---------------------------------------------------- Top of safe zone / Top of the screen
+        *                          |                  |
+        *                      1/2 BirdHeight         |
+        *                          |                  |
+        *                         ---                 |
+        *                          |                  |
+        *                          |         Half Height of Safe Zone
+        *                          |                  |
+        *                      yOffset of Bird        |
+        *                          |                  |
+        *                          |                  |
+        *                          |                  |
+        *                          |                  |
+        * ---------------------------------------------------- Central of safe zone
+        *                          |                  |
+        *                          |                  |
+        *                          |                  |
+        *                          |                  |
+        *                          |                  |
+        *                          |         Half Height of Safe Zone
+        *                          |                  |
+        *                          |                  |
+        *                         ---                 |
+        *                          |                  |
+        *                          |                  |
+        *                          |                  |
+        * ---------------------------------------------------- Bottom of Safe Zone
+        *
+        * From this graph, we know if -bird.yOffset + 1/2 bird.height <= safeZone.height, the bird hit
+        * this ground.
+        * */
+        return -viewState.value.birdState.yOffset + viewState.value.birdState.height * 0.5f <= viewState.value.safeZone.height * 0.5f
+    }
+
     // Check if the bird is hitting the ground
     fun isBirdHittingTheGround(): Boolean {
         /*
@@ -173,48 +210,41 @@ class FlappyBirdViewModel: ViewModel() {
         return viewState.value.birdState.yOffset + viewState.value.birdState.height * 0.5f <= viewState.value.safeZone.height * 0.5f
     }
 
-    /*
-        * ---------------------------------------------------- Top of safe zone / Top of the screen
-        *                          |                  |
-        *                      1/2 BirdHeight         |
-        *                          |                  |
-        *                         ---                 |
-        *                          |                  |
-        *                          |         Half Height of Safe Zone
-        *                          |                  |
-        *                      yOffset of Bird        |
-        *                          |                  |
-        *                          |                  |
-        *                          |                  |
-        *                          |                  |
-        * ---------------------------------------------------- Central of safe zone
-        *                          |                  |
-        *                          |                  |
-        *                          |                  |
-        *                          |                  |
-        *                          |                  |
-        *                          |         Half Height of Safe Zone
-        *                          |                  |
-        *                          |                  |
-        *                         ---                 |
-        *                          |                  |
-        *                          |                  |
-        *                          |                  |
-        * ---------------------------------------------------- Bottom of Safe Zone
-        *
-        * From this graph, we know if -bird.yOffset + 1/2 bird.height <= safeZone.height, the bird hit
-        * this ground.
-        * */
-    fun isBirdHittingTheSky(): Boolean {
-        return -viewState.value.birdState.yOffset + viewState.value.birdState.height * 0.5f <= viewState.value.safeZone.height * 0.5f
+    fun isBirdHittingThePipe(): Boolean {
+        // TODO(add rotate factor in bird bound calculate)
+        // calculate top, bottom, left, right bound of the bird.
+        val topBound = viewState.value.safeZone.height * 0.5f + viewState.value.birdState.yOffset - viewState.value.birdState.height * 0.5f
+        val bottomBound = viewState.value.safeZone.height * 0.5f + viewState.value.birdState.yOffset + viewState.value.birdState.height * 0.5f
+        val leftBound = viewState.value.safeZone.width * 0.5f - viewState.value.birdState.width * 0.5f
+        val rightBound = viewState.value.safeZone.width * 0.5f + viewState.value.birdState.width * 0.5f
+
+        val pipeStateList = viewState.value.pipeStateList
+        pipeStateList.forEach { pipeState ->
+            // If it's a up pipe.
+            if (pipeState.direction == PipeDirection.Up) {
+                // calculate top, left, right bound of this pipe.
+                val topBound = viewState.value.safeZone.height - pipeState.pillarHeight - PipeState.TOP_HEIGHT
+                val leftBound = (viewState.value.safeZone.width - PipeState.PILLAR_WIDTH) * 0.5f
+                val rightBound = (viewState.value.safeZone.width + PipeState.PILLAR_WIDTH) * 0.5f
+            }
+            // If it's a down pipe.
+            else if (pipeState.direction == PipeDirection.Down) {
+                // calculate bottom, left, right bound of this pipe
+                val bottomBound = pipeState.pillarHeight + PipeState.TOP_HEIGHT
+                val leftBound = (viewState.value.safeZone.width - PipeState.PILLAR_WIDTH) * 0.5f
+                val rightBound = (viewState.value.safeZone.width + PipeState.PILLAR_WIDTH) * 0.5f
+            }
+        }
+
+        return false
     }
 
     fun gameOver(gameOverCauses: GameOverCauses) {
         when (gameOverCauses) {
-            GameOverCauses.BirdHitGround -> {
+            GameOverCauses.BirdHitSky -> {
 
             }
-            GameOverCauses.BirdHitSky -> {
+            GameOverCauses.BirdHitGround -> {
 
             }
             GameOverCauses.BirdHitPipe -> {
@@ -232,7 +262,22 @@ class FlappyBirdViewModel: ViewModel() {
     }
 
     fun isGameOver(): Boolean {
-        return viewState.value.gameStatus == GameStatus.GameOver
+        if (viewState.value.gameStatus == GameStatus.Ide) {
+            return false
+        }
+
+        // case 1: bird hit sky
+        // case 2: bird hit ground
+        // case 3: bird hit pipe
+        if (
+            viewState.value.gameStatus == GameStatus.GameOver ||
+            isBirdHittingTheSky() ||
+            isBirdHittingTheGround()
+        ) {
+            return true
+        }
+
+        return false
     }
 }
 
