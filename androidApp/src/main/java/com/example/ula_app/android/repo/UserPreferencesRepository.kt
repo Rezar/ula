@@ -177,7 +177,7 @@ class UserPreferencesRepository() {
 
         updatedStepsHistory.add(StepsWithDate(DateTimeUtil.nowInInstant().epochSeconds, stepsPerDay.stepCount))
         updateStepsHistory(updatedStepsHistory)
-        // TODO: not sure reset stepsPerDay is needed.
+        // not sure reset stepsPerDay is needed.
     }
 
     /*

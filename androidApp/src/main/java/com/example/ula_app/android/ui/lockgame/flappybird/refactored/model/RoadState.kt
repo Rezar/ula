@@ -4,7 +4,10 @@ data class RoadState(
     var xOffset: Float = 0f,
     var threshold: Float = 0f
 ) {
-    val X_SPAN: Float = 5f
+    companion object {
+        // Shifting distance on x axis per tick.
+        const val X_SPAN: Float = 5f
+    }
 
     fun isPassTheThreshold(): Boolean {
         return xOffset <= threshold

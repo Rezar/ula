@@ -1,16 +1,16 @@
 package com.example.ula_app.android.ui.lockgame.flappybird.refactored
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.ula_app.android.ui.lockgame.flappybird.refactored.model.GameStatus
 import com.example.ula_app.android.ui.lockgame.flappybird.refactored.ui.FlappyBird
 import com.example.ula_app.android.ui.lockgame.flappybird.refactored.viewmodel.FlappyBirdViewModel
-import com.example.ula_app.android.ui.lockgame.flappybird.ui.theme.FlappyBirdTheme
+import com.example.ula_app.android.ui.theme.AppTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 
@@ -22,12 +22,11 @@ class FlappyBirdActivity: ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            FlappyBirdTheme {
+            AppTheme {
                 val viewModel: FlappyBirdViewModel = viewModel()
-                val uiState by viewModel.viewState.collectAsState()
 
                 LaunchedEffect(key1 = Unit) {
-                    while (isActive && (uiState.gameStatus == GameStatus.Ide || uiState.gameStatus == GameStatus.Running)) {
+                    while (isActive) {
                         delay(AUTO_TICK_INTERVAL) // interval: 50ms
                         viewModel.autoTick()
                     }

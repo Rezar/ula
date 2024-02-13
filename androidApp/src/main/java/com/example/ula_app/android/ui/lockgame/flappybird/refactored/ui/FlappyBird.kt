@@ -1,14 +1,11 @@
 package com.example.ula_app.android.ui.lockgame.flappybird.refactored.ui
 
-import android.util.Log
 import android.view.MotionEvent.ACTION_DOWN
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -16,7 +13,6 @@ import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
-import com.example.ula_app.android.ui.lockgame.flappybird.refactored.model.GameStatus
 import com.example.ula_app.android.ui.lockgame.flappybird.refactored.viewmodel.FlappyBirdViewModel
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -24,7 +20,6 @@ import com.example.ula_app.android.ui.lockgame.flappybird.refactored.viewmodel.F
 fun FlappyBird(
     viewModel: FlappyBirdViewModel
 ) {
-    val uiState by viewModel.viewState.collectAsState()
     val density = LocalDensity.current
 
     Column(
@@ -59,7 +54,6 @@ fun FlappyBird(
                         it.size.height.toDp()
                     }
                     viewModel.initiateGameConfig(width.value, height.value)
-                    Log.i("FlappyBird", "safe zone size: w${width}, h${height}")
                 }
         ) {
             FarBackground()
@@ -69,6 +63,10 @@ fun FlappyBird(
             )
             
             Bird(
+                viewModel = viewModel
+            )
+
+            ScoreBoard(
                 viewModel = viewModel
             )
         }
