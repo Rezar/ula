@@ -1,13 +1,13 @@
-package com.example.ula_app.android.ui.lockgame.flappybird.refactored.viewmodel
+package com.example.ula_app.android.ui.lockgame.flappybird.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.example.ula_app.android.ui.lockgame.flappybird.refactored.model.BirdState
-import com.example.ula_app.android.ui.lockgame.flappybird.refactored.model.GameStatus
-import com.example.ula_app.android.ui.lockgame.flappybird.refactored.model.PipeDirection
-import com.example.ula_app.android.ui.lockgame.flappybird.refactored.model.PipeState
-import com.example.ula_app.android.ui.lockgame.flappybird.refactored.model.RoadState
-import com.example.ula_app.android.ui.lockgame.flappybird.refactored.model.SafeZone
-import com.example.ula_app.android.ui.lockgame.flappybird.refactored.model.ViewState
+import com.example.ula_app.android.ui.lockgame.flappybird.model.BirdState
+import com.example.ula_app.android.ui.lockgame.flappybird.model.GameStatus
+import com.example.ula_app.android.ui.lockgame.flappybird.model.PipeDirection
+import com.example.ula_app.android.ui.lockgame.flappybird.model.PipeState
+import com.example.ula_app.android.ui.lockgame.flappybird.model.RoadState
+import com.example.ula_app.android.ui.lockgame.flappybird.model.SafeZone
+import com.example.ula_app.android.ui.lockgame.flappybird.model.ViewState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update

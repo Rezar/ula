@@ -1,4 +1,4 @@
-package com.example.ula_app.android.ui.lockgame.flappybird.refactored.ui
+package com.example.ula_app.android.ui.lockgame.flappybird.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -19,9 +19,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ula_app.android.R
-import com.example.ula_app.android.ui.lockgame.flappybird.refactored.model.PipeDirection
-import com.example.ula_app.android.ui.lockgame.flappybird.refactored.model.PipeState
-import com.example.ula_app.android.ui.lockgame.flappybird.refactored.viewmodel.FlappyBirdViewModel
+import com.example.ula_app.android.ui.lockgame.flappybird.model.PipeDirection
+import com.example.ula_app.android.ui.lockgame.flappybird.model.PipeState
+import com.example.ula_app.android.ui.lockgame.flappybird.viewmodel.FlappyBirdViewModel
 
 @Composable
 fun PipeGroup(

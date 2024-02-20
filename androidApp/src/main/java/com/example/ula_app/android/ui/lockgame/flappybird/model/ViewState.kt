@@ -1,58 +1,58 @@
 package com.example.ula_app.android.ui.lockgame.flappybird.model
 
-// Managed by view model, used to refresh ui.
 data class ViewState(
-    val gameStatus: GameStatus = GameStatus.Waiting,
-
+    val roadStateList: List<RoadState> = emptyList(),
+    val pipeStateList: List<PipeState> = emptyList(),
     val birdState: BirdState = BirdState(),
-
-    val pipeStateList: List<PipeState> = PipeStateList,
-    // Index that identify which pipe couple to reset or count score.
-    var targetPipeIndex: Int = -1,
-
-    val roadStateList: List<RoadState> = RoadStateList,
-    // Index that identify which road to reset.
-    var targetRoadIndex: Int = -1,
-
-    var playZoneSize: Pair<Int, Int> = Pair(0, 0),
-
+    val safeZone: SafeZone = SafeZone(),
+    val gameStatus: GameStatus = GameStatus.Ide,
+    val isTapping: Boolean = false,
     val score: Int = 0,
-    val bestScore: Int = 0,
+    val bestScore: Int = 0
 ) {
-    val isLifting get() = gameStatus == GameStatus.Running && birdState.isLifting
-    val isFalling get() = gameStatus == GameStatus.Running && !birdState.isLifting
-    val isQuickFalling get() = gameStatus == GameStatus.Dying
-    val isOver get() = gameStatus == GameStatus.Over
-    // val isPaused get() = gameStatus == GameStatus.Paused
-    // val isRunning get() = gameStatus == GameStatus.Running
-    fun reset(bestScore: Int): ViewState =
-        ViewState(bestScore = bestScore)
+    companion object {
+        val DefaultGameSetting: ViewState = ViewState(
+
+        )
+    }
 }
 
-// Enum that manage game status.
+data class SafeZone(
+    var width: Float = 0f,
+    var height: Float = 0f
+) {
+    fun initiated(): Boolean {
+        return width != 0f || height != 0f
+    }
+}
+
+// A data structure represents the top, bottom, left, and right bound the object.
+data class ObjectEdge(
+    var top: Float = 0f,
+    var bottom: Float = 0f,
+    var left: Float = 0f,
+    var right: Float = 0f
+)
+
+/**
+ * A enum class represents the status of the game.
+ *
+ * Ide: Status before user play the game
+ * Running: Status when user is playing the game.
+ * GameOver: Status when bird died in the game.
+ *
+ *                                        tap the screen            keep scoring
+ * user first time enter the game -> Ide ----------------> Running -------------->
+ *                                    ^                        |
+ *                                    |                        | bird died in the game.
+ *                                    |                        |
+ *                                    | press restart button   v      press exit button
+ *                                    -------------------- GameOver -------------------> Exit the game
+ * */
 enum class GameStatus {
-    Waiting, // wait to start
+    Ide,
     Running,
-    Dying, // hit pipe and dying
-    Over
-    // Paused
+    GameOver
 }
 
-// User or view action to trigger game.
-sealed class GameAction {
-    object Start : GameAction()
-    object AutoTick : GameAction()
-    object TouchLift : GameAction()
 
-    object ScreenSizeDetect : GameAction()
-    object PipeExit : GameAction()
-    object RoadExit : GameAction()
-
-    object HitPipe : GameAction()
-    object HitGround : GameAction()
-    object CrossedPipe : GameAction()
-
-    object Restart : GameAction()
-    // object Pause : GameAction()
-    // object Resume : GameAction()
-}

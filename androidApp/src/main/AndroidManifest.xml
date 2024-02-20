@@ -54,9 +54,6 @@
             android:name=".ui.lockgame.snakegame.presentation.activity.GameActivity">
         </activity>
         <activity
-            android:name=".ui.lockgame.flappybird.refactored.FlappyBirdActivity">
-        </activity>
-        <activity
             android:name=".ui.lockgame.flappybird.FlappyBirdActivity">
         </activity>
 

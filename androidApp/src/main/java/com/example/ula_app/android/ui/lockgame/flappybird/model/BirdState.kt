@@ -1,51 +1,49 @@
 package com.example.ula_app.android.ui.lockgame.flappybird.model
 
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
-
 data class BirdState(
-    var birdHeight: Dp = DefaultBirdHeightOffset,
-    var isLifting: Boolean = false,
-    var birdH: Dp = BirdSizeHeight,
-    var birdW: Dp = BirdSizeWidth
+    var xOffset: Float = 0f,
+    var yOffset: Float = 0f,
+    var width: Float = WIDTH,
+    var height: Float = HEIGHT,
+    var degree: Float = 0f
 ) {
-    fun lift(): BirdState =
-        copy(birdHeight = birdHeight - BirdLiftVelocity, isLifting = true)
+    companion object {
+        // Width of the bird.
+        const val WIDTH: Float = 40f
+        // Height of the bird.
+        const val HEIGHT: Float = 28f
+        // Lifting distance per tap.
+        const val LIFT_Y_SPAN: Float = 100f
+        // Falling distance per tick.
+        const val FALL_Y_SPAN: Float = 9f
+    }
 
-    fun fall(): BirdState =
-        copy(birdHeight = birdHeight + BirdFallVelocity, isLifting = false)
+    fun lift(safeZone: SafeZone): BirdState = copy(
+        // yOffset - LIFT_Y_SPAN >= (bird.height - safeZone.bottom) / 2
+        yOffset = Math.max((height - safeZone.height) / 2f, yOffset - LIFT_Y_SPAN),
+        degree = -10f
+    )
 
-    fun over(groundOffset: Dp): BirdState =
-        copy(birdHeight = groundOffset)
+    fun fall(safeZone: SafeZone): BirdState = copy(
+        // yOffset + FALL_Y_SPAN <= (safeZone.height - bird.height) / 2
+        yOffset = Math.min((safeZone.height - height) / 2f, yOffset + FALL_Y_SPAN),
+        // bird.degree + 1f <= 35f
+        degree = Math.min(35f, degree + 1f)
+    )
 
-    fun quickFall(): BirdState =
-        copy(birdHeight = birdHeight + BirdQuickFallVelocity)
+    // TODO: Need a better way to calculate the edges of the bird. Including calculate new edges when the bird rotates
+    fun birdEdge(safeZone: SafeZone): ObjectEdge {
+        val birdTopBound = safeZone.height * 0.5f + yOffset - height * 0.5f
+        val birdBottomBound = safeZone.height * 0.5f + yOffset + height * 0.5f
+        val birdLeftBound = safeZone.width * 0.5f - width * 0.5f
+        val birdRightBound = safeZone.width * 0.5f + width * 0.5f
 
-    fun correct(): BirdState =
-        copy(birdH = BirdSizeHeight, birdW = BirdSizeWidth)
+        return ObjectEdge(
+            top = birdTopBound,
+            bottom = birdBottomBound,
+            left = birdLeftBound,
+            right = birdRightBound
+        )
+    }
 }
 
-val DefaultBirdHeightOffset = 0.dp
-
-val HighBirdHeightOffset = (-272).dp
-
-val LowBirdHeightOffset = 272.dp
-
-// val BirdSizeWidth = 72.dp // 48.dp // Control bird's size
-// val BirdSizeHeight = 50.dp // 48.dp // Control bird's size
-
-// Bird height calculated from pipe distance.
-const val BirdPipeDistanceFraction = 0.30f
-var BirdSizeHeight = PipeDistance * BirdPipeDistanceFraction
-var BirdSizeWidth = BirdSizeHeight * 1.44f
-
-// Need consider bird's height when calculating hit ground or not.
-// val BirdHitGroundThreshold = 0.dp
-val BirdHitGroundThreshold = BirdSizeHeight / 2 // BirdSizeHeight / 3
-
-const val BirdFallToGroundTimes = 20
-var BirdFallVelocity = 8.dp
-var BirdQuickFallVelocity = BirdFallVelocity * 4
-
-val BirdLiftVelocity = BirdFallVelocity * 8
-val BirdQuickLiftVelocity = BirdLiftVelocity * 1.5f

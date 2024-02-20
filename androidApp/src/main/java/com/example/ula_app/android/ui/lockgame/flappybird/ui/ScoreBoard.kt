@@ -1,4 +1,4 @@
-package com.example.ula_app.android.ui.lockgame.flappybird.refactored.ui
+package com.example.ula_app.android.ui.lockgame.flappybird.ui
 
 import android.app.Activity
 import androidx.compose.foundation.Image
@@ -34,8 +34,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ula_app.android.R
-import com.example.ula_app.android.ui.lockgame.flappybird.refactored.model.GameStatus
-import com.example.ula_app.android.ui.lockgame.flappybird.refactored.viewmodel.FlappyBirdViewModel
+import com.example.ula_app.android.ui.lockgame.flappybird.model.GameStatus
+import com.example.ula_app.android.ui.lockgame.flappybird.viewmodel.FlappyBirdViewModel
 
 @Composable
 fun ScoreBoard(

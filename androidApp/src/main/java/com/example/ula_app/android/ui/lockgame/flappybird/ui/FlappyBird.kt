@@ -1,4 +1,4 @@
-package com.example.ula_app.android.ui.lockgame.flappybird.refactored.ui
+package com.example.ula_app.android.ui.lockgame.flappybird.ui
 
 import android.view.MotionEvent.ACTION_DOWN
 import androidx.compose.foundation.layout.Box
@@ -13,7 +13,7 @@ import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
-import com.example.ula_app.android.ui.lockgame.flappybird.refactored.viewmodel.FlappyBirdViewModel
+import com.example.ula_app.android.ui.lockgame.flappybird.viewmodel.FlappyBirdViewModel
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
