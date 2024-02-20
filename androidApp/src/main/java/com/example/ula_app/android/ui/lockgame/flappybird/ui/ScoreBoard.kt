@@ -67,7 +67,7 @@ fun RealTimeScoreBoard(
             modifier = Modifier
                 .align(Alignment.Center)
                 .offset(y = Dp(-250f)),
-            color = Color.White,
+            color = Color.Black,
             fontSize = 60.sp,
             style = MaterialTheme.typography.body1
         )
