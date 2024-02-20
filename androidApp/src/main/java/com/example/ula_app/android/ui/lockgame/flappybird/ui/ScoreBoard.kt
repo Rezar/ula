@@ -171,7 +171,7 @@ fun LabelScoreField(
         Text(
             text = score.toString(),
             modifier = Modifier.align(Alignment.CenterHorizontally),
-            color = Color.White,
+            color = Color.Black,
             fontSize = 40.sp,
             style = MaterialTheme.typography.body1
         )

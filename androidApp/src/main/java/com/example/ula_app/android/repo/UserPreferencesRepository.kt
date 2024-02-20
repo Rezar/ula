@@ -162,6 +162,7 @@ class UserPreferencesRepository() {
         }
     }
 
+    // This will only be called by ULAApplication registerMidnightTimer function
     suspend fun saveStepPerDayToStepHistoryAndReset() {
         Log.i(TAG, "Saving started")
         val preferences: Preferences = dataStore.data.first().toPreferences()
@@ -177,7 +178,9 @@ class UserPreferencesRepository() {
 
         updatedStepsHistory.add(StepsWithDate(DateTimeUtil.nowInInstant().epochSeconds, stepsPerDay.stepCount))
         updateStepsHistory(updatedStepsHistory)
-        // not sure reset stepsPerDay is needed.
+        // reset stepsPerDay when it's 23:55. This will be called on ULAApplication registerMidnightTimer function
+        // to reset the stepsPerDay. For details, please refer to the hand drawing diagram.
+        updateStepsPerDay(StepsPerDay(stepsPerDay.preStepCount, 0))
     }
 
     /*

@@ -12,6 +12,7 @@ class OnBootReceiver: BroadcastReceiver() {
             if (
                 PermissionManager.hasPermission(context, Manifest.permission.ACTIVITY_RECOGNITION)
             ) {
+                // start the stepCounterService, and this is the
                 val launchIntent = Intent(applicationContext, StepCounterService::class.java)
                 startService(launchIntent)
             }

@@ -33,27 +33,30 @@ data class PipeState(
         return xOffset <= threshold
     }
 
-    fun move(): PipeState = copy(xOffset = xOffset - X_SPAN)
+    fun move(): PipeState = copy(xOffset = xOffset - X_SPAN) // X_SPAN is the unit distance moved within a unit time range
 
+    // reset the pipe when it moves out of the screen from right to left
     fun reset(targetOffset: Float): PipeState = copy(
         direction = randomPipeDirection(),
         pillarHeight = randomPillarHeight(),
         xOffset = targetOffset,
-        counted = false
+        counted = false // this is to indicate whether this pipe has been scored no matter it is scored 1 or no score.
     )
 
+    // this is the function that actually get score after the bird fly over the pipe
     fun count() = copy(
         counted = true
     )
 
+    // Defines the position of the pipe. Details see the hand drawing.
     fun pipeEdge(safeZone: SafeZone): ObjectEdge {
         // calculate top, bottom, left, right bound of this pipe.
         when (direction) {
             PipeDirection.Up -> {
                 val pipeTopBound = safeZone.height - pillarHeight - TOP_HEIGHT
                 val pipeBottomBound = safeZone.height
-                val pipeLeftBound = (safeZone.width - PILLAR_WIDTH) * 0.5f + xOffset
-                val pipeRightBound = (safeZone.width + PILLAR_WIDTH) * 0.5f + xOffset
+                val pipeLeftBound = (safeZone.width - TOP_WIDTH) * 0.5f + xOffset
+                val pipeRightBound = (safeZone.width + TOP_WIDTH) * 0.5f + xOffset
 
                 return ObjectEdge(
                     top = pipeTopBound,
@@ -65,8 +68,8 @@ data class PipeState(
             PipeDirection.Down -> {
                 val pipeTopBound = 0f
                 val pipeBottomBound = pillarHeight + TOP_HEIGHT
-                val pipeLeftBound = (safeZone.width - PILLAR_WIDTH) * 0.5f + xOffset
-                val pipeRightBound = (safeZone.width + PILLAR_WIDTH) * 0.5f + xOffset
+                val pipeLeftBound = (safeZone.width - TOP_WIDTH) * 0.5f + xOffset
+                val pipeRightBound = (safeZone.width + TOP_WIDTH) * 0.5f + xOffset
 
                 return ObjectEdge(
                     top = pipeTopBound,

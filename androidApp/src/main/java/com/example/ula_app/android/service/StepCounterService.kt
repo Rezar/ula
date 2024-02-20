@@ -24,16 +24,19 @@ import kotlinx.datetime.LocalDateTime
 
 private const val TAG = "StepCounterService"
 
+//
 class StepCounterService: Service(), SensorEventListener {
 
     private var userPreferencesRepository = ULAApplication.getInstance<UserPreferencesRepository>()
+    // must to include this variable whenever you want to use the android sensor
     private lateinit var sensorManager: SensorManager
+    //
     private var stepsPerDay: StepsPerDay = StepsPerDay()
 
 
     private val serviceScope = CoroutineScope(Dispatchers.IO) // Create a CoroutineScope with IO dispatcher
 
-
+    // this is the function when you want to bind the service to the activity
     override fun onBind(intent: Intent?): IBinder? {
         return null
     }
@@ -45,19 +48,22 @@ class StepCounterService: Service(), SensorEventListener {
             Sensor.TYPE_STEP_COUNTER -> {
                 Log.i(TAG, "Step sensor changed")
 
+                // get the step counter for today, and update the step constantly within a day
+
                 serviceScope.launch {
                     withContext(Dispatchers.IO) {
-                        stepsPerDay = userPreferencesRepository.fetchStepsPerDay()
+                        stepsPerDay = userPreferencesRepository.fetchStepsPerDay() // get steps for today
                     }
                 }
 
-                val sensorStepCount = event.values[0].toInt()
+                // calculate
+                val sensorStepCount = event.values[0].toInt() // this is the steps count from t = 0 to n
                 stepsPerDay.stepCount += sensorStepCount - stepsPerDay.preStepCount
                 stepsPerDay.preStepCount = sensorStepCount
 
                 serviceScope.launch {
                     withContext(Dispatchers.IO) {
-                        userPreferencesRepository.updateStepsPerDay(stepsPerDay)
+                        userPreferencesRepository.updateStepsPerDay(stepsPerDay)  // update steps of today
                     }
                 }
 
@@ -94,6 +100,7 @@ class StepCounterService: Service(), SensorEventListener {
         }
     }
 
+    // Should override this function if you implement SensorEventListener
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
         Log.i(TAG, sensor?.name + " accuracy changed: " + accuracy)
     }
@@ -102,20 +109,23 @@ class StepCounterService: Service(), SensorEventListener {
         super.onCreate()
         Log.i(TAG, "Sensor Service is created.")
 
-        sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        val sensor: Sensor? = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
-        sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL)
+        sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager //instantiate a SensorManager object
+        val sensor: Sensor? = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER) // find the stepCounter sensor in the sensor list
+        sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL) // monitor the sensor constantly in a slower rate
     }
 
+    // this is the job that you want to do when the instance of this service is destroyed
     override fun onDestroy() {
         super.onDestroy()
-        sensorManager.unregisterListener(this)
+        sensorManager.unregisterListener(this)  // do not monitor the sensor if the service is destroyed
     }
 
+    // this is the job that you want to do when the service is unbinded or stopped
     override fun onTaskRemoved(rootIntent: Intent?) {
         super.onTaskRemoved(rootIntent)
     }
 
+    // when the stepCounterService is started, the tasks in this functions will started
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.i(TAG, "Step Detector Service is Started")
         return START_STICKY
