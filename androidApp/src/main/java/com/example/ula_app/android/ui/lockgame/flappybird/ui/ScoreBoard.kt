@@ -44,7 +44,7 @@ fun ScoreBoard(
     val uiState by viewModel.viewState.collectAsState()
 
     when (uiState.gameStatus) {
-        GameStatus.Ide, GameStatus.Running -> {
+        GameStatus.Idle, GameStatus.Running -> {
             RealTimeScoreBoard(viewModel = viewModel)
         }
         GameStatus.GameOver -> {

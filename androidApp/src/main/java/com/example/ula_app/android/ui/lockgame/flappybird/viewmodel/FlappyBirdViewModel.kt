@@ -22,7 +22,7 @@ class FlappyBirdViewModel: ViewModel() {
             return
         }
 
-        if (isIde()) {
+        if (isIdle()) {
             startGame()
         }
 
@@ -61,10 +61,10 @@ class FlappyBirdViewModel: ViewModel() {
                 ),
                 pipeStateList = listOf(
                     PipeState(
-                        xOffset = currentState.safeZone.width * 0.5f + PipeState.TOP_WIDTH + 2f
+                        xOffset = currentState.safeZone.width * 0.5f + PipeState.TOP_WIDTH * 0.5f + 2f
                     ),
                     PipeState(
-                        xOffset = currentState.safeZone.width + PipeState.TOP_WIDTH + 2f
+                        xOffset = currentState.safeZone.width + PipeState.TOP_WIDTH + 4f
                     )
                 ),
                 birdState = BirdState(),
@@ -72,16 +72,21 @@ class FlappyBirdViewModel: ViewModel() {
                     width = currentState.safeZone.width,
                     height = currentState.safeZone.height
                 ),
-                gameStatus = GameStatus.Ide,
+                gameStatus = GameStatus.Idle,
                 isTapping = false,
                 score = 0
             )
         }
     }
 
+    // for the position of the pipe, road, and bird in different game status
+    // will always execute this function whenever you open the game
+    // when the game is waiting, move the road.
+    // When the game is running, move the road, pipe and bird.
+    // When the game is over, do nothing (stop on where you were. )
     fun autoTick() {
         when (viewState.value.gameStatus) {
-            GameStatus.Ide -> {
+            GameStatus.Idle -> {
                 // Update road
                 val newRoadStateList = listOf<RoadState>(
                     viewState.value.roadStateList[0].move(),
@@ -181,15 +186,15 @@ class FlappyBirdViewModel: ViewModel() {
                 ),
                 pipeStateList = listOf(
                     PipeState(
-                        xOffset = width * 0.5f + PipeState.TOP_WIDTH + 2f,
+                        xOffset = width * 0.5f + PipeState.TOP_WIDTH * 0.5f + 2f,
                         threshold = -width * 0.5f - PipeState.TOP_WIDTH * 0.5f - 2f
                     ),
                     PipeState(
-                        xOffset = width + PipeState.TOP_WIDTH + 2f,
+                        xOffset = width + PipeState.TOP_WIDTH + 4f,
                         threshold = -width * 0.5f - PipeState.TOP_WIDTH * 0.5f - 2f
                     )
                 ),
-                birdState = BirdState(),
+                birdState = BirdState(), // defined in the birdState fields already.
                 safeZone = SafeZone(
                     width = width,
                     height = height
@@ -214,7 +219,7 @@ class FlappyBirdViewModel: ViewModel() {
     fun resetPipe() {
         val newPipeStateList = listOf<PipeState>(
             viewState.value.pipeStateList[1],
-            viewState.value.pipeStateList[0].reset(viewState.value.safeZone.width * 0.5f + 34f)
+            viewState.value.pipeStateList[0].reset(viewState.value.safeZone.width * 0.5f + PipeState.TOP_WIDTH * 0.5f + 2f)
         )
 
         _viewState.update { currentState ->
@@ -358,8 +363,8 @@ class FlappyBirdViewModel: ViewModel() {
         }
     }
 
-    fun isIde(): Boolean {
-        return viewState.value.gameStatus == GameStatus.Ide
+    fun isIdle(): Boolean {
+        return viewState.value.gameStatus == GameStatus.Idle
     }
 
     fun isRunning(): Boolean {

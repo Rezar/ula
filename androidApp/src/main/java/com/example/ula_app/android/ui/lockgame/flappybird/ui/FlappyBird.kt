@@ -28,7 +28,7 @@ fun FlappyBird(
             .run {
                 pointerInteropFilter {
                     when (it.action) {
-                        ACTION_DOWN -> {
+                        ACTION_DOWN -> { // will execute when you tap the screen
                             viewModel.handleTap()
                             return@pointerInteropFilter false
                         }
@@ -46,13 +46,15 @@ fun FlappyBird(
                 .fillMaxWidth()
                 .align(Alignment.CenterHorizontally)
                 .weight(0.90f)
-                .onGloballyPositioned {
+                .onGloballyPositioned {//get the height and width of the box in pixel
                     val width = with(density) {
-                        it.size.width.toDp()
+                        it.size.width.toDp()  // but jetpack compose needs a Dp instead of pixel
                     }
                     val height = with(density) {
                         it.size.height.toDp()
                     }
+
+                    // initiate the width and height when you start the game
                     viewModel.initiateGameConfig(width.value, height.value)
                 }
         ) {

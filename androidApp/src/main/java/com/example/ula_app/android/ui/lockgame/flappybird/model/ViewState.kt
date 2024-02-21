@@ -1,12 +1,12 @@
 package com.example.ula_app.android.ui.lockgame.flappybird.model
 
 data class ViewState(
-    val roadStateList: List<RoadState> = emptyList(),
-    val pipeStateList: List<PipeState> = emptyList(),
-    val birdState: BirdState = BirdState(),
-    val safeZone: SafeZone = SafeZone(),
-    val gameStatus: GameStatus = GameStatus.Ide,
-    val isTapping: Boolean = false,
+    val roadStateList: List<RoadState> = emptyList(),  // list of two roads
+    val pipeStateList: List<PipeState> = emptyList(),  // list of two pipes
+    val birdState: BirdState = BirdState(), // a bird
+    val safeZone: SafeZone = SafeZone(),  // the area defined for the farBackground
+    val gameStatus: GameStatus = GameStatus.Idle, // game status: idle(waiting), running(playing), game over
+    val isTapping: Boolean = false, // whether the user is tapping the screen
     val score: Int = 0,
     val bestScore: Int = 0
 ) {
@@ -26,7 +26,7 @@ data class SafeZone(
     }
 }
 
-// A data structure represents the top, bottom, left, and right bound the object.
+// A data structure represents the top, bottom, left, and right bound the objects.
 data class ObjectEdge(
     var top: Float = 0f,
     var bottom: Float = 0f,
@@ -37,12 +37,12 @@ data class ObjectEdge(
 /**
  * A enum class represents the status of the game.
  *
- * Ide: Status before user play the game
+ * Idle: Status before user play the game
  * Running: Status when user is playing the game.
  * GameOver: Status when bird died in the game.
  *
  *                                        tap the screen            keep scoring
- * user first time enter the game -> Ide ----------------> Running -------------->
+ * user first time enter the game -> Idle ----------------> Running -------------->
  *                                    ^                        |
  *                                    |                        | bird died in the game.
  *                                    |                        |
@@ -50,7 +50,7 @@ data class ObjectEdge(
  *                                    -------------------- GameOver -------------------> Exit the game
  * */
 enum class GameStatus {
-    Ide,
+    Idle,
     Running,
     GameOver
 }

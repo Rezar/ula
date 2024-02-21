@@ -20,6 +20,8 @@ data class BirdState(
 
     fun lift(safeZone: SafeZone): BirdState = copy(
         // yOffset - LIFT_Y_SPAN >= (bird.height - safeZone.bottom) / 2
+        //the last parameter is to lift the bird with unit distance LIFT_Y_SPAN
+        // if the lift get out of the screen size, set the offset as the top of the screen height.
         yOffset = Math.max((height - safeZone.height) / 2f, yOffset - LIFT_Y_SPAN),
         degree = -10f
     )
@@ -33,8 +35,8 @@ data class BirdState(
 
     // TODO: Need a better way to calculate the edges of the bird. Including calculate new edges when the bird rotates
     fun birdEdge(safeZone: SafeZone): ObjectEdge {
-        val birdTopBound = safeZone.height * 0.5f + yOffset - height * 0.5f
-        val birdBottomBound = safeZone.height * 0.5f + yOffset + height * 0.5f
+        val birdTopBound = safeZone.height * 0.5f + yOffset - height
+        val birdBottomBound = safeZone.height * 0.5f + yOffset
         val birdLeftBound = safeZone.width * 0.5f - width * 0.5f
         val birdRightBound = safeZone.width * 0.5f + width * 0.5f
 
