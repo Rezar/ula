@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.ula_app.android.ui.lockgame.flappybird.ui.FlappyBird
 import com.example.ula_app.android.ui.lockgame.flappybird.viewmodel.FlappyBirdViewModel
 import com.example.ula_app.android.ui.theme.AppTheme
 import kotlinx.coroutines.delay
