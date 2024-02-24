@@ -1,16 +1,14 @@
 package com.example.ula_app.android.ui.lockgame.dinogame.refactor.model
 
-import androidx.compose.runtime.Composable
-
 
 data class ViewState(
     val roadStateList: List<RoadState> = emptyList(), // List of two roads
     val cactusStateList: List<CactusState> = emptyList(), // List of two or three cactus
-
+    val dinoState: DinoState = DinoState(),
     val safeZone: SafeZone = SafeZone(),
     val gameStatus: GameStatus = GameStatus.Idle,
     val score: Int = 0,
-    val bestScore: Int = 0
+    val bestScore: Int = 0,
 ) {
 
 }

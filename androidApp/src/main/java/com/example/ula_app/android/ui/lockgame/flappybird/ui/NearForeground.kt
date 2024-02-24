@@ -18,9 +18,9 @@ import com.example.ula_app.android.R
 import com.example.ula_app.android.ui.lockgame.flappybird.viewmodel.FlappyBirdViewModel
 
 @Composable
-fun NearForeground() {
-
-    val viewModel: FlappyBirdViewModel = viewModel()
+fun NearForeground(
+    viewModel: FlappyBirdViewModel = viewModel()
+) {
 
     val uiState by viewModel.viewState.collectAsState()
 

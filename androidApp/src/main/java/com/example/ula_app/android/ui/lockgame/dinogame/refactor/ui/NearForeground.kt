@@ -18,9 +18,9 @@ import com.example.ula_app.android.R
 import com.example.ula_app.android.ui.lockgame.dinogame.refactor.DinoGameViewModel
 
 @Composable
-fun NearForeground() {
-
-    val viewModel: DinoGameViewModel = viewModel()
+fun NearForeground(
+    viewModel: DinoGameViewModel = viewModel()
+) {
 
     val uiState by viewModel.viewState.collectAsState()
 
@@ -47,8 +47,7 @@ fun NearForeground() {
                 if(uiState.safeZone.initiated()) {
                     uiState.roadStateList.forEachIndexed {index, roadState ->
                         if (roadState.isPassTheThreshold()) {
-//                            TODO: reset the road after building the viewModel
-//                            viewModel.resetRoad()
+                            viewModel.resetRoad()
                         }
                     }
                 }

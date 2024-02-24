@@ -42,6 +42,14 @@ fun Cactus(
         }
     }
 
+    if(uiState.safeZone.initiated()) {
+        uiState.cactusStateList.forEach { cactusState ->
+            if(cactusState.isPassTheThreshold()) {
+                viewModel.resetCactus()
+            }
+        }
+    }
+
 }
 
 
@@ -72,5 +80,3 @@ fun CactusDisplay(
     }
 
 }
-
-//@Preview()

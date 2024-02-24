@@ -83,7 +83,7 @@ fun FlappyBird(
                 .fillMaxWidth()
                 .weight(0.10f)
         ) {
-            NearForeground()
+            NearForeground(viewModel = viewModel)
         }
     }
 }

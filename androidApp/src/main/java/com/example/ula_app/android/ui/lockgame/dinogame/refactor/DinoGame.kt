@@ -18,6 +18,7 @@ import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import com.example.ula_app.android.ui.lockgame.dinogame.refactor.ui.Cactus
+import com.example.ula_app.android.ui.lockgame.dinogame.refactor.ui.Dino
 import com.example.ula_app.android.ui.lockgame.dinogame.refactor.ui.FarBackground
 import com.example.ula_app.android.ui.lockgame.dinogame.refactor.ui.NearForeground
 
@@ -42,7 +43,7 @@ fun DinoGame(
                     pointerInteropFilter {
                         when (it.action) {
                             MotionEvent.ACTION_DOWN -> { // will execute when you tap the screen
-//                            viewModel.handleTap()
+                            viewModel.handleTap()
                                 return@pointerInteropFilter false
                             }
 
@@ -67,12 +68,14 @@ fun DinoGame(
                         }
 
                         // initiate the width and height when you start the game
-//                    viewModel.initiateGameConfig(width.value, height.value)
+                    viewModel.initiateGameConfig(width.value, height.value)
                     }
             ) {
                 FarBackground()
 
-                Cactus()
+                Cactus(viewModel = viewModel)
+
+                Dino(viewModel = viewModel)
 
 
             }
@@ -82,7 +85,7 @@ fun DinoGame(
                     .fillMaxWidth()
                     .weight(0.10f)
             ) {
-                NearForeground()
+                NearForeground(viewModel = viewModel)
             }
         }
     }
