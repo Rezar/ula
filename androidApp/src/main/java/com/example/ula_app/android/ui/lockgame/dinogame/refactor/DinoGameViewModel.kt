@@ -46,17 +46,42 @@ class DinoGameViewModel: ViewModel() {
     // when the game is over, do nothing
     fun autoTick() {
 
-        if(isGameOver()) {
-            gameOver()
-            return
-        }
+        when(viewState.value.gameStatus) {
+            GameStatus.Idle -> {
 
+            }
+            GameStatus.Running -> {
+                if(isGameOver()) {
+                    gameOver()
+                    return
+                }
 
+                increaseScore()
 
+                // Update road, cactus, and dino status
+                val newRoadStateList = listOf(
+                    viewState.value.roadStateList[0].move(),
+                    viewState.value.roadStateList[1].move()
+                )
 
+                val newCactusStateList = listOf(
+                    viewState.value.cactusStateList[0].move(),
+                    viewState.value.cactusStateList[1].move()
+                )
 
-        if(viewState.value.dinoState.isJump) {
-            viewState.value.dinoState.handleJump()
+                val newDinoState = viewState.value.dinoState.handleJump()
+
+                _viewState.update { currentState ->
+                    currentState.copy(
+                        roadStateList = newRoadStateList,
+                        cactusStateList = newCactusStateList,
+                        dinoState = newDinoState
+                    )
+                }
+            }
+            GameStatus.GameOver -> {
+
+            }
         }
     }
 
@@ -178,24 +203,54 @@ class DinoGameViewModel: ViewModel() {
 
 
 
-
-
-
-
     fun increaseScore() {
+        val dinoEdge = viewState.value.dinoState.dinoEdge(viewState.value.safeZone)
 
+        val newCactusState = viewState.value.cactusStateList.map { cactusState ->
+            val cactusEdge = cactusState.cactusEdge(viewState.value.safeZone)
+            if(!cactusState.counted && cactusEdge.right < dinoEdge.left) {
+                _viewState.update { currentState ->
+                    currentState.copy(
+                        score = currentState.score + 1,
+                        bestScore = (currentState.score + 1).coerceAtLeast(currentState.bestScore)
+                    )
+                }
+                cactusState.count()
+            } else {
+                cactusState
+            }
+        }
+
+        _viewState.update { currentState ->
+            currentState.copy(
+                cactusStateList = newCactusState
+            )
+        }
     }
-
-
-
-
-
 
 
 
     fun isDinoHittingTheCactus(): Boolean {
 
-        return true
+        val dinoEdge = viewState.value.dinoState.dinoEdge(viewState.value.safeZone)
+
+        val cactusState = viewState.value.cactusStateList
+
+        cactusState.forEach { cactusState ->
+            val cactusEdge = cactusState.cactusEdge(viewState.value.safeZone)
+
+            // if the dino is on the left or right of the cactus, it does not hit the cactus
+            // or if the dino is not passing or passed the cactus, it does not hit the cactus
+            if(dinoEdge.right < cactusEdge.left || dinoEdge.left > cactusEdge.right) {
+                return false
+            }
+
+            if((dinoEdge.right >= cactusEdge.left && dinoEdge.left <= cactusEdge.right) && dinoEdge.bottom >= cactusEdge.top) {
+                return true
+            }
+        }
+
+        return false
     }
 
 

@@ -15,6 +15,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import com.example.ula_app.android.ui.lockgame.dinogame.refactor.DinoGameViewModel
 import com.example.ula_app.android.R
+import com.example.ula_app.android.ui.lockgame.dinogame.refactor.model.DinoState
 
 @Composable
 fun Dino(
@@ -32,7 +33,7 @@ fun Dino(
             modifier = Modifier
                 .size(Dp(uiState.dinoState.width), Dp(uiState.dinoState.height))
                 .align(Alignment.BottomStart)
-                .offset(y = Dp(uiState.dinoState.yOffset))
+                .offset(x = Dp(DinoState.leftMargin), y = Dp(uiState.dinoState.yOffset))
         )
     }
 

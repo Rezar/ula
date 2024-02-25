@@ -23,12 +23,19 @@ data class DinoState(
         // lifting distance per tap
         const val LIFT_Y_SPAN: Float = 18f
 
+        const val leftMargin: Float =  11f
+
         // a list of jump/fall distance per time unit
         val jumpList: List<Float> = listOf(9f, 9f, -9f, -9f)
     }
 
     // param: the height per jump
     fun handleJump(): DinoState {
+
+        // if the user does not tap, dino does nothing (running on the ground
+        if(!isJump) {
+            return copy()
+        }
 
         if(jumpIndex == jumpList.size - 1) {
             return copy(
@@ -47,5 +54,19 @@ data class DinoState(
     fun startJump(): DinoState = copy(
         isJump = true
     )
+
+    fun dinoEdge(safeZone: SafeZone): ObjectEdge {
+        val dinoTopBound = safeZone.height * 0.5f + yOffset - height * 0.5f
+        val dinoBottomBound = safeZone.height * 0.5f + yOffset + height * 0.5f
+        val dinoLeftBound = 11f
+        val dinoRightBound = 11f + width
+
+        return ObjectEdge(
+            top = dinoTopBound,
+            bottom = dinoBottomBound,
+            left = dinoLeftBound,
+            right = dinoRightBound
+        )
+    }
 
 }

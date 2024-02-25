@@ -71,7 +71,7 @@ fun DinoGame(
                     viewModel.initiateGameConfig(width.value, height.value)
                     }
             ) {
-                FarBackground()
+                FarBackground(viewModel = viewModel)
 
                 Cactus(viewModel = viewModel)
 

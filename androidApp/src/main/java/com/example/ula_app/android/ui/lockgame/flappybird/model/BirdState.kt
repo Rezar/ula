@@ -35,8 +35,8 @@ data class BirdState(
 
     // TODO: Need a better way to calculate the edges of the bird. Including calculate new edges when the bird rotates
     fun birdEdge(safeZone: SafeZone): ObjectEdge {
-        val birdTopBound = safeZone.height * 0.5f + yOffset - height
-        val birdBottomBound = safeZone.height * 0.5f + yOffset
+        val birdTopBound = safeZone.height * 0.5f + yOffset - height * 0.5f
+        val birdBottomBound = safeZone.height * 0.5f + yOffset + height * 0.5f
         val birdLeftBound = safeZone.width * 0.5f - width * 0.5f
         val birdRightBound = safeZone.width * 0.5f + width * 0.5f
 
