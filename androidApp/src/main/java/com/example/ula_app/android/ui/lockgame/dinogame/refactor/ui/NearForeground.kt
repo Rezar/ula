@@ -44,11 +44,13 @@ fun NearForeground(
 
                 )
 
-                if(uiState.safeZone.initiated()) {
-                    uiState.roadStateList.forEachIndexed {index, roadState ->
-                        if (roadState.isPassTheThreshold()) {
-                            viewModel.resetRoad()
-                        }
+
+            }
+
+            if(uiState.safeZone.initiated()) {
+                uiState.roadStateList.forEachIndexed {index, roadState ->
+                    if (roadState.isPassTheThreshold()) {
+                        viewModel.resetRoad()
                     }
                 }
             }
