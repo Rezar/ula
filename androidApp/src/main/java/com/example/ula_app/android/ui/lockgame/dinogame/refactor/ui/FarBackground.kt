@@ -72,12 +72,14 @@ fun GameOver(
         modifier = Modifier.fillMaxSize()
     ){
         Column(
-            modifier = Modifier.align(Alignment.Center)
+            modifier = Modifier
+                .align(Alignment.Center),
+            horizontalAlignment = Alignment.CenterHorizontally
         ){
             Text(
                 text = "Game Over",
                 color = Color.Black,
-                fontSize = 60.sp,
+                fontSize = 40.sp,
                 style = MaterialTheme.typography.body1
             )
 
@@ -112,7 +114,7 @@ fun Buttons(
         Spacer(
             modifier = Modifier
                 .wrapContentWidth()
-                .height(20.dp)
+                .width(25.dp)
         )
 
         Image(

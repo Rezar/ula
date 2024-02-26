@@ -16,17 +16,15 @@ data class DinoState(
 ) {
 
     companion object {
-        // width of the bird
-        const val WIDTH: Float = 11f
-        // height of the bird
-        const val  HEIGHT: Float = 12f
-        // lifting distance per tap
-        const val LIFT_Y_SPAN: Float = 18f
+        // width of the Dino
+        const val WIDTH: Float = 42f
+        // height of the Dino
+        const val HEIGHT: Float = 45f
 
-        const val leftMargin: Float =  11f
+        const val leftMargin: Float =  15f
 
         // a list of jump/fall distance per time unit
-        val jumpList: List<Float> = listOf(9f, 9f, -9f, -9f)
+        val jumpList: List<Float> = listOf(12f, 12f, 12f, 12f, 12f, 12f, 12f, 12f, 12f, -12f, -12f, -12f, -12f, -12f, -12f, -12f, -12f, -12f)
     }
 
     // param: the height per jump
@@ -56,10 +54,10 @@ data class DinoState(
     )
 
     fun dinoEdge(safeZone: SafeZone): ObjectEdge {
-        val dinoTopBound = safeZone.height * 0.5f + yOffset - height * 0.5f
-        val dinoBottomBound = safeZone.height * 0.5f + yOffset + height * 0.5f
-        val dinoLeftBound = 11f
-        val dinoRightBound = 11f + width
+        val dinoTopBound = safeZone.height - height + yOffset
+        val dinoBottomBound = safeZone.height + yOffset
+        val dinoLeftBound = leftMargin
+        val dinoRightBound = leftMargin + width
 
         return ObjectEdge(
             top = dinoTopBound,

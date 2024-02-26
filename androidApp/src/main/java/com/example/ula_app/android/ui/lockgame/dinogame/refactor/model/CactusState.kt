@@ -28,10 +28,12 @@ data class CactusState(
             }
         }
 
+        const val X_SPAN: Float = 10f
+
 
     }
 
-    private val X_SPAN: Float = 5f
+
 
     fun isPassTheThreshold(): Boolean {
         return xOffset <= threshold
@@ -67,11 +69,11 @@ data class CactusState(
 }
 
 enum class CactusId {
-    SMALL(R.drawable.cactus_small, 6f, 10f),
-    TWOSMALL(R.drawable.cactus_twosmall, 12f, 10f),
-    THREESMALL(R.drawable.cactus_threesmall, 18f, 10f),
-    NORMAL(R.drawable.cactus_normal, 8f, 12f),
-    LARGE(R.drawable.cactus_large, 10f, 14f);
+    SMALL(R.drawable.cactus_small, 22f, 40f),
+    TWOSMALL(R.drawable.cactus_twosmall, 42f, 40f),
+    THREESMALL(R.drawable.cactus_threesmall, 57f, 40f),
+    NORMAL(R.drawable.cactus_normal, 32f, 45f),
+    LARGE(R.drawable.cactus_large, 50f, 45f);
 
     var id: Int = 0
     var width: Float = 0f

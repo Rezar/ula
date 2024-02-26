@@ -7,8 +7,10 @@ import android.content.pm.ActivityInfo
 import android.os.Build
 import android.view.MotionEvent
 import androidx.activity.ComponentActivity
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -33,12 +35,13 @@ fun DinoGame(
     val density = LocalDensity.current
 
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(0.4f)
+                .fillMaxHeight(0.4f)
                 .run {
                     pointerInteropFilter {
                         when (it.action) {

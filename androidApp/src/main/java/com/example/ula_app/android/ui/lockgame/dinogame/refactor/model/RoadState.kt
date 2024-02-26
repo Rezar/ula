@@ -9,7 +9,7 @@ data class RoadState(
 ) {
 
     companion object {
-        const val X_SPAN: Float = 5f
+        const val X_SPAN: Float = 10f
     }
 
     fun isPassTheThreshold(): Boolean {

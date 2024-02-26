@@ -1,5 +1,6 @@
 package com.example.ula_app.android.ui.lockgame.dinogame.refactor
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.ula_app.android.ui.lockgame.dinogame.refactor.model.CactusId
 import com.example.ula_app.android.ui.lockgame.dinogame.refactor.model.CactusState
@@ -36,7 +37,14 @@ class DinoGameViewModel: ViewModel() {
         if(viewState.value.dinoState.isJump) {
             return
         } else {
-            viewState.value.dinoState.startJump()
+
+            val newDinoState = viewState.value.dinoState.startJump()
+
+            _viewState.update { currentState ->
+                currentState.copy(
+                    dinoState = newDinoState
+                )
+            }
         }
     }
 
@@ -70,6 +78,7 @@ class DinoGameViewModel: ViewModel() {
                 )
 
                 val newDinoState = viewState.value.dinoState.handleJump()
+                Log.i("Dinogame", "${newDinoState}")
 
                 _viewState.update { currentState ->
                     currentState.copy(
@@ -92,6 +101,9 @@ class DinoGameViewModel: ViewModel() {
     }
 
     fun initiateGameConfig(width: Float, height: Float) {
+
+        Log.i("dinogame", "${width}, ${height}")
+
         _viewState.update { currentState ->
 
 
@@ -116,12 +128,12 @@ class DinoGameViewModel: ViewModel() {
                 cactusStateList = listOf(
                     CactusState(
                         cactusId = cactusId1,
-                        xOffset = width * 0.5f + cactusId1.width + 2f,
+                        xOffset = width * 0.5f + cactusId1.width * 0.5f + 2f,
                         threshold = -width * 0.5f - cactusId1.width * 0.5f - 2f
                     ),
                     CactusState(
                         cactusId = cactusId2,
-                        xOffset = -width * 0.5f - cactusId2.width * 0.5f + 30f - 2f,
+                        xOffset = width * 0.5f + cactusId2.width * 0.5f + 211f + 2f,
                         threshold = -width * 0.5f - cactusId2.width * 0.5f - 2f
                     )
                 ),
@@ -139,7 +151,9 @@ class DinoGameViewModel: ViewModel() {
 
         val newCactusStateList = listOf(
             viewState.value.cactusStateList[1],
-            viewState.value.cactusStateList[0].reset(0.5f * (viewState.value.safeZone.width + CactusState.randomizeACactus().width) + ( 1/4 + Math.random().toFloat() * (3/4 - 1/4)) + 2f)
+            viewState.value.cactusStateList[0].reset(
+                (viewState.value.safeZone.width + CactusState.randomizeACactus().width) + (viewState.value.safeZone.width + CactusState.randomizeACactus().width) * ( 0.16f + Math.random().toFloat() * (0.6f - 0.16f)) + 2f
+            )
         )
 
         _viewState.update { currentState ->
@@ -176,22 +190,26 @@ class DinoGameViewModel: ViewModel() {
                 roadStateList = listOf(
                     RoadState(
                         roadId = RoadId.FIRST,
-                        xOffset = 0f
+                        xOffset = 0f,
+                        threshold = -viewState.value.safeZone.width
                     ),
                     RoadState(
                         roadId = RoadId.SECOND,
-                        xOffset = currentState.safeZone.width
-                    ),
+                        xOffset = viewState.value.safeZone.width,
+                        threshold = -viewState.value.safeZone.width
+                    )
                 ),
 
                 cactusStateList = listOf(
                     CactusState(
                         cactusId = cactusId1,
-                        xOffset = currentState.safeZone.width * 0.5f + cactusId1.width + 2f,
+                        xOffset = viewState.value.safeZone.width * 0.5f + cactusId1.width * 0.5f + 2f,
+                        threshold = -viewState.value.safeZone.width * 0.5f - cactusId1.width * 0.5f - 2f
                     ),
                     CactusState(
                         cactusId = cactusId2,
-                        xOffset = -currentState.safeZone.width * 0.5f - cactusId2.width * 0.5f + 30f - 2f,
+                        xOffset = viewState.value.safeZone.width * 0.5f + cactusId2.width * 0.5f + 211f + 2f,
+                        threshold = -viewState.value.safeZone.width * 0.5f - cactusId2.width * 0.5f - 2f
                     )
                 ),
                 dinoState = DinoState(),

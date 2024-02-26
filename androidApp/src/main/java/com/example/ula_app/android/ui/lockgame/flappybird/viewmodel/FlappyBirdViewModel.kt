@@ -53,18 +53,22 @@ class FlappyBirdViewModel: ViewModel() {
             currentState.copy(
                 roadStateList = listOf<RoadState>(
                     RoadState(
-                        xOffset = 0f
+                        xOffset = 0f,
+                        threshold = 10f - viewState.value.safeZone.width
                     ),
                     RoadState(
-                        xOffset = currentState.safeZone.width - 10f
+                        xOffset = viewState.value.safeZone.width - 10f,
+                        threshold = 10f - viewState.value.safeZone.width
                     )
                 ),
                 pipeStateList = listOf(
                     PipeState(
-                        xOffset = currentState.safeZone.width * 0.5f + PipeState.TOP_WIDTH * 0.5f + 2f
+                        xOffset = viewState.value.safeZone.width * 0.5f + PipeState.TOP_WIDTH * 0.5f + 2f,
+                        threshold = -viewState.value.safeZone.width * 0.5f - PipeState.TOP_WIDTH * 0.5f - 2f
                     ),
                     PipeState(
-                        xOffset = currentState.safeZone.width + PipeState.TOP_WIDTH + 4f
+                        xOffset = viewState.value.safeZone.width + PipeState.TOP_WIDTH + 4f,
+                        threshold = -viewState.value.safeZone.width * 0.5f - PipeState.TOP_WIDTH * 0.5f - 2f
                     )
                 ),
                 birdState = BirdState(),
