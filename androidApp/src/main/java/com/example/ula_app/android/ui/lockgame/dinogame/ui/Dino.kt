@@ -1,4 +1,4 @@
-package com.example.ula_app.android.ui.lockgame.dinogame.refactor.ui
+package com.example.ula_app.android.ui.lockgame.dinogame.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -13,9 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
-import com.example.ula_app.android.ui.lockgame.dinogame.refactor.DinoGameViewModel
+import com.example.ula_app.android.ui.lockgame.dinogame.DinoGameViewModel
 import com.example.ula_app.android.R
-import com.example.ula_app.android.ui.lockgame.dinogame.refactor.model.DinoState
+import com.example.ula_app.android.ui.lockgame.dinogame.model.DinoState
 
 @Composable
 fun Dino(

@@ -1,4 +1,4 @@
-package com.example.ula_app.android.ui.lockgame.dinogame.refactor.ui
+package com.example.ula_app.android.ui.lockgame.dinogame.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -14,14 +14,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.ula_app.android.R
-import com.example.ula_app.android.ui.lockgame.dinogame.refactor.DinoGameViewModel
-import com.example.ula_app.android.ui.lockgame.dinogame.refactor.model.CactusId
-import com.example.ula_app.android.ui.lockgame.dinogame.refactor.model.CactusState
+import com.example.ula_app.android.ui.lockgame.dinogame.DinoGameViewModel
+import com.example.ula_app.android.ui.lockgame.dinogame.model.CactusId
 
 @Composable
 fun Cactus(

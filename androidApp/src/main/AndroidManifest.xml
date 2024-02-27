@@ -48,7 +48,7 @@
             android:name=".ui.lockgame.dinogame.DinoGameActivity">
         </activity>
         <activity
-            android:name=".ui.lockgame.dinogame.refactor.DinoGameActivity">
+            android:name=".ui.lockgame.dinogame.DinoGameActivity">
         </activity>
         <activity
             android:name=".ui.lockgame.snakegame.presentation.activity.SnakeGameActivity">

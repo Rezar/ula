@@ -1,4 +1,4 @@
-package com.example.ula_app.android.ui.lockgame.dinogame.refactor.ui
+package com.example.ula_app.android.ui.lockgame.dinogame.ui
 
 import android.app.Activity
 import androidx.compose.foundation.Image
@@ -24,8 +24,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.ula_app.android.ui.lockgame.dinogame.refactor.DinoGameViewModel
-import com.example.ula_app.android.ui.lockgame.dinogame.refactor.model.GameStatus
+import com.example.ula_app.android.ui.lockgame.dinogame.DinoGameViewModel
+import com.example.ula_app.android.ui.lockgame.dinogame.model.GameStatus
 
 @Composable
 fun FarBackground(

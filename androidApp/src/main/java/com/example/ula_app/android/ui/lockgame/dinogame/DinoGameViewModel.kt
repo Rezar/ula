@@ -1,16 +1,14 @@
-package com.example.ula_app.android.ui.lockgame.dinogame.refactor
+package com.example.ula_app.android.ui.lockgame.dinogame
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.example.ula_app.android.ui.lockgame.dinogame.refactor.model.CactusId
-import com.example.ula_app.android.ui.lockgame.dinogame.refactor.model.CactusState
-import com.example.ula_app.android.ui.lockgame.dinogame.refactor.model.DinoState
-import com.example.ula_app.android.ui.lockgame.dinogame.refactor.model.GameStatus
-import com.example.ula_app.android.ui.lockgame.dinogame.refactor.model.RoadId
-import com.example.ula_app.android.ui.lockgame.dinogame.refactor.model.RoadState
-import com.example.ula_app.android.ui.lockgame.dinogame.refactor.model.SafeZone
-import com.example.ula_app.android.ui.lockgame.dinogame.refactor.model.ViewState
-import com.example.ula_app.android.ui.lockgame.flappybird.model.PipeState
+import com.example.ula_app.android.ui.lockgame.dinogame.model.CactusState
+import com.example.ula_app.android.ui.lockgame.dinogame.model.DinoState
+import com.example.ula_app.android.ui.lockgame.dinogame.model.GameStatus
+import com.example.ula_app.android.ui.lockgame.dinogame.model.RoadId
+import com.example.ula_app.android.ui.lockgame.dinogame.model.RoadState
+import com.example.ula_app.android.ui.lockgame.dinogame.model.SafeZone
+import com.example.ula_app.android.ui.lockgame.dinogame.model.ViewState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update

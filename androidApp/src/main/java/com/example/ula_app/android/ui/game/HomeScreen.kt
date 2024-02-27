@@ -30,7 +30,7 @@ import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import com.example.ula_app.android.ULAApplication
-import com.example.ula_app.android.ui.lockgame.dinogame.refactor.DinoGameActivity
+import com.example.ula_app.android.ui.lockgame.dinogame.DinoGameActivity
 import com.example.ula_app.android.ui.lockgame.tictactoe.TicTacToeActivity
 import com.example.ula_app.android.data.DataSource
 import com.example.ula_app.android.ui.viewmodel.UserPreferencesViewModel

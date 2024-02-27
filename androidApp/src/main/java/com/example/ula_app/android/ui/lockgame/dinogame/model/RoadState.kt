@@ -1,4 +1,4 @@
-package com.example.ula_app.android.ui.lockgame.dinogame.refactor.model
+package com.example.ula_app.android.ui.lockgame.dinogame.model
 
 import com.example.ula_app.android.R
 

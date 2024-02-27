@@ -1,4 +1,4 @@
-package com.example.ula_app.android.ui.lockgame.dinogame.refactor
+package com.example.ula_app.android.ui.lockgame.dinogame
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -13,16 +13,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
-import com.example.ula_app.android.ui.lockgame.dinogame.refactor.ui.Cactus
-import com.example.ula_app.android.ui.lockgame.dinogame.refactor.ui.Dino
-import com.example.ula_app.android.ui.lockgame.dinogame.refactor.ui.FarBackground
-import com.example.ula_app.android.ui.lockgame.dinogame.refactor.ui.NearForeground
+import com.example.ula_app.android.ui.lockgame.dinogame.ui.Cactus
+import com.example.ula_app.android.ui.lockgame.dinogame.ui.Dino
+import com.example.ula_app.android.ui.lockgame.dinogame.ui.FarBackground
+import com.example.ula_app.android.ui.lockgame.dinogame.ui.NearForeground
 
 
 @OptIn(ExperimentalComposeUiApi::class)
