@@ -13,8 +13,6 @@ import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,27 +30,29 @@ fun Controller(
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(24.dp)
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp)
     ) {
-        AppIconButton(
+        DirectionButton(
             icon = Icons.Default.KeyboardArrowUp,
             onClick = { viewModel.changeSnakeDirection(SnakeDirection.Up) }
         )
 
         Row {
-            AppIconButton(
+            DirectionButton(
                 icon = Icons.Default.KeyboardArrowLeft,
                 onClick = { viewModel.changeSnakeDirection(SnakeDirection.Left)}
             )
 
             Spacer(modifier = buttonSize)
 
-            AppIconButton(
+            DirectionButton(
                 icon = Icons.Default.KeyboardArrowRight,
                 onClick = { viewModel.changeSnakeDirection(SnakeDirection.Right)}
             )
         }
-        AppIconButton(
+        DirectionButton(
             icon = Icons.Default.KeyboardArrowDown,
             onClick = { viewModel.changeSnakeDirection(SnakeDirection.Down)}
         )
@@ -62,7 +62,7 @@ fun Controller(
 
 
 @Composable
-fun AppIconButton(icon: ImageVector, onClick: () -> Unit) {
+fun DirectionButton(icon: ImageVector, onClick: () -> Unit) {
     IconButton(
         onClick = onClick,
         modifier = Modifier

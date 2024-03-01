@@ -27,15 +27,15 @@ class SnakeGameViewModel: ViewModel() {
 
             GameStatus.Running -> {
 
-                val snakeHead = viewState.value.snakeStateList.first()
-                val newPosition: Coordinate = when(viewState.value.snakeDirection) {
+                val viewState = viewState.value
+                val snakeHead = viewState.snakeStateList.first()
+
+                val newPosition: Coordinate = when(viewState.snakeDirection) {
                     SnakeDirection.Left -> Coordinate(snakeHead.x - 1, snakeHead.y)
                     SnakeDirection.Right -> Coordinate(snakeHead.x + 1, snakeHead.y)
                     SnakeDirection.Up -> Coordinate(snakeHead.x, snakeHead.y  - 1)
                     SnakeDirection.Down -> Coordinate(snakeHead.x, snakeHead.y + 1)
                 }
-
-                increaseScore(newPosition)
 
                 // need to check if the game is over everytime you move the snake
                 // (or your snake has new position
@@ -44,11 +44,26 @@ class SnakeGameViewModel: ViewModel() {
                     return
                 }
 
-                // update snake head to the new position and concatenate the snake body to the new head
-                _viewState.update { currentState ->
-                    currentState.copy(
-                        snakeStateList = listOf(newPosition) + currentState.snakeStateList.take(currentState.snakeStateList.size - 1)
-                    )
+                val foodCoordinate = viewState.foodState
+
+                if(foodCoordinate.x == newPosition.x && foodCoordinate.y == newPosition.y) {
+                    // 1. increase the snake length by 1, and add the food position as the snake's head
+                    // 2. increase the score by 1
+                    // 3. randomize a new food
+                    _viewState.update { currentState ->
+                        currentState.copy(
+                            foodState = Coordinate.randomCoordinate(currentState.snakeStateList),
+                            snakeStateList = listOf(foodCoordinate) + currentState.snakeStateList,
+                            score = currentState.score + 1
+                        )
+                    }
+                } else {
+                    // update snake head to the new position and concatenate the snake body to the new head
+                    _viewState.update { currentState ->
+                        currentState.copy(
+                            snakeStateList = listOf(newPosition) + currentState.snakeStateList.take(currentState.snakeStateList.size - 1)
+                        )
+                    }
                 }
             }
 
@@ -89,7 +104,7 @@ class SnakeGameViewModel: ViewModel() {
     fun restartGame() {
         _viewState.update { currentState ->
             currentState.copy(
-                foodState = Coordinate.randomCoordinate(),
+                foodState = Coordinate.randomCoordinate(listOf(Coordinate(16, 2), Coordinate(16, 1))),
                 snakeStateList = listOf(Coordinate(16, 2), Coordinate(16, 1)),
                 snakeDirection = SnakeDirection.Down,
                 gameStatus = GameStatus.Running,
@@ -158,58 +173,16 @@ class SnakeGameViewModel: ViewModel() {
         }
     }
 
-    fun increaseScore(newPosition: Coordinate) {
-        val foodCoordinate = viewState.value.foodState
-
-        if(foodCoordinate.equals(newPosition)) {
-            // 1. increase the snake length by 1, and add the food position as the snake's head
-            // 2. increase the score by 1
-            // 3. randomize a new food
-            _viewState.update { currentState ->
-                currentState.copy(
-                    foodState = Coordinate.randomCoordinate(),
-//                    snakeStateList = listOf(foodCoordinate) + currentState.snakeStateList + listOf(),
-                    snakeStateList = currentState.snakeStateList + listOf(increaseSnakeLength(currentState.snakeDirection, currentState.snakeStateList)),
-                    score = currentState.score + 1
-                )
-            }
-        }
-    }
-
-    // TODO: to check the x, y coordinate +/- correction
-    // to increase the snake in the direction according to the snake's moving direction
-    fun increaseSnakeLength(currentSnakeDirection: SnakeDirection, snakeStateList: List<Coordinate>): Coordinate {
-
-//        val currentSnakeDirection = viewState.value.snakeDirection
-//        val snakeStateList = viewState.value.snakeStateList
-
-        when(currentSnakeDirection) {
-            SnakeDirection.Left -> {
-                return Coordinate(snakeStateList.last().x + 1, snakeStateList.last().y)
-            }
-            SnakeDirection.Right -> {
-                return Coordinate(snakeStateList.last().x - 1, snakeStateList.last().y)
-            }
-            SnakeDirection.Up -> {
-                return Coordinate(snakeStateList.last().x, snakeStateList.last().y + 1)
-            }
-            SnakeDirection.Down -> {
-                return Coordinate(snakeStateList.last().x, snakeStateList.last().y - 1)
-            }
-        }
-
-    }
 
 
-    fun isSnakeHittingTheBorder(): Boolean {
+    fun isSnakeHittingTheBorder(newPosition: Coordinate): Boolean {
 
-        val snakeHead = viewState.value.snakeStateList.first()
         val snakeDirection = viewState.value.snakeDirection
 
-        val hasReachedLeftEnd = snakeHead.x == -1 && snakeDirection == SnakeDirection.Left
-        val hasReachedTopEnd = snakeHead.y == -1 && snakeDirection == SnakeDirection.Up
-        val hasReachedRightEnd = snakeHead.x == boardSize && snakeDirection == SnakeDirection.Right
-        val hasReachedBottomEnd = snakeHead.y == boardSize && snakeDirection == SnakeDirection.Down
+        val hasReachedLeftEnd = newPosition.x == -1 && snakeDirection == SnakeDirection.Left
+        val hasReachedTopEnd = newPosition.y == -1 && snakeDirection == SnakeDirection.Up
+        val hasReachedRightEnd = newPosition.x == boardSize && snakeDirection == SnakeDirection.Right
+        val hasReachedBottomEnd = newPosition.y == boardSize && snakeDirection == SnakeDirection.Down
 
         return hasReachedLeftEnd || hasReachedTopEnd || hasReachedRightEnd || hasReachedBottomEnd
     }
@@ -221,7 +194,7 @@ class SnakeGameViewModel: ViewModel() {
 
     // called by the autoTick() function to obtain the new position of the snake
     fun isGameOver(newPosition: Coordinate): Boolean {
-        return isSnakeHittingTheBorder()
+        return isSnakeHittingTheBorder(newPosition)
                 || isSnakeHittingItself(newPosition)
                 || viewState.value.gameStatus == GameStatus.GameOver
     }

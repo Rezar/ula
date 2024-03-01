@@ -35,7 +35,7 @@ import com.example.ula_app.android.ui.lockgame.tictactoe.TicTacToeActivity
 import com.example.ula_app.android.data.DataSource
 import com.example.ula_app.android.ui.viewmodel.UserPreferencesViewModel
 import com.mutualmobile.composesensors.rememberStepCounterSensorState
-import com.example.ula_app.android.ui.lockgame.snakegame.presentation.activity.SnakeGameActivity
+import com.example.ula_app.android.ui.lockgame.snakegame.refactor.SnakeGameActivity
 import com.example.ula_app.android.ui.lockgame.flappybird.FlappyBirdActivity
 import com.example.ula_app.android.ui.viewmodel.AndroidHomeViewModel
 import com.example.ula_app.presentation.UiMonsterMovie

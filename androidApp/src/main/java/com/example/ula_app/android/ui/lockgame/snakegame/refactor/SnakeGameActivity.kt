@@ -9,7 +9,7 @@ import com.example.ula_app.android.ui.theme.AppTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 
-val AUTO_TICK_INTERVAL = 50L
+val AUTO_TICK_INTERVAL = 500L
 class SnakeGameActivity: ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,6 +25,8 @@ class SnakeGameActivity: ComponentActivity() {
                         viewModel.autoTick()
                     }
                 }
+                
+                SnakeGame(viewModel = viewModel)
             }
         }
     }

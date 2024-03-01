@@ -1,6 +1,7 @@
 package com.example.ula_app.android.ui.lockgame.snakegame.refactor.model
 
 import androidx.compose.runtime.Composable
+import kotlin.random.Random
 
 data class Coordinate(
     val x: Int,
@@ -8,19 +9,23 @@ data class Coordinate(
 ) {
 
     companion object {
-        fun randomCoordinate(): Coordinate {
+        fun randomCoordinate(snakeStateList: List<Coordinate>): Coordinate {
 
-            // TODO: need to add if to make sure that the randomized food position does not overlap with the snake
+            val maxX = 31
+            val maxY = 31
+            var newX: Int
+            var newY:Int
+            var isOverlapping: Boolean
 
-            return Coordinate(7, 7)
+            do {
+                newX = Random.nextInt(maxX)
+                newY = Random.nextInt(maxY)
+
+                isOverlapping = snakeStateList.any { it.x == newX && it.y == newY}
+            } while (isOverlapping)
+
+            return Coordinate(newX, newY)
         }
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this == other) return true
-        if (other !is Coordinate) return false
-
-        return this.x == other.x && this.y == other.y
     }
 
 
