@@ -25,7 +25,7 @@ actual data class UiMonsterMovie(
                         CommonMonsterMovie.MOVIE8 -> R.raw.v3_1
                         CommonMonsterMovie.MOVIE9 -> R.raw.v3_2
                         CommonMonsterMovie.MOVIE10 -> R.raw.v3_3
-                        CommonMonsterMovie.MOVIE11 -> R.raw.v4_1
+                        CommonMonsterMovie.MOVIE11 -> R.raw.v4_3
                         CommonMonsterMovie.MOVIE12 -> R.raw.v5_3
                         CommonMonsterMovie.MOVIE13 -> R.raw.v6_1
                         CommonMonsterMovie.MOVIE14 -> R.raw.v6_2
