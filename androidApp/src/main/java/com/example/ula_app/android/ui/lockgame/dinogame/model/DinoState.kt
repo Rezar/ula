@@ -1,84 +1,70 @@
 package com.example.ula_app.android.ui.lockgame.dinogame.model
 
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.graphics.Path
-import com.example.ula_app.android.ui.lockgame.dinogame.DinoPath
-import com.example.ula_app.android.ui.lockgame.dinogame.DinoPath2
-import com.example.ula_app.android.ui.lockgame.dinogame.EARTH_Y_POSITION
-
 data class DinoState(
-    var xPos: Float = 60f,
-    var yPos: Float = EARTH_Y_POSITION,
-    var velocityY: Float = 0f,
-    var gravity: Float = 0f,
-    var scale: Float = 0.4f,
-    var keyframe: Int = 0,
-    private var pathList: ArrayList<Path> = arrayListOf(),
-    var isJumping: Boolean = false
-)
-{
-    val path: Path
-        get() = if (keyframe <= 5) pathList[0] else pathList[1]
+    var xOffset: Float = 0f,
+    var yOffset: Float = 0f,
+    var width: Float = WIDTH,
+    var height: Float = HEIGHT,
 
-    init {
-        // Adding all keyframes
-        pathList.add(DinoPath())
-        pathList.add(DinoPath2())
+    // the current time unit index during the jump and fall
+    var jumpIndex: Int = 0,
+    // whether the dino is jumping/falling
+    // or whether the jumpList's index is back to the index 0, where the dino
+    // is ready for another jump
+    val isJump: Boolean = false
+
+) {
+
+    companion object {
+        // width of the Dino
+        const val WIDTH: Float = 42f
+        // height of the Dino
+        const val HEIGHT: Float = 45f
+
+        const val leftMargin: Float =  15f
+
+        // a list of jump/fall distance per time unit
+        val jumpList: List<Float> = listOf(12f, 12f, 12f, 12f, 12f, 12f, 12f, 12f, 12f, -12f, -12f, -12f, -12f, -12f, -12f, -12f, -12f, -12f)
     }
 
-    fun init()
-    {
-        xPos = 60f
-        yPos = EARTH_Y_POSITION
-        velocityY = 0f
-        gravity = 0f
-        isJumping = false
-    }
+    // param: the height per jump
+    fun handleJump(): DinoState {
 
-    fun move()
-    {
-        yPos += velocityY
-        velocityY += gravity
-
-        if (yPos > EARTH_Y_POSITION)
-        {
-            yPos = EARTH_Y_POSITION
-            gravity = 0f
-            velocityY = 0f
-            isJumping = false
+        // if the user does not tap, dino does nothing (running on the ground
+        if(!isJump) {
+            return copy()
         }
 
-        if (!isJumping)
-        {
-            // Change keyframe only when dino is running and not jumping
-            changeKeyframe()
+        if(jumpIndex == jumpList.size - 1) {
+            return copy(
+                yOffset = yOffset - jumpList[jumpIndex],
+                jumpIndex = 0,
+                isJump = false
+            )
         }
-    }
-
-    fun jump()
-    {
-        if (yPos == EARTH_Y_POSITION)
-        {
-            isJumping = true
-            velocityY = -40f
-            gravity = 3f
-        }
-    }
-
-    fun changeKeyframe()
-    {
-        keyframe++
-        if (keyframe == 10)
-            keyframe = 0
-    }
-
-    fun getBounds() : Rect
-    {
-        return Rect(
-            left = xPos,
-            top = yPos - path.getBounds().height,
-            right = xPos + path.getBounds().width,
-            bottom = yPos
+        return copy(
+            yOffset = yOffset - jumpList[jumpIndex],
+            jumpIndex = jumpIndex + 1
         )
     }
+
+
+    fun startJump(): DinoState = copy(
+        isJump = true
+    )
+
+    fun dinoEdge(safeZone: SafeZone): ObjectEdge {
+        val dinoTopBound = safeZone.height - height + yOffset
+        val dinoBottomBound = safeZone.height + yOffset
+        val dinoLeftBound = leftMargin
+        val dinoRightBound = leftMargin + width
+
+        return ObjectEdge(
+            top = dinoTopBound,
+            bottom = dinoBottomBound,
+            left = dinoLeftBound,
+            right = dinoRightBound
+        )
+    }
+
 }

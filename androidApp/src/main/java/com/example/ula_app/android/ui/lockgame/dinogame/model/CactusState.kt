@@ -1,87 +1,100 @@
 package com.example.ula_app.android.ui.lockgame.dinogame.model
 
-import android.util.Log
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.graphics.Path
-import com.example.ula_app.android.ui.lockgame.dinogame.CactusPath
-import com.example.ula_app.android.ui.lockgame.dinogame.EARTH_SPEED
-import com.example.ula_app.android.ui.lockgame.dinogame.EARTH_Y_POSITION
-import com.example.ula_app.android.ui.lockgame.dinogame.deviceWidthInPixels
-import com.example.ula_app.android.ui.lockgame.dinogame.distanceBetweenCactus
+import com.example.ula_app.android.R
+
 
 data class CactusState(
-    val cactusList: ArrayList<CactusModel> = ArrayList(),
-    val cactusSpeed: Int = EARTH_SPEED,
-) {
-    init {
-        initCactus()
-    }
+    var cactusId: CactusId = randomizeACactus(),
+    var xOffset: Float = 0f,
+    var threshold: Float = 0f,
+    var counted: Boolean = false
 
-    fun initCactus()
-    {
-        cactusList.clear()
-        var startX = deviceWidthInPixels + 150
-        var cactusCount = 3
-
-        for (i in 0 until cactusCount) {
-            var cactus = CactusModel(
-                count = rand(1, 3),
-                scale = rand(0.85f, 1.2f),
-                xPos = startX,
-                yPos = EARTH_Y_POSITION.toInt()
-            )
-            Log.w("Cactus", "${cactus.xPos}")
-            cactusList.add(cactus)
-
-            startX += distanceBetweenCactus
-            startX += rand(0, distanceBetweenCactus)
-        }
-    }
-
-    fun moveForward()
-    {
-        cactusList.forEach { cactus ->
-            cactus.xPos -= cactusSpeed
-        }
-
-        if (cactusList.first().xPos < -250) {
-            cactusList.removeAt(0)
-            var cactus = CactusModel(
-                count = rand(1, 3),
-                scale = rand(0.85f, 1.2f),
-                xPos = nextCactusX(cactusList.last().xPos),
-                yPos = EARTH_Y_POSITION.toInt() + rand(20, 30)
-            )
-            cactusList.add(cactus)
-            Log.e("Cactus", "${cactus.xPos}")
-        }
-    }
-
-    fun nextCactusX(lastX: Int): Int
-    {
-        var nextX = lastX + distanceBetweenCactus
-        nextX += rand(0, distanceBetweenCactus)
-        if (nextX < deviceWidthInPixels)
-            nextX += (deviceWidthInPixels - nextX)
-        return nextX
-    }
-}
-
-data class CactusModel(
-    val count: Int = 1,
-    val scale: Float = 1f,
-    var xPos: Int = 0,
-    var yPos: Int = 0,
-    var path: Path = CactusPath()
 ) {
 
-    fun getBounds() : Rect
-    {
-        return Rect(
-            left = xPos.toFloat(),
-            top = yPos.toFloat() - (path.getBounds().height * scale),
-            right = xPos + (path.getBounds().width * scale),
-            bottom = yPos.toFloat()
+    companion object{
+
+        fun randomizeACactus(): CactusId {
+            val rnds = (0..4).random()
+            return if(rnds == 0) {
+                CactusId.SMALL
+            } else if(rnds == 1) {
+                CactusId.TWOSMALL
+            }else if(rnds == 2) {
+                CactusId.THREESMALL
+            }else if(rnds == 3) {
+                CactusId.NORMAL
+            }else{
+                CactusId.LARGE
+            }
+        }
+
+        const val X_SPAN: Float = 10f
+
+
+    }
+
+
+
+    fun isPassTheThreshold(): Boolean {
+        return xOffset <= threshold
+    }
+
+    fun move(): CactusState = copy(xOffset = xOffset - X_SPAN) // X_SPAN is the unit distance moved within a unit time range
+
+    fun reset(targetOffset: Float): CactusState =  copy(
+        cactusId = randomizeACactus(),
+        xOffset = targetOffset,  // need to randomize a target offset when you reset the cactus in viewModel
+        counted = false
+    )
+
+    fun count() = copy(
+        counted = true
+    )
+
+    // Define the position of the cactus
+    fun cactusEdge(safeZone: SafeZone): ObjectEdge {
+        val cactusTopBound = safeZone.height - cactusId.height
+        val cactusBottomBound = safeZone.height
+        val cactusLeftBound = (safeZone.width - cactusId.width) * 0.5f + xOffset
+        val cactusRightBound = (safeZone.width + cactusId.width) * 0.5f + xOffset
+
+        return ObjectEdge(
+            top = cactusTopBound,
+            bottom = cactusBottomBound,
+            left = cactusLeftBound,
+            right = cactusRightBound
         )
     }
+
+}
+
+enum class CactusId {
+    SMALL(R.drawable.cactus_small, 22f, 40f),
+    TWOSMALL(R.drawable.cactus_twosmall, 42f, 40f),
+    THREESMALL(R.drawable.cactus_threesmall, 57f, 40f),
+    NORMAL(R.drawable.cactus_normal, 32f, 45f),
+    LARGE(R.drawable.cactus_large, 50f, 45f);
+
+    var id: Int = 0
+    var width: Float = 0f
+    var height: Float = 0f
+
+    constructor()
+
+    constructor(
+        id: Int,
+        width: Float,
+        height: Float
+    ) {
+        this.id = id
+        this.width = width
+        this.height = height
+    }
+
+    // custom method
+    fun customToString(): String {
+        return ""
+    }
+
+
 }

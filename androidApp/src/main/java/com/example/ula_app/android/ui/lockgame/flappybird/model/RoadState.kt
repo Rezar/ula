@@ -1,19 +1,19 @@
 package com.example.ula_app.android.ui.lockgame.flappybird.model
 
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
+data class RoadState(
+    var xOffset: Float = 0f,
+    var threshold: Float = 0f
+) {
+    companion object {
+        // Shifting distance on x axis per tick.
+        const val X_SPAN: Float = 5f
+    }
 
-data class RoadState (var offset: Dp = RoadWidthOffset) {
-    fun move(): RoadState = copy(offset = offset - RoadMoveVelocity)
+    fun isPassTheThreshold(): Boolean {
+        return xOffset <= threshold
+    }
 
-    fun reset(): RoadState = copy(offset = TempRoadWidthOffset)
+    fun move(): RoadState = copy(xOffset = xOffset - X_SPAN)
+
+    fun reset(targetOffset: Float): RoadState = copy(xOffset = targetOffset)
 }
-
-val RoadWidthOffset = 0.dp
-val TempRoadWidthOffset = 300.dp
-val RoadMoveVelocity = 10.dp
-
-val RoadStateList = listOf(
-    RoadState(),
-    RoadState(offset = TempRoadWidthOffset)
-)

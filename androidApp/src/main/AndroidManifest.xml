@@ -53,6 +53,10 @@
         <activity
             android:name=".ui.lockgame.snakegame.presentation.activity.GameActivity">
         </activity>
+
+        <activity
+            android:name=".ui.lockgame.snakegame.refactor.SnakeGameActivity">
+        </activity>
         <activity
             android:name=".ui.lockgame.flappybird.FlappyBirdActivity">
         </activity>

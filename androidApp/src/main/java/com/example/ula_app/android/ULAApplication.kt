@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.preferencesDataStore
+import com.example.ula_app.android.data.StepsPerDay
 import com.example.ula_app.android.repo.UserPreferencesRepository
 import com.example.ula_app.android.ui.viewmodel.AndroidDebugViewModel
 import com.example.ula_app.android.ui.viewmodel.AndroidHomeViewModel
@@ -36,13 +37,15 @@ class ULAApplication: Application() {
 
     val applicationScope = CoroutineScope(Dispatchers.IO)
 
+    // current time
     var localDateTimeState = MutableStateFlow<LocalDateTime>(DateTimeUtil.nowInLocalDateTime())
 
     override fun onCreate() {
         super.onCreate()
-        registerMidnightTimer()
+        registerMidnightTimer() //call the function here in the onCreate function so that it can actually start checking the time
     }
 
+    // constantly checking if the time is 23:55
     private fun registerMidnightTimer() {
         val intentFilter = IntentFilter().apply {
             addAction(Intent.ACTION_TIME_TICK)
@@ -52,8 +55,11 @@ class ULAApplication: Application() {
         registerReceiver(midnightBroadcastReceiver, intentFilter)
     }
 
+    // record today's step and date
     private val midnightBroadcastReceiver = object : BroadcastReceiver() {
 
+        // if the conditions in the "registerMidnightTimer" is fulfilled,
+        // then use the broadcast receiver to do the job below
         override fun onReceive(context: Context?, intent: Intent?) {
             val today = DateTimeUtil.nowInLocalDateTime()
             if (today.date != localDateTimeState.value.date) {
@@ -68,6 +74,7 @@ class ULAApplication: Application() {
         }
     }
 
+    // check if the time is 23:55
     private fun isSavingTime(now: LocalDateTime): Boolean {
         if (
             now.time.hour == 23 &&
